@@ -1,0 +1,8 @@
+<div class="margin-top-10 large-bold-header-text center-text">Current Player Statistics</div>
+<div class="center-text margin-top-10">
+  Player statistics come from the Sleeper APIs. The following are tables have custom views for each position group with relevant fantasy related stats for the season.
+</div>
+
+<div class="margin-top-25">
+  <app-ktc-table *ngIf="playersLoaded" [players]="playerService.playerValues"></app-ktc-table>
+</div>
