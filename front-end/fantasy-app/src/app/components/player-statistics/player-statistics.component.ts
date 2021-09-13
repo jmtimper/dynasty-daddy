@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {PlayerService} from "../../services/player.service";
-import {BaseComponent} from "../base-component.abstract";
+import {PlayerService} from '../../services/player.service';
+import {BaseComponent} from '../base-component.abstract';
 
 @Component({
   selector: 'app-player-statistics',

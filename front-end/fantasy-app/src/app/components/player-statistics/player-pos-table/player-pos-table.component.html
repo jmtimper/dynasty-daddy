@@ -1,0 +1,114 @@
+<div class="ktc-table-container">
+  <div>
+    <mat-form-field class="button-left player-value-checkbox-margin mat-dropdown-wide-300" color="accent">
+      <mat-label>Search Player</mat-label>
+<!--      <input matInput type="text" (keyup)="updatePlayerFilters()" [(ngModel)]="searchVal">-->
+    </mat-form-field>
+  </div>
+  <div [ngClass]="{'center-text': configService.isMobile}">
+    <span [ngClass]="{'button-left': !configService.isMobile}">
+<!--      <mat-checkbox [ngClass]="{'player-value-checkbox-margin': !configService.isMobile, 'player-value-checkbox-margin__mobile': configService.isMobile}" color="primary" [(ngModel)]="filterPosGroup[0]"-->
+<!--                    (change)="updatePlayerFilters()">QB</mat-checkbox>-->
+<!--      <mat-checkbox [ngClass]="{'player-value-checkbox-margin': !configService.isMobile, 'player-value-checkbox-margin__mobile': configService.isMobile}" color="primary" [(ngModel)]="filterPosGroup[1]"-->
+<!--                    (change)="updatePlayerFilters()">RB</mat-checkbox>-->
+<!--      <mat-checkbox [ngClass]="{'player-value-checkbox-margin': !configService.isMobile, 'player-value-checkbox-margin__mobile': configService.isMobile}" color="primary" [(ngModel)]="filterPosGroup[2]"-->
+<!--                    (change)="updatePlayerFilters()">WR</mat-checkbox>-->
+<!--      <mat-checkbox [ngClass]="{'player-value-checkbox-margin': !configService.isMobile, 'player-value-checkbox-margin__mobile': configService.isMobile}" color="primary" [(ngModel)]="filterPosGroup[3]"-->
+<!--                    (change)="updatePlayerFilters()">TE</mat-checkbox>-->
+<!--      <mat-checkbox [ngClass]="{'player-value-checkbox-margin': !configService.isMobile, 'player-value-checkbox-margin__mobile': configService.isMobile}" color="primary" [(ngModel)]="filterPosGroup[4]" [disabled]="showFreeAgents || showRookies"-->
+<!--                    (change)="updatePlayerFilters()">Picks</mat-checkbox>-->
+    </span>
+    <span *ngIf="!configService.isMobile" class="container_spacer"></span>
+    <div [ngClass]="{'button-right': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+<!--      <mat-slide-toggle *ngIf="sleeperService.leagueLoaded" color="primary" [(ngModel)]="showFreeAgents" (change)="updatePlayerFilters()" class="player-value-checkbox-margin">-->
+<!--        {{configService.isMobile ? 'FA' : 'Free Agents'}}-->
+<!--      </mat-slide-toggle>-->
+<!--      <mat-slide-toggle color="primary" [(ngModel)]="showRookies" (change)="updatePlayerFilters()" class="player-value-checkbox-margin">-->
+<!--        {{configService.isMobile ? 'Rookies' : 'Rookies Only'}}-->
+<!--      </mat-slide-toggle>-->
+<!--      <mat-slide-toggle color="primary" [(ngModel)]="isSuperFlex" (change)="updateSuperFlex()"  class="player-value-checkbox-margin" >-->
+<!--        {{configService.isMobile ? 'SF' : 'SuperFlex'}}-->
+<!--      </mat-slide-toggle>-->
+    </div>
+  </div>
+  <div class="margin-top-10 mat-elevation-z8" [hidden]="filteredPlayers.length === 0">
+    <mat-table [dataSource]="dataSource" matSort matSortActive="{{isSuperFlex ? 'sf_trade_value' : 'trade_value'}}"
+               matSortDirection="desc">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="full_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{configService.isMobile ? element.first_name.substr(0, 1) + '. ' + element.last_name : element.full_name}} <span
+          *ngIf="(element.experience === 0 && element.position !== 'PI')" matBadge="R" matBadgeOverlap="false"></span>
+          <!--          <span class="small-text__light">{{element.team}}</span>-->
+        </mat-cell>
+      </ng-container>
+
+      <!-- Pos Column -->
+      <ng-container matColumnDef="position">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{configService.isMobile ? 'Pos' : 'Position'}}</mat-header-cell>
+        <mat-cell
+          *matCellDef="let element"> {{element.position == 'PI' ? 'PICK' : element.position}} {{isSuperFlex ? element.sf_position_rank : element.position_rank}}</mat-cell>
+      </ng-container>
+
+      <!-- Age Column -->
+      <ng-container matColumnDef="age">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Age</mat-header-cell>
+        <mat-cell
+          *matCellDef="let element"> {{(element.age == -1 || !element.age) ? '??' : element.age + ' y.o.'}} </mat-cell>
+      </ng-container>
+
+      <!-- Fantasy Points -->
+      <ng-container matColumnDef="halfppr">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{playerService.playerStatsYear}} Points</mat-header-cell>
+        <mat-cell
+          *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pts_half_ppr || '---'}}</mat-cell>
+      </ng-container>
+
+      <!-- Value Column -->
+      <ng-container matColumnDef="{{isSuperFlex ? 'sf_trade_value' : 'trade_value'}}">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Trade Value</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_trade_value : playerService.playerValueAnalysis[element.name_id].trade_value}} </mat-cell>
+      </ng-container>
+
+      <!-- % change Column -->
+      <ng-container matColumnDef="change">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>% Change</mat-header-cell>
+        <mat-cell *matCellDef="let element"> <span [ngClass]="{'success__alert': isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_change > 0 : playerService.playerValueAnalysis[element.name_id].standard_change > 0, 'warning__alert': isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_change < 0 : playerService.playerValueAnalysis[element.name_id].standard_change < 0}">{{isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_change : playerService.playerValueAnalysis[element.name_id].standard_change}}%</span></mat-cell>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element" (click)="$event.stopPropagation();">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="openPlayerComparison(element)">
+              <span>Add to Player Comparison</span>
+            </button>
+            <button *ngIf="element.position !== 'PI'" mat-menu-item [routerLink]="['../details', element.name_id]">
+              <span>View Player Page</span>
+            </button>
+            <button mat-menu-item *ngIf="sleeperService.selectedLeague && element.position !== 'PI' && element.owner" [routerLink]="['../../league/team', element.owner?.ownerName]">
+              <span>View Team Page</span>
+            </button>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container *ngIf="sleeperService.selectedLeague" matColumnDef="owner">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Owner</mat-header-cell>
+        <mat-cell *matCellDef="let element" style="text-overflow-ellipsis: true">{{element.owner?.ownerName || '---'}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row class="ktc-table-element-row" *matRowDef="let row; columns: displayedColumns;"
+               [routerLink]="row.position !== 'PI' ? ['../details', row.name_id] : []"
+               [ngClass]="{'accent__color__background': sleeperService.sleeperUser && sleeperService.sleeperUser?.userData?.user_id === row.owner?.userId && sleeperService.selectedLeague}"></mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+  <div class="mid-bold-text center-text warning__alert" [hidden]="filteredPlayers.length > 0">No results found. Try a different search.</div>
+</div>
