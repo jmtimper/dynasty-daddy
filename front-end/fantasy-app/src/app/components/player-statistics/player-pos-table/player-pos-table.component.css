@@ -1,0 +1,65 @@
+.mat-column-position,
+.mat-column-age,
+.mat-column-actions {
+  max-width: 82px;
+}
+
+.mat-column-full_name {
+  min-width: 120px;
+}
+
+.mat-column-full_name,
+.mat-column-owner {
+  text-overflow: clip;
+}
+
+.mat-column-full_name,
+.mat-column-points,
+.mat-column-off_snap,
+.mat-column-owner {
+  text-align: right;
+  justify-content: flex-start;
+}
+
+.mat-column-trade_value,
+.mat-column-sf_trade_value,
+.mat-column-pass_att,
+.mat-column-pass_cmp,
+.mat-column-pass_yd,
+.mat-column-pass_td,
+.mat-column-pass_int,
+.mat-column-pass_rz_att,
+.mat-column-actions,
+.mat-column-pass_sack,
+.mat-column-fum_lost,
+.mat-column-rush_att,
+.mat-column-rush_yd,
+.mat-column-rush_ypa,
+.mat-column-rush_td,
+.mat-column-rec_tgt,
+.mat-column-rec_yd,
+.mat-column-rec_ypr,
+.mat-column-rec_td,
+.mat-column-rec_rz_tgt,
+.mat-column-cmp_pct,
+.mat-column-rec {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.ktc-table-element-row:hover {
+  background: #c33163;
+}
+
+.ktc-table-element-row:active {
+  background: #c33163;
+}
+
+.pos-table-container-wrapper {
+  overflow-x: auto;
+  width: 300px;
+}
+
+.pos-table-width {
+  min-width: 1000px;
+}

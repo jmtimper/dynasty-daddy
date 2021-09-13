@@ -23,112 +23,112 @@
 
     <ng-container matColumnDef="week">
       <mat-header-cell *matHeaderCellDef>Week</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog; let i = index">{{getDisplayWeek(i)}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog; let i = index">{{getDisplayWeek(gamelog.week)}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="points">
       <mat-header-cell *matHeaderCellDef>Fantasy Points</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pts_half_ppr || '---'}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pts_half_ppr || '---'}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="off_snp">
       <mat-header-cell *matHeaderCellDef>Off Snp %</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.off_snp || gamelog?.snp || 0}}%</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.off_snp || gamelog?.stats?.snp || 0}}%</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_att">
       <mat-header-cell *matHeaderCellDef>Pass Att</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_att || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_att || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_cmp">
       <mat-header-cell *matHeaderCellDef>Pass Cmp</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_cmp || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_cmp || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_yd">
       <mat-header-cell *matHeaderCellDef>Pass Yards</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_yd || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_yd || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_td">
       <mat-header-cell *matHeaderCellDef>Pass TDs</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_td || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_td || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_int">
       <mat-header-cell *matHeaderCellDef>Pass Ints</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_int || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_int || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rush_att">
       <mat-header-cell *matHeaderCellDef>Rush Att</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rush_att || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rush_att || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rush_yd">
       <mat-header-cell *matHeaderCellDef>Rush Yds</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rush_yd || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rush_yd || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rush_ypa">
       <mat-header-cell *matHeaderCellDef>Rush YPA</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rush_ypa || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rush_ypa || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rush_td">
       <mat-header-cell *matHeaderCellDef>Rush TDs</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rush_td || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rush_td || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_sack">
       <mat-header-cell *matHeaderCellDef>Sacks</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_sack || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_sack || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_sack_yds">
       <mat-header-cell *matHeaderCellDef>Sack Yds</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.pass_sack_yds || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.pass_sack_yds || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="fum">
       <mat-header-cell *matHeaderCellDef>Fumbles</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.fum || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.fum || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="fum_lost">
       <mat-header-cell *matHeaderCellDef>Fumbles Lost</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.fum_lost || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.fum_lost || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rec">
       <mat-header-cell *matHeaderCellDef>Rec</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rec || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rec || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rec_tgt">
       <mat-header-cell *matHeaderCellDef>Rec Targets</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rec_tgt || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rec_tgt || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rec_yd">
       <mat-header-cell *matHeaderCellDef>Rec Yd</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rec_yd || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rec_yd || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rec_ypr">
       <mat-header-cell *matHeaderCellDef>Rec YPR</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rec_ypr || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rec_ypr || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rec_td">
       <mat-header-cell *matHeaderCellDef>Rec TD</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rec_td || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rec_td || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="rec_rz_tgt">
       <mat-header-cell *matHeaderCellDef>Rec RZ T</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.rec_rz_tgt || 0}}</mat-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.rec_rz_tgt || 0}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

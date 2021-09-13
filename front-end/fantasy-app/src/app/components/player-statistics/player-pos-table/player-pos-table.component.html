@@ -1,0 +1,168 @@
+<div class="pos-table-container">
+  <div>
+    <div [ngClass]="{'button-left': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field class="button-left player-value-checkbox-margin" [ngClass]="{'mat-dropdown-wide-300': !configService.isMobile, 'mat-dropdown-wide-100': configService.isMobile}" color="accent">
+        <mat-label>Search Player</mat-label>
+        <input matInput type="text" (keyup)="updatePlayerFilters()" [(ngModel)]="searchVal">
+      </mat-form-field>
+    </div>
+    <span *ngIf="!configService.isMobile" class="container_spacer"></span>
+    <div [ngClass]="{'button-right': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Select Position Group</mat-label>
+        <mat-select (selectionChange)="updatePositionTable($event)" [value]="selectedPosition">
+          <mat-option *ngFor="let pos of posGroup" [value]="pos.value">
+            {{pos.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div [ngClass]="{'pos-table-container-wrapper': configService.isMobile}">
+    <div class="margin-top-10 mat-elevation-z8 pos-table-width" [hidden]="filteredPlayers.length === 0">
+      <mat-table [dataSource]="dataSource" matSort matSortActive="{{isSuperFlex ? 'sf_trade_value' : 'trade_value'}}"
+                 matSortDirection="desc">
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="full_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.first_name.substr(0, 1) + '. ' + element.last_name}} <span
+            *ngIf="(element.experience === 0 && element.position !== 'PI')" matBadge="R" matBadgeOverlap="false"></span>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="points">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Points</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pts_half_ppr || '---'}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_att">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Pass Att</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_att || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_cmp">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Pass Cmp</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_cmp || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cmp_pct">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Cmp %</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.cmp_pct || 0}}%</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_yd">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Pass Yards</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_yd || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_td">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Pass TDs</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_td || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_int">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Pass Ints</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_int || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rush_att">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rush Att</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rush_att || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rush_yd">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rush Yds</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rush_yd || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rush_ypa">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rush YPA</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rush_ypa || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rush_td">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rush TDs</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rush_td || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_sack">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Sacks</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_sack || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fum_lost">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Fum</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.fum_lost || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rec">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rec</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rec || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rec_tgt">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Targets</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rec_tgt || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rec_yd">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rec Yd</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rec_yd || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rec_ypr">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>YPR</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rec_ypr || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rec_td">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>TD</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rec_td || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="rec_rz_tgt">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Rec RZ T</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.rec_rz_tgt || 0}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="pass_rz_att">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>RZ Att</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.pass_rz_att || 0}}</mat-cell>
+        </ng-container>
+
+        <!-- actions column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let element" (click)="$event.stopPropagation();">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openPlayerComparison(element)">
+                <span>Add to Player Comparison</span>
+              </button>
+              <button *ngIf="element.position !== 'PI'" mat-menu-item [routerLink]="['../details', element.name_id]">
+                <span>View Player Page</span>
+              </button>
+              <button mat-menu-item *ngIf="sleeperService.selectedLeague && element.position !== 'PI' && element.owner" [routerLink]="['../../league/team', element.owner?.ownerName]">
+                <span>View Team Page</span>
+              </button>
+            </mat-menu>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container *ngIf="sleeperService.selectedLeague" matColumnDef="owner">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Owner</mat-header-cell>
+          <mat-cell *matCellDef="let element" style="text-overflow-ellipsis: true">{{element.owner?.ownerName || '---'}}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row class="ktc-table-element-row" *matRowDef="let row; columns: displayedColumns;"
+                 [ngClass]="{'accent__color__background': sleeperService.sleeperUser && sleeperService.sleeperUser?.userData?.user_id === row.owner?.userId && sleeperService.selectedLeague}"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+  <div class="mid-bold-text center-text warning__alert" [hidden]="filteredPlayers.length > 0">No results found. Try a different search.</div>
+</div>

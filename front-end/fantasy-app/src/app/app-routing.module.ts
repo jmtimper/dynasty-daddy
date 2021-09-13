@@ -10,6 +10,7 @@ import {PlayerDetailsComponent} from './components/player-details/player-details
 import {FantasyTeamDetailsComponent} from './components/fantasy-team-details/fantasy-team-details.component';
 import {PlayoffCalculatorComponent} from './components/playoff-calculator/playoff-calculator.component';
 import {AboutComponent} from "./components/about/about.component";
+import {PlayerStatisticsComponent} from "./components/player-statistics/player-statistics.component";
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
   {
     path: 'players/comparison',
     component: PlayerComparisonsComponent
+  },
+  {
+    path: 'players/statistics',
+    component: PlayerStatisticsComponent
   },
   {
     path: 'players/details/:playerNameId',

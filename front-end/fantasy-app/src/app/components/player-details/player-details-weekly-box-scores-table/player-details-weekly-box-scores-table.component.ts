@@ -89,7 +89,8 @@ export class PlayerDetailsWeeklyBoxScoresTableComponent implements OnInit {
     this.setDisplayColumns();
     for (let i = 1; i < 19; i++) {
       const weekStats = this.playerService.pastSeasonWeeklyStats[i];
-      if (weekStats[this.selectedPlayer.sleeper_id]) { this.playerWeeklyStats.push(weekStats[this.selectedPlayer.sleeper_id]); }
+      if (weekStats[this.selectedPlayer.sleeper_id]) { this.playerWeeklyStats.push(
+        {week: i, stats: weekStats[this.selectedPlayer.sleeper_id]}); }
     }
     this.datasource = new MatTableDataSource<any>(this.playerWeeklyStats);
     if (this.playerService.leagueLeaders.rec.sleeperId !== '') {
@@ -141,7 +142,7 @@ export class PlayerDetailsWeeklyBoxScoresTableComponent implements OnInit {
    * @param i number from today
    */
   getDisplayWeek(i: number): string {
-    return this.playerService.getWeekByIndex(i + 1).slice(5);
+    return this.playerService.getWeekByIndex(i).slice(5);
   }
 
   /**

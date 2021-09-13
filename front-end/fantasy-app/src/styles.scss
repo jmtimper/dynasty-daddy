@@ -370,6 +370,10 @@ hr.dark {
   width: 300px;
 }
 
+.mat-dropdown-wide-100 {
+  width: 100px;
+}
+
 .mat-dropdown-wide-100-percent {
   width: 100%;
 }
@@ -429,6 +433,14 @@ hr.dark {
   max-width: 1000px;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.pos-table-container {
+  display: flex;
+  flex-direction: column;
+  padding: 3px 8px 8px;
+  min-width: 1000px;
+  justify-content: center;
 }
 
 .playoff-calc-table-container {
