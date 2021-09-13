@@ -31,7 +31,8 @@ export class PlayerPosTableComponent implements OnInit {
 
   /** position group filters, [qb, rb, wr/te] */
   posGroup: {value: string, displayName: string}[] = [{value: 'qb', displayName: 'Quarterbacks'},
-    {value: 'rb', displayName: 'Running Backs'}, {value: 'wr/te', displayName: 'Wide Receivers & Tight Ends'}];
+    {value: 'rb', displayName: 'Running Backs'}, {value: 'wr/te', displayName: 'Wide Receivers & Tight Ends'},
+    {value: 'wr', displayName: 'Wide Receivers'}, {value: 'te', displayName: 'Tight Ends'}];
 
   /** columns to display */
   displayedColumns: string[] = [];
