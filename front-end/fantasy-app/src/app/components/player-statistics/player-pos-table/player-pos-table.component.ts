@@ -61,9 +61,6 @@ export class PlayerPosTableComponent implements OnInit {
   /** mat table datasource */
   dataSource: MatTableDataSource<KTCPlayer> = new MatTableDataSource<KTCPlayer>();
 
-  /** show free agents, only show if league is loaded */
-  showFreeAgents: boolean = false;
-
   /** selected position from dropdown */
   selectedPosition: string = 'qb';
 
