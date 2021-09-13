@@ -29,11 +29,30 @@ export class PlayerPosTableComponent implements OnInit {
   /** filtered list of players for searching */
   filteredPlayers: KTCPlayer[];
 
-  /** position group filters, [qb, rb, wr, te, picks] */
-  filterPosGroup: boolean[] = [true, true, true, true, true];
+  /** position group filters, [qb, rb, wr/te] */
+  posGroup: {value: string, displayName: string}[] = [{value: 'qb', displayName: 'Quarterbacks'},
+    {value: 'rb', displayName: 'Running Backs'}, {value: 'wr/te', displayName: 'Wide Receivers & Tight Ends'}];
 
   /** columns to display */
   displayedColumns: string[] = [];
+
+  /** general box score cols */
+  generalBoxScore = ['full_name', 'points'];
+
+  /** passing box score */
+  passingBoxScore = ['pass_att', 'pass_cmp', 'cmp_pct', 'pass_yd', 'pass_td', 'pass_int', 'pass_rz_att'];
+
+  /** rushing box score */
+  rushingBoxScore = ['rush_att', 'rush_yd', 'rush_ypa', 'rush_td'];
+
+  /** sack box score */
+  sackBoxScore = ['pass_sack'];
+
+  /** turnover box score */
+  turnoverBoxScore = ['fum_lost'];
+
+  /** receiving Box score */
+  receivingBoxScore = ['rec', 'rec_tgt', 'rec_yd', 'rec_ypr', 'rec_td', 'rec_rz_tgt'];
 
   /** is superflex or normal value */
   isSuperFlex: boolean;
@@ -41,11 +60,11 @@ export class PlayerPosTableComponent implements OnInit {
   /** mat table datasource */
   dataSource: MatTableDataSource<KTCPlayer> = new MatTableDataSource<KTCPlayer>();
 
-  /** show rookies in table */
-  showRookies: boolean = false;
-
   /** show free agents, only show if league is loaded */
   showFreeAgents: boolean = false;
+
+  /** selected position from dropdown */
+  selectedPosition: string = 'qb';
 
   /** search value from search box */
   searchVal: string;
@@ -58,29 +77,25 @@ export class PlayerPosTableComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.isSuperFlex = this.sleeperService?.selectedLeague?.isSuperflex !== undefined ?
-      this.sleeperService?.selectedLeague?.isSuperflex : true;
-    this.filteredPlayers = this.players.slice(0);
     this.dataSource = new MatTableDataSource(this.filteredPlayers);
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
-        case 'halfppr':
+        case 'points':
           return this.playerService.playerStats[item.sleeper_id]?.pts_half_ppr;
-        case 'change':
-          return this.isSuperFlex ? this.playerService.playerValueAnalysis[item.name_id].sf_change
-            : this.playerService.playerValueAnalysis[item.name_id].standard_change;
         case 'sf_trade_value':
           return this.playerService.playerValueAnalysis[item.name_id].sf_trade_value;
         case 'trade_value':
           return this.playerService.playerValueAnalysis[item.name_id].trade_value;
+        case 'full_name':
+          return item.full_name;
         default:
-          return item[property];
+          return this.selectedPosition.includes(item.position.toLowerCase())
+            ? this.playerService.playerStats[item.sleeper_id]?.[property] : 0;
       }
     };
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.displayedColumns = this.configService.isMobile ? ['full_name', 'position', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value'] : ['full_name', 'position', 'age', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value', 'change', 'actions'];
-    this.dataSource.data = this.filteredPlayers;
+    this.updatePlayerFilters();
   }
 
 
@@ -89,32 +104,9 @@ export class PlayerPosTableComponent implements OnInit {
    */
   updatePlayerFilters(): void {
     this.filteredPlayers = this.players.slice(0);
-    const filterOptions = ['QB', 'RB', 'WR', 'TE', 'PI'];
-    if (this.showRookies) {
-      this.filterPosGroup[4] = false;
-      this.filteredPlayers = this.filteredPlayers.filter(player => {
-        if (player.experience === 0 && player.position !== 'PI') {
-          return player;
-        }
-      });
-    }
-    if (this.showFreeAgents) {
-      this.filterPosGroup[4] = false;
-      this.filteredPlayers = this.filteredPlayers.filter(player => {
-        if (!player.owner && player.position !== 'PI') {
-          return player;
-        }
-      });
-    }
-    for (let i = 0; i < this.filterPosGroup.length; i++) {
-      if (!this.filterPosGroup[i]) {
-        this.filteredPlayers = this.filteredPlayers.filter(player => {
-          if (player.position !== filterOptions[i]) {
-            return player;
-          }
-        });
-      }
-    }
+    this.filteredPlayers = this.filteredPlayers.filter(player => {
+      return this.selectedPosition.includes(player.position.toLowerCase());
+    });
     if (this.searchVal && this.searchVal.length > 0) {
       this.filteredPlayers = this.filteredPlayers.filter(player => {
         return (player.full_name.toLowerCase().indexOf(this.searchVal.toLowerCase()) >= 0
@@ -124,6 +116,7 @@ export class PlayerPosTableComponent implements OnInit {
       });
     }
     this.paginator.pageIndex = 0;
+    this.setDisplayColumns();
     this.dataSource.data = this.filteredPlayers;
   }
 
@@ -136,4 +129,54 @@ export class PlayerPosTableComponent implements OnInit {
     this.router.navigateByUrl('players/comparison');
   }
 
+  /**
+   * handles when position categories are changed
+   * @param event from select
+   */
+  updatePositionTable(event: any): void {
+    this.selectedPosition = event.value;
+    this.updatePlayerFilters();
+  }
+
+  /**
+   * set display column order based on player position
+   * @private
+   */
+  private setDisplayColumns(): void {
+    this.displayedColumns = [];
+    switch (this.selectedPosition) {
+      case 'qb':
+        this.displayedColumns = this.displayedColumns.concat(
+          this.generalBoxScore,
+          this.passingBoxScore,
+          this.sackBoxScore,
+          this.turnoverBoxScore,
+          ['actions']
+        );
+        break;
+      case 'rb':
+        this.displayedColumns = this.displayedColumns.concat(
+          this.generalBoxScore,
+          this.rushingBoxScore,
+          this.receivingBoxScore,
+          this.turnoverBoxScore,
+          ['actions']
+        );
+        break;
+      case 'wr/te':
+        this.displayedColumns = this.displayedColumns.concat(
+          this.generalBoxScore,
+          this.receivingBoxScore,
+          this.turnoverBoxScore,
+          ['actions']
+        );
+        break;
+      default:
+        this.displayedColumns = this.displayedColumns.concat(
+          this.generalBoxScore,
+          this.receivingBoxScore,
+          this.turnoverBoxScore
+        );
+    }
+  }
 }

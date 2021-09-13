@@ -4,5 +4,5 @@
 </div>
 
 <div class="margin-top-25">
-  <app-player-pos-table *ngIf="playersLoaded" [players]="playerService.playerValues"></app-player-pos-table>
+  <app-player-pos-table *ngIf="playersLoaded && playerService.playerStats" [players]="playerService.playerValues"></app-player-pos-table>
 </div>

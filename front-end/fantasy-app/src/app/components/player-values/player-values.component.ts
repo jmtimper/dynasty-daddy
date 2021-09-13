@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
-import {KTCPlayer} from '../../model/KTCPlayer';
-import {KTCApiService} from '../../services/api/ktc-api.service';
-import {NgxSpinnerService} from 'ngx-spinner';
-import {SleeperService} from '../../services/sleeper.service';
+import {ConfigService} from '../../services/init/config.service';
 
 @Component({
   selector: 'app-player-values',
@@ -16,7 +13,8 @@ export class PlayerValuesComponent extends BaseComponent implements OnInit {
   /** are players loaded */
   playersLoaded: boolean;
 
-  constructor(public playerService: PlayerService) {
+  constructor(public playerService: PlayerService,
+              public configService: ConfigService) {
     super();
   }
 
