@@ -1,20 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
-import {ConfigService} from '../../services/init/config.service';
 
 @Component({
-  selector: 'app-player-values',
-  templateUrl: './player-values.component.html',
-  styleUrls: ['./player-values.component.css']
+  selector: 'app-player-statistics',
+  templateUrl: './player-statistics.component.html',
+  styleUrls: ['./player-statistics.component.css']
 })
-export class PlayerValuesComponent extends BaseComponent implements OnInit {
+export class PlayerStatisticsComponent extends BaseComponent implements OnInit {
 
-  /** are players loaded */
-  playersLoaded: boolean;
+  playersLoaded: boolean = false;
 
-  constructor(public playerService: PlayerService,
-              public configService: ConfigService) {
+  constructor(public playerService: PlayerService) {
     super();
   }
 
@@ -25,5 +22,4 @@ export class PlayerValuesComponent extends BaseComponent implements OnInit {
       this.playersLoaded = true;
     }));
   }
-
 }

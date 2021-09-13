@@ -74,8 +74,7 @@
       <div class="mid-bold-text margin-top-10 center-text">Past 18 Weeks Points Vs. Projections</div>
       <div class="margin-top-10 center-text">Below is the past 18 weeks of points and projections based on Sleeper's <span class="info__alert">0.5 PPR scoring</span>.
       </div>
-      <app-player-details-weekly-stats-line-chart *ngIf="isPlayerStatsGenerated()"
-                                                  [selectedPlayer]="selectedPlayer"></app-player-details-weekly-stats-line-chart>
+      <app-player-details-weekly-stats-line-chart [selectedPlayer]="selectedPlayer"></app-player-details-weekly-stats-line-chart>
     </mat-tab>
     <mat-tab label="Insights">
       <div class="mid-bold-text margin-top-10 center-text">Player Insights</div>

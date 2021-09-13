@@ -70,6 +70,8 @@ import { FooterComponent } from './components/footer/footer.component';
 import { AboutComponent } from './components/about/about.component';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import { PlayerDetailsInsightsComponent } from './components/player-details/player-details-insights/player-details-insights.component';
+import { PlayerStatisticsComponent } from './components/player-statistics/player-statistics.component';
+import { PlayerPosTableComponent } from './components/player-statistics/player-pos-table/player-pos-table.component';
 
 
 export function initialize(startupService: StartupService): any {
@@ -114,6 +116,8 @@ let UniversalDeviceDetectorService;
     FooterComponent,
     AboutComponent,
     PlayerDetailsInsightsComponent,
+    PlayerStatisticsComponent,
+    PlayerPosTableComponent,
   ],
   imports: [
     BrowserModule,
