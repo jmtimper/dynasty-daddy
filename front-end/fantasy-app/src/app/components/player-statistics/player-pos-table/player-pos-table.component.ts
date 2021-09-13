@@ -164,7 +164,7 @@ export class PlayerPosTableComponent implements OnInit {
           ['actions']
         );
         break;
-      case 'wr/te':
+      case 'wr/te' || 'wr' || 'te':
         this.displayedColumns = this.displayedColumns.concat(
           this.generalBoxScore,
           this.receivingBoxScore,

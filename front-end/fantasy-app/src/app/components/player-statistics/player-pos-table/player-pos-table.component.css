@@ -54,3 +54,12 @@
 .ktc-table-element-row:active {
   background: #c33163;
 }
+
+.pos-table-container-wrapper {
+  overflow-x: auto;
+  width: 300px;
+}
+
+.pos-table-width {
+  min-width: 1000px;
+}
