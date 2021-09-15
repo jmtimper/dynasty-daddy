@@ -51,4 +51,6 @@ export class MatchUpUI {
   team2StartersPoints: number[];
   team2Points: number;
   selectedWinner: number = 0;
+  selectedTeam1MedianWin: number = 0;
+  selectedTeam2MedianWin: number = 0;
 }

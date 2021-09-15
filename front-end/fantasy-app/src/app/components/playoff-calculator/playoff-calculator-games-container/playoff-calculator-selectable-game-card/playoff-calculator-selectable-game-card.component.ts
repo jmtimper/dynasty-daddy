@@ -22,7 +22,7 @@ export class PlayoffCalculatorSelectableGameCardComponent implements OnInit {
   /** team 2 sleeper object */
   team2: SleeperTeam;
 
-  constructor(private sleeperService: SleeperService,
+  constructor(public sleeperService: SleeperService,
               private playoffCalculatorService: PlayoffCalculatorService,
               public displayService: DisplayService) {
   }
@@ -38,7 +38,62 @@ export class PlayoffCalculatorSelectableGameCardComponent implements OnInit {
    */
   updateGameResultOption(winner: number): void {
     this.playoffCalculatorService.forceShowRecord = true;
+    // if game is being decided for first time select default median options
+    if (this.game.matchUpDetails.selectedWinner === 0 && this.sleeperService.selectedLeague.medianWins) {
+      if (winner === 1) {
+        this.game.matchUpDetails.selectedTeam1MedianWin = 1;
+        this.game.matchUpDetails.selectedTeam2MedianWin = -1;
+      } else {
+        this.game.matchUpDetails.selectedTeam1MedianWin = -1;
+        this.game.matchUpDetails.selectedTeam2MedianWin = 1;
+      }
+    }
+    // set winner
     this.game.matchUpDetails.selectedWinner = winner === this.game.matchUpDetails.selectedWinner ? 0 : winner;
+
+    // if game is going back to unselected deselect median wins
+    if (this.sleeperService.selectedLeague.medianWins) {
+      if (this.game.matchUpDetails.selectedWinner === 0) {
+        this.game.matchUpDetails.selectedTeam1MedianWin = 0;
+        this.game.matchUpDetails.selectedTeam2MedianWin = 0;
+      } else {
+        // if new winner is below median but loser is above median correct stats
+        if (this.game.matchUpDetails.selectedWinner === 1 &&
+          this.game.matchUpDetails.selectedTeam1MedianWin < this.game.matchUpDetails.selectedTeam2MedianWin) {
+          this.game.matchUpDetails.selectedTeam1MedianWin = 1;
+        } else if (this.game.matchUpDetails.selectedWinner === 2
+          && this.game.matchUpDetails.selectedTeam2MedianWin < this.game.matchUpDetails.selectedTeam1MedianWin) {
+          this.game.matchUpDetails.selectedTeam2MedianWin = 1;
+        }
+      }
+    }
     this.playoffCalculatorService.updateSeasonOdds();
+  }
+
+  /**
+   * handles changes to the median wins when selections are made
+   * @param medianWinner number
+   * @param team number
+   */
+  updateMedianResultOption(medianWinner: number, team: number): void {
+    this.playoffCalculatorService.forceShowRecord = true;
+    // if median is first thing selected fire defaults
+    if (this.game.matchUpDetails.selectedWinner === 0) {
+      this.updateGameResultOption(team);
+    } else {
+      // set new median win value
+      const newWinnerValue = medianWinner === 0 ? 1 : medianWinner * -1;
+      team === 1 ? this.game.matchUpDetails.selectedTeam1MedianWin = newWinnerValue
+        : this.game.matchUpDetails.selectedTeam2MedianWin = newWinnerValue;
+      // if new winner is below median but loser is above median correct stats
+      if (this.game.matchUpDetails.selectedWinner === 1 &&
+        this.game.matchUpDetails.selectedTeam1MedianWin === -1) {
+        this.game.matchUpDetails.selectedTeam2MedianWin = -1;
+      } else if (this.game.matchUpDetails.selectedWinner === 2
+        && this.game.matchUpDetails.selectedTeam2MedianWin === -1) {
+        this.game.matchUpDetails.selectedTeam1MedianWin = -1;
+      }
+      this.playoffCalculatorService.updateSeasonOdds();
+    }
   }
 }

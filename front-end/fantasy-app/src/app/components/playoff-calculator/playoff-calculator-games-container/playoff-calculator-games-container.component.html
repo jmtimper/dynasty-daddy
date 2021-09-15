@@ -12,6 +12,9 @@
       <app-playoff-calculator-selectable-game-card [game]="game" *ngIf="selectable"></app-playoff-calculator-selectable-game-card>
     </div>
   </div>
+  <div class="margin-top-10 center-text small-text__light" *ngIf="selectable && sleeperService.selectedLeague.medianWins">
+    The max medians wins/losses per week are not enforced so make sure you don't choose more than half.
+  </div>
   <div class="margin-top-10 center-text" *ngIf="selectable">
     <button mat-stroked-button (click)="resetSelectableGames()"><mat-icon class="add-icon-button">restart_alt</mat-icon> Reset Week</button>
   </div>

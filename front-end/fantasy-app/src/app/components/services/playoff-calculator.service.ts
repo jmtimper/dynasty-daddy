@@ -111,6 +111,8 @@ export class PlayoffCalculatorService {
       let selectedWins = 0;
       let selectedLosses = 0;
       let totalMedianWins = 0;
+      let selectedMedianWins = 0;
+      let selectedMedianLosses = 0;
       for (let week = startWeek; week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
         projectedWeeks++;
         this.matchUpsWithProb[week - 1]?.map(matchUp => {
@@ -121,9 +123,13 @@ export class PlayoffCalculatorService {
             } else if (matchUp.matchUpDetails.selectedWinner === 1) {
               selectedWins++;
               projectedWeeks--;
+              if (this.sleeperService.selectedLeague.medianWins) { matchUp.matchUpDetails.selectedTeam1MedianWin === 1
+                ? selectedMedianWins++ : selectedMedianLosses++; }
             } else if (matchUp.matchUpDetails.selectedWinner === 2) {
               selectedLosses++;
               projectedWeeks--;
+              if (this.sleeperService.selectedLeague.medianWins) { matchUp.matchUpDetails.selectedTeam1MedianWin === 1
+                ? selectedMedianWins++ : selectedMedianLosses++; }
             }
             return;
           } else if (matchUp.matchUpDetails.team2RosterId === rosterId) {
@@ -133,9 +139,13 @@ export class PlayoffCalculatorService {
             } else if (matchUp.matchUpDetails.selectedWinner === 2) {
               selectedWins++;
               projectedWeeks--;
+              if (this.sleeperService.selectedLeague.medianWins) { matchUp.matchUpDetails.selectedTeam2MedianWin === 1
+                ? selectedMedianWins++ : selectedMedianLosses++; }
             } else if (matchUp.matchUpDetails.selectedWinner === 1) {
               selectedLosses++;
               projectedWeeks--;
+              if (this.sleeperService.selectedLeague.medianWins) { matchUp.matchUpDetails.selectedTeam2MedianWin === 1
+                ? selectedMedianWins++ : selectedMedianLosses++; }
             }
             return;
           }
@@ -145,15 +155,17 @@ export class PlayoffCalculatorService {
       const lossesAtDate = this.getLossesAtWeek(rosterId, startWeek - 1);
       this.selectedGameResults[rosterId] = {
         selectedWins,
-        selectedLosses
+        selectedLosses,
+        selectedMedianWins,
+        selectedMedianLosses,
       };
       // if median league than double the amount of projected games to take into account
       // if (this.sleeperService.selectedLeague.medianWins) { projectedWeeks *= 2; }
       this.teamsProjectedRecord[rosterId] = {
         projWins: winsAtDate.wins + selectedWins + Math.round(totalWins / 100),
         projLoss: lossesAtDate.losses + selectedLosses + projectedWeeks - Math.round(totalWins / 100),
-        medianWins: winsAtDate.medianWins + Math.round(totalMedianWins / 100),
-        medianLoss: lossesAtDate.medianLosses + projectedWeeks - Math.round(totalMedianWins / 100)
+        medianWins: winsAtDate.medianWins + selectedMedianWins + Math.round(totalMedianWins / 100),
+        medianLoss: lossesAtDate.medianLosses + selectedMedianLosses + projectedWeeks - Math.round(totalMedianWins / 100)
       };
     }
   }
@@ -247,18 +259,16 @@ export class PlayoffCalculatorService {
             }
           }
           divisionTeams.sort((a, b) => {
-            return a.roster.teamMetrics.rank - b.roster.teamMetrics.rank;
+            return a.roster.teamMetrics.rank - b.roster.teamMetrics.rank || b.roster.teamMetrics.wins - a.roster.teamMetrics.wins
+              || b.roster.teamMetrics.fpts - a.roster.teamMetrics.fpts;
           });
           this.divisions.push(new Division(i + 1, divisionTeams));
         }
       } else {
         const allTeams = teams.slice();
         allTeams.sort((a, b) => {
-          if (a.roster.teamMetrics.rank !== 0) {
-            return a.roster.teamMetrics.rank - b.roster.teamMetrics.rank;
-          } else {
-            return b.roster.teamMetrics.wins - a.roster.teamMetrics.wins || b.roster.teamMetrics.fpts - a.roster.teamMetrics.fpts;
-          }
+          return a.roster.teamMetrics.rank - b.roster.teamMetrics.rank || b.roster.teamMetrics.wins - a.roster.teamMetrics.wins
+            || b.roster.teamMetrics.fpts - a.roster.teamMetrics.fpts;
         });
         if (allTeams[0].roster.teamMetrics.rank === 0) {
           for (let i = 0; i < allTeams.length; i++) {

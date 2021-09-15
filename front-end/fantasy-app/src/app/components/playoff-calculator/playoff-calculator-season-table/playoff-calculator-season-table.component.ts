@@ -7,6 +7,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {PlayoffCalculatorService} from '../../services/playoff-calculator.service';
 import {ColorService} from '../../services/color.service';
 import {ConfigService} from '../../../services/init/config.service';
+import {NflService} from "../../../services/utilities/nfl.service";
 
 @Component({
   selector: 'app-playoff-calculator-season-table',
@@ -29,7 +30,8 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
               public powerRankingsService: PowerRankingsService,
               public playoffCalculatorService: PlayoffCalculatorService,
               private colorService: ColorService,
-              public configService: ConfigService) {
+              public configService: ConfigService,
+              private nflService: NflService) {
   }
 
   /** team properties like name division value */
@@ -162,5 +164,20 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
     }
     return this.playoffCalculatorService.teamsProjectedRecord[rosterId].projWins + ' - '
       + this.playoffCalculatorService.teamsProjectedRecord[rosterId].projLoss;
+  }
+
+  getActualRecord(rosterId: number): string {
+    const winsAtDate = this.playoffCalculatorService.getWinsAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
+    const lossesAtDate = this.playoffCalculatorService.getLossesAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
+    if (this.sleeperService.selectedLeague.medianWins) {
+      return (this.playoffCalculatorService.selectedGameResults[rosterId].selectedWins +
+          this.playoffCalculatorService.selectedGameResults[rosterId].selectedMedianWins +
+         winsAtDate.totalWins) + ' - '
+        + (this.playoffCalculatorService.selectedGameResults[rosterId].selectedLosses +
+          this.playoffCalculatorService.selectedGameResults[rosterId].selectedMedianLosses +
+        lossesAtDate.totalLosses);
+    }
+    return (this.playoffCalculatorService.selectedGameResults[rosterId].selectedWins + winsAtDate.wins) + ' - '
+      + (this.playoffCalculatorService.selectedGameResults[rosterId].selectedLosses + lossesAtDate.losses);
   }
 }
