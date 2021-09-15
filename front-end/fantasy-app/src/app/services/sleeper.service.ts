@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {CompletedDraft, DraftCapital, SleeperData, SleeperLeagueData, SleeperUserData} from '../model/SleeperUser';
 import {SleeperApiService} from './api/sleeper/sleeper-api.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {SleeperOwnerData, SleeperPlayoffMatchUp, SleeperRawDraftOrderData, SleeperRawTradePicksData, SleeperRosterData, SleeperTeam, SleeperTeamMatchUpData, SleeperTeamTransactionData,} from '../model/SleeperLeague';
+import {SleeperOwnerData, SleeperPlayoffMatchUp, SleeperRawDraftOrderData, SleeperRawTradePicksData,
+  SleeperRosterData, SleeperTeam, SleeperTeamMatchUpData, SleeperTeamTransactionData} from '../model/SleeperLeague';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 

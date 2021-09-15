@@ -7,7 +7,8 @@ import {MatchupService} from './matchup.service';
 import {MatchUpUI} from '../model/matchup';
 import {SleeperService} from '../../services/sleeper.service';
 import {NflService} from '../../services/utilities/nfl.service';
-import {cumulativeStdNormalProbability, mean, standardDeviation, zScore} from 'simple-statistics';
+import {cumulativeStdNormalProbability, mean, median, standardDeviation, zScore} from 'simple-statistics';
+import {Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,9 @@ export class PlayoffCalculatorService {
 
   /** how many selected wins by roster id, used for season table record */
   selectedGameResults = {};
+
+  /** median win probability for each team based on median of team rank 6 and 7 */
+  medianWinProbability = {};
 
   /** force show records of teams on table if game results are selected */
   forceShowRecord: boolean = false;
@@ -66,6 +70,9 @@ export class PlayoffCalculatorService {
       const teamP = cumulativeStdNormalProbability(teamZ);
       this.teamRatingsPValues[team.team.roster.rosterId] = teamP;
     }
+
+    // generate mean value score and save it to position 0 of dict
+    this.generateMedianProbabilities(meanRating, stdRating);
 
     this.matchUpsWithProb = [];
     this.matchUpService.leagueMatchUpUI.map(weekMatchups => {
@@ -103,12 +110,14 @@ export class PlayoffCalculatorService {
       let projectedWeeks = 0;
       let selectedWins = 0;
       let selectedLosses = 0;
+      let totalMedianWins = 0;
       for (let week = startWeek; week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
         projectedWeeks++;
         this.matchUpsWithProb[week - 1]?.map(matchUp => {
           if (matchUp.matchUpDetails.team1RosterId === rosterId) {
             if (matchUp.matchUpDetails.selectedWinner === 0) {
               totalWins += matchUp.team1Prob;
+              if (this.sleeperService.selectedLeague.medianWins) { totalMedianWins += this.medianWinProbability[rosterId].meanProb; }
             } else if (matchUp.matchUpDetails.selectedWinner === 1) {
               selectedWins++;
               projectedWeeks--;
@@ -120,6 +129,7 @@ export class PlayoffCalculatorService {
           } else if (matchUp.matchUpDetails.team2RosterId === rosterId) {
             if (matchUp.matchUpDetails.selectedWinner === 0) {
               totalWins += matchUp.team2Prob;
+              if (this.sleeperService.selectedLeague.medianWins) { totalMedianWins += this.medianWinProbability[rosterId].meanProb; }
             } else if (matchUp.matchUpDetails.selectedWinner === 2) {
               selectedWins++;
               projectedWeeks--;
@@ -137,9 +147,13 @@ export class PlayoffCalculatorService {
         selectedWins,
         selectedLosses
       };
+      // if median league than double the amount of projected games to take into account
+      // if (this.sleeperService.selectedLeague.medianWins) { projectedWeeks *= 2; }
       this.teamsProjectedRecord[rosterId] = {
-        projWins: winsAtDate + selectedWins + Math.round(totalWins / 100),
-        projLoss: lossesAtDate + selectedLosses + projectedWeeks - Math.round(totalWins / 100)
+        projWins: winsAtDate.wins + selectedWins + Math.round(totalWins / 100),
+        projLoss: lossesAtDate.losses + selectedLosses + projectedWeeks - Math.round(totalWins / 100),
+        medianWins: winsAtDate.medianWins + Math.round(totalMedianWins / 100),
+        medianLoss: lossesAtDate.medianLosses + projectedWeeks - Math.round(totalMedianWins / 100)
       };
     }
   }
@@ -150,19 +164,30 @@ export class PlayoffCalculatorService {
    * @param rosterId
    * @param endWeek
    */
-  getWinsAtWeek(rosterId: number, endWeek: number): number {
+  getWinsAtWeek(rosterId: number, endWeek: number): {totalWins: number, wins: number, medianWins: number} {
     let wins = 0;
+    let medianWins = 0;
     for (let i = 0; i <= endWeek - this.sleeperService.selectedLeague.startWeek; i++) {
+      const medianValue = this.sleeperService.selectedLeague.medianWins ? this.getMedianPointsForWeek(this.matchUpsWithProb[i]) : 0;
       this.matchUpsWithProb[i]?.map(matchUp => {
-        if (matchUp.matchUpDetails.team1RosterId === rosterId && matchUp.matchUpDetails.team1Points > matchUp.matchUpDetails.team2Points) {
-          wins++;
-        } else if (matchUp.matchUpDetails.team2RosterId === rosterId
-          && matchUp.matchUpDetails.team2Points > matchUp.matchUpDetails.team1Points) {
-          wins++;
+        if (matchUp.matchUpDetails.team1RosterId === rosterId) {
+          if (matchUp.matchUpDetails.team1Points > matchUp.matchUpDetails.team2Points) {
+            wins++;
+          }
+          if (this.sleeperService.selectedLeague.medianWins && matchUp.matchUpDetails.team1Points >= medianValue) {
+            medianWins++;
+          }
+        } else if (matchUp.matchUpDetails.team2RosterId === rosterId) {
+          if (matchUp.matchUpDetails.team2Points > matchUp.matchUpDetails.team1Points) {
+            wins++;
+          }
+          if (this.sleeperService.selectedLeague.medianWins && matchUp.matchUpDetails.team2Points >= medianValue) {
+            medianWins++;
+          }
         }
       });
     }
-    return wins;
+    return {totalWins: wins + medianWins, wins, medianWins};
   }
 
   /**
@@ -171,19 +196,30 @@ export class PlayoffCalculatorService {
    * @param rosterId
    * @param endWeek
    */
-  getLossesAtWeek(rosterId: number, endWeek: number): number {
+  getLossesAtWeek(rosterId: number, endWeek: number): {totalLosses: number, losses: number, medianLosses: number} {
     let losses = 0;
+    let medianLosses = 0;
     for (let i = 0; i <= endWeek - this.sleeperService.selectedLeague.startWeek; i++) {
+      const medianValue = this.sleeperService.selectedLeague.medianWins ? this.getMedianPointsForWeek(this.matchUpsWithProb[i]) : 0;
       this.matchUpsWithProb[i]?.map(matchUp => {
-        if (matchUp.matchUpDetails.team1RosterId === rosterId && matchUp.matchUpDetails.team1Points < matchUp.matchUpDetails.team2Points) {
-          losses++;
-        } else if (matchUp.matchUpDetails.team2RosterId === rosterId
-          && matchUp.matchUpDetails.team2Points < matchUp.matchUpDetails.team1Points) {
-          losses++;
+        if (matchUp.matchUpDetails.team1RosterId === rosterId) {
+          if (matchUp.matchUpDetails.team1Points < matchUp.matchUpDetails.team2Points) {
+            losses++;
+          }
+          if (this.sleeperService.selectedLeague.medianWins && matchUp.matchUpDetails.team1Points < medianValue) {
+            medianLosses++;
+          }
+        } else if (matchUp.matchUpDetails.team2RosterId === rosterId) {
+          if (matchUp.matchUpDetails.team2Points < matchUp.matchUpDetails.team1Points) {
+            losses++;
+          }
+          if (this.sleeperService.selectedLeague.medianWins && matchUp.matchUpDetails.team2Points < medianValue) {
+            medianLosses++;
+          }
         }
       });
     }
-    return losses;
+    return {totalLosses: losses + medianLosses, losses, medianLosses};
   }
 
   /**
@@ -200,7 +236,7 @@ export class PlayoffCalculatorService {
    * @param league league data
    * @param teams fantasy teams
    */
-  generateDivisions(league: SleeperLeagueData, teams: SleeperTeam[]): void {
+  generateDivisions(league: SleeperLeagueData, teams: SleeperTeam[]): Observable<any> {
     if (this.divisions?.length === 0) {
       if (league.divisions && league.divisions > 1) {
         for (let i = 0; i < league.divisions; i++) {
@@ -233,6 +269,7 @@ export class PlayoffCalculatorService {
         league.divisions = 1;
       }
     }
+    return of(this.divisions);
   }
 
   /**
@@ -279,8 +316,13 @@ export class PlayoffCalculatorService {
       for (let week = startWeek; week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
         this.matchUpsWithProb[week - 1]?.map(matchUp => {
           if (matchUp.matchUpDetails.team1RosterId === rosterId) {
+            // check if game was manually selected
             if (matchUp.matchUpDetails.selectedWinner === 0) {
+              // randomly select winner
               if (this.getRandomInt(100) < matchUp.team1Prob) {
+                totalWins++;
+              }
+              if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId]) {
                 totalWins++;
               }
             } else if (matchUp.matchUpDetails.selectedWinner === 1) {
@@ -288,8 +330,13 @@ export class PlayoffCalculatorService {
             }
             return;
           } else if (matchUp.matchUpDetails.team2RosterId === rosterId) {
+            // check if game was manually selected
             if (matchUp.matchUpDetails.selectedWinner === 0) {
+              // randomly generate winner based on prob
               if (this.getRandomInt(100) < matchUp.team2Prob) {
+                totalWins++;
+              }
+              if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId]) {
                 totalWins++;
               }
             } else if (matchUp.matchUpDetails.selectedWinner === 2) {
@@ -299,11 +346,9 @@ export class PlayoffCalculatorService {
           }
         });
       }
-      // get current amount of wins
-      const winsAtDate = this.getWinsAtWeek(rosterId, startWeek - 1);
       wins.push({
         team: this.sleeperService.getTeamByRosterId(rosterId),
-        projWins: winsAtDate + totalWins
+        projWins: this.teamPlayoffOdds[rosterId].winsAtStartDate.totalWins + totalWins
       });
     }
 
@@ -448,7 +493,7 @@ export class PlayoffCalculatorService {
    * @param startWeek
    */
   private updatePlayoffOdds(startWeek): void {
-    // teams that havent lost yet
+    // teams that haven't lost yet
     const teamsLeft = [];
 
     // eliminated teams used to check with matchup is winners bracket
@@ -662,8 +707,10 @@ export class PlayoffCalculatorService {
         timesMakeConfRd: 0,
         timesMakeChampionship: 0,
         timesWinChampionship: 0,
+        winsAtStartDate: this.getWinsAtWeek(team.roster.rosterId, startWeek - 1)
       };
     }
+
     for (let i = 0; i < this.NUMBER_OF_SIMULATIONS; i++) {
       if (startWeek >= this.sleeperService.selectedLeague.playoffStartWeek) {
         this.updatePlayoffOdds(startWeek);
@@ -706,5 +753,56 @@ export class PlayoffCalculatorService {
       return this.nflService.stateOfNFL.completedWeek + 1;
     }
     return Number(this.nflService.stateOfNFL.season) < 2021 ? 17 : 18;
+  }
+
+  /**
+   * get median value for week
+   * @param matchUpsWithProbElement
+   * @private
+   */
+  private getMedianPointsForWeek(matchUpsWithProbElement: MatchUpProbability[]): number {
+    const teamPoints = [];
+    matchUpsWithProbElement.map(matchUp => {
+      teamPoints.push(matchUp.matchUpDetails.team1Points);
+      teamPoints.push(matchUp.matchUpDetails.team2Points);
+    });
+    teamPoints.sort((a, b) => {
+      return a - b;
+    });
+    const totalPoints = [teamPoints[this.sleeperService.selectedLeague.totalRosters / 2 - 1],
+      teamPoints[this.sleeperService.selectedLeague.totalRosters / 2]];
+    return median(totalPoints);
+  }
+
+  /**
+   * generate odds for a team to beat the median
+   * @param meanRating
+   * @param stdRating
+   * @private
+   */
+  private generateMedianProbabilities(meanRating: any, stdRating: any): void {
+    // sort array based on starter value to find the middle two
+    const rankings = this.powerRankingsService.powerRankings.slice();
+    rankings.sort((a, b) => {
+      return this.sleeperService.selectedLeague.isSuperflex ? a.sfTradeValueStarter - b.sfTradeValueStarter
+        : a.tradeValueStarter - b.tradeValueStarter;
+    });
+
+    // get median of middle two teams value wise
+    const medianStarterValue = median(this.sleeperService.selectedLeague.isSuperflex ?
+      [rankings[rankings.length / 2 - 1].sfTradeValueStarter, rankings[rankings.length / 2].sfTradeValueStarter]
+      : [rankings[rankings.length / 2 - 1].tradeValueStarter, rankings[rankings.length / 2].tradeValueStarter]);
+
+    // add median probability to pValues at pos 0
+    const medianZ = zScore(medianStarterValue, meanRating, stdRating);
+    const medianP = cumulativeStdNormalProbability(medianZ);
+    this.teamRatingsPValues[0] = medianP;
+
+    // generate odds to beat the mean
+    for (const team of this.powerRankingsService.powerRankings) {
+      this.medianWinProbability[team.team.roster.rosterId] = {
+        meanProb: this.getPercent(0.5 + (this.teamRatingsPValues[team.team.roster.rosterId] - this.teamRatingsPValues[0]) / 2)
+      };
+    }
   }
 }

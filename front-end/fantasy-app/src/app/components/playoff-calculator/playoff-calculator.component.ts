@@ -51,7 +51,7 @@ export class PlayoffCalculatorComponent implements OnInit {
         console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');
         this.matchupService.initMatchUpCharts(this.sleeperService.selectedLeague);
       }
-      this.playoffMachineWeek = this.nflService.stateOfNFL.completedWeek > 0 ? this.nflService.stateOfNFL.completedWeek : 1;
+      this.playoffMachineWeek = this.nflService.stateOfNFL.completedWeek;
       this.refreshGames();
       this.generateSelectableWeeks();
     }

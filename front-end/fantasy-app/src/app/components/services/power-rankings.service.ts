@@ -3,7 +3,8 @@ import {SleeperTeam} from '../../model/SleeperLeague';
 import {KTCPlayer} from '../../model/KTCPlayer';
 import {PositionPowerRanking, TeamPowerRanking} from '../model/powerRankings';
 import {SleeperService} from '../../services/sleeper.service';
-import {PlayerService} from "../../services/player.service";
+import {PlayerService} from '../../services/player.service';
+import {Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class PowerRankingsService {
    * @param teams
    * @param players
    */
-  mapPowerRankings(teams: SleeperTeam[], players: KTCPlayer[]): void {
+  mapPowerRankings(teams: SleeperTeam[], players: KTCPlayer[]): Observable<any> {
     try {
       if (this.powerRankings.length === 0) {
         teams.map((team) => {
@@ -98,7 +99,7 @@ export class PowerRankingsService {
     } catch (e: any) {
       console.error('Error Mapping League Data: ', e);
     }
-
+    return of(this.powerRankings);
   }
 
   /**

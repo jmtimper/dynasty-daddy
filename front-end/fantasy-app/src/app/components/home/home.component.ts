@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {BaseComponent} from '../base-component.abstract';
 import {SleeperApiService} from '../../services/api/sleeper/sleeper-api.service';
-import {SleeperLeagueData, SleeperUserData} from '../../model/SleeperUser';
+import {SleeperLeagueData} from '../../model/SleeperUser';
 import {SleeperService} from '../../services/sleeper.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {PlayerService} from '../../services/player.service';
@@ -10,6 +10,7 @@ import {MockDraftService} from '../services/mock-draft.service';
 import {MatchupService} from '../services/matchup.service';
 import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {ConfigService} from '../../services/init/config.service';
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -86,10 +87,11 @@ export class HomeComponent extends BaseComponent implements OnInit {
             this.playersService.generateRoster(team);
           });
           this.spinner.hide();
-          this.powerRankingService.mapPowerRankings(this.sleeperService.sleeperTeamDetails, this.playersService.playerValues);
-          this.matchupService.initMatchUpCharts(this.selectedLeague);
-          this.playoffCalculatorService.generateDivisions(this.selectedLeague, this.sleeperService.sleeperTeamDetails);
-          this.sleeperService.leagueLoaded = true;
+          forkJoin([this.powerRankingService.mapPowerRankings(this.sleeperService.sleeperTeamDetails, this.playersService.playerValues),
+            this.playoffCalculatorService.generateDivisions(this.selectedLeague, this.sleeperService.sleeperTeamDetails),
+            this.matchupService.initMatchUpCharts(this.selectedLeague)]).subscribe(() => {
+            this.sleeperService.leagueLoaded = true;
+          });
           console.timeEnd('Fetch Sleeper League Data');
         }
       ));

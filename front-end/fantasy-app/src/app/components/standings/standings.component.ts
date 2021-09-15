@@ -20,7 +20,13 @@ export class StandingsComponent implements OnInit {
 
   divisionTableCols = ['teamName', 'record', 'pf', 'pot'];
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // TODO fix this
+    if (this.sleeperService.selectedLeague && this.matchupService.leagueMatchUpUI.length === 0) {
+      console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');
+      this.matchupService.initMatchUpCharts(this.sleeperService.selectedLeague);
+    }
+  }
 
   roundNumber(num: number): number {
     return Math.round(num);
