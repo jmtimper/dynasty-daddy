@@ -458,7 +458,7 @@ export class PlayoffCalculatorService {
           }
         }
         if (team1Wins === team2Wins) {
-          if (team1.team.roster.teamMetrics.fpts > team2.team.roster.teamMetrics.fpts) {
+          if (this.getRandomInt(100) < team1WinsOdds) {
             advancingTeams.push(team1);
           } else {
             advancingTeams.push(team2);

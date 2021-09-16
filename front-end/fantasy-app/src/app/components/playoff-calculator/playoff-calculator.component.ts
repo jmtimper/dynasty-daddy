@@ -5,7 +5,8 @@ import {NflService} from '../../services/utilities/nfl.service';
 import {MatchUpProbability} from '../model/playoffCalculator';
 import {MatchupService} from '../services/matchup.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
-import {ConfigService} from "../../services/init/config.service";
+import {ConfigService} from '../../services/init/config.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-playoff-calculator',
@@ -34,7 +35,6 @@ export class PlayoffCalculatorComponent implements OnInit {
 
   /** playoff machine start week */
   playoffMachineWeek: number;
-
   constructor(
     public sleeperService: SleeperService,
     public playoffCalculatorService: PlayoffCalculatorService,

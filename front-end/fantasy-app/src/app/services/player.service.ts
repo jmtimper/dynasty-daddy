@@ -380,7 +380,9 @@ export class PlayerService {
    */
   getPercentChange(element: KTCPlayer, isSuperFlex: boolean): number {
     const playerDataPoint = this.getPlayerBySleeperIdFromThreeMonth(element.sleeper_id);
-    const isCurrent = new Date(element.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
+    const yesterdayDate = new Date().getTime() - 1000 * 60 * 60 * 24;
+    const isCurrent = new Date(element.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+      || new Date(element.date).setHours(0, 0, 0, 0) === new Date(yesterdayDate).setHours(0, 0, 0, 0);
     if (playerDataPoint) {
       const changeAmount = isSuperFlex ? (isCurrent ? element.sf_trade_value : 0) - playerDataPoint.sf_trade_value
         : (isCurrent ? element.trade_value : 0) - playerDataPoint.trade_value;
