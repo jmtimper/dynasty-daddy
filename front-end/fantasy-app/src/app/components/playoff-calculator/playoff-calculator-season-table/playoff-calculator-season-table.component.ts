@@ -166,6 +166,11 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
       + this.playoffCalculatorService.teamsProjectedRecord[rosterId].projLoss;
   }
 
+  /**
+   * returns realized wins and selected wins
+   * if median mode is enabled display median wins as well
+   * @param rosterId roster id
+   */
   getActualRecord(rosterId: number): string {
     const winsAtDate = this.playoffCalculatorService.getWinsAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
     const lossesAtDate = this.playoffCalculatorService.getLossesAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
