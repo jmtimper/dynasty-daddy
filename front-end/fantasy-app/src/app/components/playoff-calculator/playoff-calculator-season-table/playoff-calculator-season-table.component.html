@@ -13,7 +13,7 @@
              onerror="style.display = 'none'" class="table-image" *ngIf="!configService.isMobile">
         {{team.owner?.teamName}}
         <span *ngIf="(forecastWeek > 1 || playoffCalculatorService.forceShowRecord) && !configService.isMobile"
-              class="small-text__light" style="padding-left: 5px">{{playoffCalculatorService.getWinsAtWeek(team.roster.rosterId, forecastWeek - 1) + playoffCalculatorService.selectedGameResults[team.roster.rosterId]?.selectedWins}} - {{playoffCalculatorService.getLossesAtWeek(team.roster.rosterId, forecastWeek - 1)  + playoffCalculatorService.selectedGameResults[team.roster.rosterId]?.selectedLosses}}</span>
+              class="small-text__light" style="padding-left: 5px">{{getActualRecord(team.roster.rosterId)}}</span>
       </mat-cell>
     </ng-container>
 
@@ -24,8 +24,7 @@
 
     <ng-container matColumnDef="record">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Projected Record</mat-header-cell>
-      <mat-cell *matCellDef="let team">{{playoffCalculatorService.teamsProjectedRecord[team.roster.rosterId]?.projWins}}
-        - {{playoffCalculatorService.teamsProjectedRecord[team.roster.rosterId]?.projLoss}}</mat-cell>
+      <mat-cell *matCellDef="let team">{{getProjRecord(team.roster.rosterId)}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="makePlayoffs">

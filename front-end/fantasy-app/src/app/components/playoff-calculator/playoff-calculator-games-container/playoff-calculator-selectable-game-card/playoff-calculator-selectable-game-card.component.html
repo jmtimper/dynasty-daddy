@@ -14,6 +14,11 @@
           {{displayService.truncate(team1.owner?.teamName, 30)}}
         </span>
       </td>
+      <td class="td-game--metrics game-score__color" *ngIf="sleeperService.selectedLeague.medianWins"  (click)="updateMedianResultOption(game.matchUpDetails.selectedTeam1MedianWin, 1)" [ngClass]="{'game-score__color': game.matchUpDetails.selectedTeam1MedianWin === 0, 'game-win__color': game.matchUpDetails.selectedTeam1MedianWin === 1, 'game-loss__color': game.matchUpDetails.selectedTeam1MedianWin === -1}">
+        <button mat-icon-button *ngIf="game.matchUpDetails.selectedTeam1MedianWin === 0" class="mid-bold-text" matTooltip="Did team beat Median?" matTooltipPosition="above">M</button>
+        <button mat-icon-button *ngIf="game.matchUpDetails.selectedTeam1MedianWin === 1" class="mid-bold-text" matTooltip="Greater than Median (+1 win)" matTooltipPosition="above">{{'>'}}M</button>
+        <button mat-icon-button *ngIf="game.matchUpDetails.selectedTeam1MedianWin === -1" class="mid-bold-text" matTooltip="Less than Median (+1 loss)" matTooltipPosition="above">{{'<'}}M</button>
+      </td>
       <td class="td-game--metrics game-score__color" (click)="updateGameResultOption(1)" [ngClass]="{'game-score__color': game.matchUpDetails.selectedWinner === 0, 'game-win__color': game.matchUpDetails.selectedWinner === 1, 'game-loss__color': game.matchUpDetails.selectedWinner === 2, 'game-tie__color': game.matchUpDetails.selectedWinner === 3}">
         <button mat-icon-button *ngIf="game.matchUpDetails.selectedWinner === 0" class="mid-bold-text">Pick</button>
         <button mat-icon-button *ngIf="game.matchUpDetails.selectedWinner === 1" class="mid-bold-text">Win</button>
@@ -28,6 +33,11 @@
         <span>
           {{displayService.truncate(team2.owner?.teamName, 30)}}
         </span>
+      </td>
+      <td class="td-game--metrics game-score__color" *ngIf="sleeperService.selectedLeague.medianWins" (click)="updateMedianResultOption(game.matchUpDetails.selectedTeam2MedianWin, 2)" [ngClass]="{'game-score__color': game.matchUpDetails.selectedTeam2MedianWin === 0, 'game-win__color': game.matchUpDetails.selectedTeam2MedianWin === 1, 'game-loss__color': game.matchUpDetails.selectedTeam2MedianWin === -1}">
+        <button mat-icon-button *ngIf="game.matchUpDetails.selectedTeam2MedianWin === 0" class="mid-bold-text" matTooltip="Did team beat Median?" matTooltipPosition="below">M</button>
+        <button mat-icon-button *ngIf="game.matchUpDetails.selectedTeam2MedianWin === 1" class="mid-bold-text" matTooltip="Greater than Median (+1 win)" matTooltipPosition="below">{{'>'}}M</button>
+        <button mat-icon-button *ngIf="game.matchUpDetails.selectedTeam2MedianWin === -1" class="mid-bold-text" matTooltip="Less than Median (+1 loss)" matTooltipPosition="below">{{'<'}}M</button>
       </td>
       <td class="td-game--metrics" (click)="updateGameResultOption(2)" [ngClass]="{'game-score__color': game.matchUpDetails.selectedWinner === 0, 'game-win__color': game.matchUpDetails.selectedWinner === 2, 'game-loss__color': game.matchUpDetails.selectedWinner === 1, 'game-tie__color': game.matchUpDetails.selectedWinner === 3}" >
         <button mat-icon-button *ngIf="game.matchUpDetails.selectedWinner === 0" class="mid-bold-text">Pick</button>

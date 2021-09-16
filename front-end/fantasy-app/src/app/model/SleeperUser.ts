@@ -45,6 +45,7 @@ export class SleeperLeagueData {
     this.draftRounds = settings.draft_rounds;
     this.season = season;
     this.playoffRoundType = settings.playoff_round_type;
+    this.medianWins = settings.league_average_match === 1;
   }
 
   isSuperflex: boolean = true;
@@ -64,6 +65,7 @@ export class SleeperLeagueData {
   draftRounds: number;
   season: string;
   playoffRoundType: number;
+  medianWins: boolean;
 }
 
 export class SleeperData {

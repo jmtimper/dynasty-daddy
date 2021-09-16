@@ -41,7 +41,7 @@
     <mat-tab label="Strength Of Schedule">
       <div class="mid-bold-text margin-top-10 center-text">Strength Of Schedule</div>
       <div class="margin-top-10 center-text">A team's strength of schedule based on average opponent starter value.</div>
-      <app-strength-of-schedule-chart></app-strength-of-schedule-chart>
+      <app-strength-of-schedule-chart *ngIf="sleeperService.selectedLeague.leagueMatchUps"></app-strength-of-schedule-chart>
     </mat-tab>
     <mat-tab label="Schedule Comparison">
       <div class="mid-bold-text margin-top-10 center-text">Schedule Comparisons</div>
