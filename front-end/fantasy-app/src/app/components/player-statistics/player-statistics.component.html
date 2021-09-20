@@ -3,6 +3,30 @@
   Player statistics come from the Sleeper APIs. The following are tables have custom views for each position group with relevant fantasy related stats for the season.
 </div>
 
-<div class="margin-top-25">
-  <app-player-pos-table *ngIf="playersLoaded && playerService.playerStats" [players]="playerService.playerValues"></app-player-pos-table>
+<div class="pos-table-container">
+  <div class="margin-top-25" *ngIf="!configService.isMobile">
+    <app-player-pos-scatter-chart *ngIf="playerService.playerValues && playerService.playerStats[playerService.playerValues[0]?.sleeper_id]" [players]="filteredPlayers" [isSuperFlex]="sleeperService.selectedLeague?.isSuperflex || true"></app-player-pos-scatter-chart>
+  </div>
+  <div class="margin-top-10">
+    <div [ngClass]="{'button-left': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field class="button-left player-value-checkbox-margin" [ngClass]="{'mat-dropdown-wide-300': !configService.isMobile, 'mat-dropdown-wide-100': configService.isMobile}" color="accent">
+        <mat-label>Search Player</mat-label>
+        <input matInput type="text" (keyup)="updatePlayerFilters()" [(ngModel)]="searchVal">
+      </mat-form-field>
+    </div>
+    <span *ngIf="!configService.isMobile" class="container_spacer"></span>
+    <div [ngClass]="{'button-right': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Select Position Group</mat-label>
+        <mat-select (selectionChange)="updatePositionTable($event)" [value]="selectedPosition">
+          <mat-option *ngFor="let pos of posGroup" [value]="pos.value">
+            {{pos.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="margin-top-10">
+    <app-player-pos-table *ngIf="playerService.playerValues && playerService.playerStats" [players]="filteredPlayers" [selectedPosition]="selectedPosition"></app-player-pos-table>
+  </div>
 </div>

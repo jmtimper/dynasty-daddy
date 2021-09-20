@@ -19,4 +19,7 @@ export class ColorService {
     return colorGradient.getArray();
   }
 
+  getTeamColor(team: string): string {
+    return '#0000FF';
+  }
 }

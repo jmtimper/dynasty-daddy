@@ -67,7 +67,8 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
         case 'teamRating':
           return this.powerRankingsService.findTeamFromRankingsByRosterId(item.roster.rosterId).sfTradeValueStarter;
         case 'record':
-          return this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.projWins + this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.medianWins;
+          return this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.projWins
+            + this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.medianWins;
         case 'makePlayoffs':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakingPlayoffs;
         case 'winDivision':
@@ -157,13 +158,13 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
    */
   getProjRecord(rosterId: number): string {
     if (this.sleeperService.selectedLeague.medianWins) {
-      return (this.playoffCalculatorService.teamsProjectedRecord[rosterId].projWins +
-        this.playoffCalculatorService.teamsProjectedRecord[rosterId].medianWins) + ' - '
-        + (this.playoffCalculatorService.teamsProjectedRecord[rosterId].projLoss +
-        this.playoffCalculatorService.teamsProjectedRecord[rosterId].medianLoss);
+      return (this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projWins +
+        this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.medianWins) + ' - '
+        + (this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projLoss +
+        this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.medianLoss);
     }
-    return this.playoffCalculatorService.teamsProjectedRecord[rosterId].projWins + ' - '
-      + this.playoffCalculatorService.teamsProjectedRecord[rosterId].projLoss;
+    return this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projWins + ' - '
+      + this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projLoss;
   }
 
   /**

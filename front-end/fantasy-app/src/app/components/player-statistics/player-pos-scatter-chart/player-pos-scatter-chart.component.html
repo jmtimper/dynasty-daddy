@@ -1,0 +1,12 @@
+<div style="display: block;" *ngIf="players && scatterChartData?.length > 0">
+  <div class="player-position-scatter">
+    <canvas baseChart
+            [datasets]="scatterChartData"
+            [options]="scatterChartOptions"
+            [chartType]="scatterChartType"
+            [colors]="scatterChartColor"
+            [legend]="false">
+    </canvas>
+  </div>
+</div>
+
