@@ -23,7 +23,7 @@ export class PlayoffCalculatorGamesContainerComponent implements OnInit {
   recordString: string = '';
 
   constructor(public sleeperService: SleeperService,
-              private playoffCalculatorService: PlayoffCalculatorService,
+              public playoffCalculatorService: PlayoffCalculatorService,
               public nflService: NflService) {
   }
 

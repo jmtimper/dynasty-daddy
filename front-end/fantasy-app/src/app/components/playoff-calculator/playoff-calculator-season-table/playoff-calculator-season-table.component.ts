@@ -173,8 +173,8 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
    * @param rosterId roster id
    */
   getActualRecord(rosterId: number): string {
-    const winsAtDate = this.playoffCalculatorService.getWinsAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
-    const lossesAtDate = this.playoffCalculatorService.getLossesAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
+    const winsAtDate = this.playoffCalculatorService.getWinsAtWeek(rosterId, this.forecastWeek - 1);
+    const lossesAtDate = this.playoffCalculatorService.getLossesAtWeek(rosterId, this.forecastWeek - 1);
     if (this.sleeperService.selectedLeague.medianWins) {
       return (this.playoffCalculatorService.selectedGameResults[rosterId].selectedWins +
           this.playoffCalculatorService.selectedGameResults[rosterId].selectedMedianWins +

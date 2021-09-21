@@ -6,6 +6,22 @@ import Gradient from 'javascript-color-gradient';
 })
 export class ColorService {
 
+  // teamColors = {
+  //   KCC: ['#E31837', '#FFB81C'],
+  //   BUF: ['#00338D', '#C60C30'],
+  //   LAC: ['#0080C6', '#FFC20E', '#FFFFFF'],
+  //   CAR: ['#0085CA', '#101820', '#BFC0BF'],
+  //   ARI: ['#97233F', '#000000', '#FFB612'],
+  //   MIN: ['#4F2683', '#FFC62F'],
+  //   IND: ['#002C5F', '#A2AAAD'],
+  //     NYG: ['#0B2265', '#A71930', '#A5ACAF'],
+  //     DAL: ['#041E42', '#869397'],
+  //     BAL: ['#241773', '#000000', '#9E7C0C'],
+  //     TEN: ['#0C2340', '#4B92DB', '#C8102E'],
+  //     CIN: ['#FB4F14', '#000000'],
+  //     SEA: ['#002244', ]
+  // };
+
   /**
    * returns array of hexs in a gradient between two colors
    * @param length number of colors
@@ -19,7 +35,19 @@ export class ColorService {
     return colorGradient.getArray();
   }
 
-  getTeamColor(team: string): string {
-    return '#0000FF';
+  /**
+   * gets point color for data point
+   * @param isTeam is player on team
+   */
+  getPointBackgroundColor(isTeam: boolean): string {
+    return isTeam ? '#17becf' : '#a6a6a6';
+  }
+
+  /**
+   * get point border color for data point
+   * @param isTeam is player on team
+   */
+  getPointBorderColor(isTeam: boolean): string {
+    return isTeam ? '#a0e6f1' : '#ffffff';
   }
 }
