@@ -33,6 +33,9 @@ export class PlayoffCalculatorComponent implements OnInit {
   /** show playoff machine game selections */
   showPlayoffMachine: boolean = false;
 
+  /** matchup offset for upcoming matchup selection cards */
+  matchupOffset: number = 0;
+
   /** playoff machine start week */
   playoffMachineWeek: number;
   constructor(
@@ -45,7 +48,6 @@ export class PlayoffCalculatorComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.sleeperService.selectedLeague) {
-      console.log(this.sleeperService.selectedLeague);
       // TODO fix this
       if (this.matchupService.leagueMatchUpUI.length === 0 || this.playoffCalculatorService.matchUpsWithProb.length === 0) {
         console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');
@@ -160,5 +162,6 @@ export class PlayoffCalculatorComponent implements OnInit {
    */
   updatePlayoffMachineWeek(change: number): void {
     this.playoffMachineWeek += change;
+    this.matchupOffset += change;
   }
 }

@@ -25,11 +25,11 @@
         </div>
         <div *ngIf="showPlayoffMachine" class="margin-bot-20">
           <div class="center-text">
-            <button mat-icon-button [disabled]="playoffMachineWeek === this.sleeperService.selectedLeague.startWeek" (click)="updatePlayoffMachineWeek(-1)"><mat-icon>chevron_left</mat-icon></button>
+            <button mat-icon-button [disabled]="playoffMachineWeek === (this.nflService.stateOfNFL.completedWeek < this.sleeperService.selectedLeague.startWeek ? this.sleeperService.selectedLeague.startWeek : this.nflService.stateOfNFL.completedWeek)" (click)="updatePlayoffMachineWeek(-1)"><mat-icon>chevron_left</mat-icon></button>
             <span class="mid-bold-text">Week {{playoffMachineWeek + 1}}</span>
             <button mat-icon-button [disabled]="playoffMachineWeek + 1 === this.sleeperService.selectedLeague.playoffStartWeek - 1" (click)="updatePlayoffMachineWeek(1)"><mat-icon >chevron_right</mat-icon></button>
           </div>
-          <app-playoff-calculator-games-container [weekMatchUps]="upcomingMatchUps[playoffMachineWeek - 1]" [selectable]="true"></app-playoff-calculator-games-container>
+          <app-playoff-calculator-games-container [weekMatchUps]="upcomingMatchUps[matchupOffset]" [selectable]="true"></app-playoff-calculator-games-container>
         </div>
       </div>
     </mat-tab>
