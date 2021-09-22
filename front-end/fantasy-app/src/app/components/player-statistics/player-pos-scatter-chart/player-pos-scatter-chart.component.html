@@ -1,4 +1,4 @@
-<div style="display: block;" *ngIf="players && scatterChartData?.length > 0">
+<div style="display: block;" *ngIf="players && scatterChartData?.length > 0 && selectedMetrics">
   <div class="player-position-scatter">
     <canvas baseChart
             [datasets]="scatterChartData"

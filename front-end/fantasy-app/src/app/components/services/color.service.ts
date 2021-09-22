@@ -39,15 +39,15 @@ export class ColorService {
    * gets point color for data point
    * @param isTeam is player on team
    */
-  getPointBackgroundColor(isTeam: boolean): string {
-    return isTeam ? '#17becf' : '#a6a6a6';
+  getPointBackgroundColor(highlightFreeAgent: boolean, highlightYourTeam: boolean, isTeam: boolean, isFreeAgent: boolean): string {
+    return isTeam && highlightYourTeam ? '#17becf' : (highlightFreeAgent && isFreeAgent ? '#ff4f4f' : '#a6a6a6');
   }
 
   /**
    * get point border color for data point
    * @param isTeam is player on team
    */
-  getPointBorderColor(isTeam: boolean): string {
-    return isTeam ? '#a0e6f1' : '#ffffff';
+  getPointBorderColor(highlightFreeAgent: boolean, highlightYourTeam: boolean, isTeam: boolean, isFreeAgent: boolean): string {
+    return isTeam && highlightYourTeam ? '#a0e6f1' : (highlightFreeAgent && isFreeAgent ? '#faa1a1' : '#ffffff');
   }
 }
