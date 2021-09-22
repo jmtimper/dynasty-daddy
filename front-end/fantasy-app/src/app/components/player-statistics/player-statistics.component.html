@@ -3,6 +3,66 @@
   Player statistics come from the Sleeper APIs. The following are tables have custom views for each position group with relevant fantasy related stats for the season.
 </div>
 
-<div class="margin-top-25">
-  <app-player-pos-table *ngIf="playersLoaded && playerService.playerStats" [players]="playerService.playerValues"></app-player-pos-table>
+<div class="pos-table-container" *ngIf="playerService.playerStats[playerService.playerValues[0]?.sleeper_id]">
+  <div class="margin-top-25" *ngIf="!configService.isMobile">
+    <app-player-pos-scatter-chart *ngIf="playerService.playerValues && playerService.playerStats[playerService.playerValues[0]?.sleeper_id] && this.selectableMetrics" [players]="filteredPlayers" [isSuperFlex]="sleeperService.selectedLeague?.isSuperflex || true" [selectedMetrics]="selectedMetrics" [highlightFreeAgents]="highlightFreeAgents" [highlightYourTeam]="highlightYourTeam"></app-player-pos-scatter-chart>
+  </div>
+  <div class="margin-top-10">
+    <div [ngClass]="{'button-left': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field class="button-left player-value-checkbox-margin" [ngClass]="{'mat-dropdown-wide-300': !configService.isMobile, 'mat-dropdown-wide-100': configService.isMobile}" color="accent">
+        <mat-label>Search Player</mat-label>
+        <input matInput type="text" (keyup)="updatePlayerFilters()" [(ngModel)]="searchVal">
+      </mat-form-field>
+    </div>
+    <span *ngIf="!configService.isMobile" class="container_spacer"></span>
+    <div [ngClass]="{'button-right': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Select Position Group</mat-label>
+        <mat-select (selectionChange)="updatePositionTable($event)" [value]="selectedPosition">
+          <mat-option *ngFor="let pos of posGroup" [value]="pos.value">
+            {{pos.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-icon-button (click)="showAdvancedSettings = !showAdvancedSettings" style="margin-right: 15px">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div [hidden]="!showAdvancedSettings">
+    <div class="button-left">
+      <mat-form-field appearance="standard" color="accent" style="margin-right: 15px; margin-left: 10px">
+        <mat-label>Select X Metric</mat-label>
+        <mat-select [value]="selectedXMetric.value">
+          <mat-option *ngFor="let metric of selectableMetrics" [value]="metric.value" (onSelectionChange)="updateSelectedMetrics(0, metric, $event)">
+            {{metric.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Select Y Metric</mat-label>
+        <mat-select [value]="selectedYMetric.value">
+          <mat-option *ngFor="let metric of selectableMetrics" [value]="metric.value" (onSelectionChange)="updateSelectedMetrics(1, metric, $event)">
+            {{metric.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <span class="container_spacer"></span>
+    <div class="button-right margin-top-25" *ngIf="sleeperService.selectedLeague">
+      <mat-slide-toggle color="accent" *ngIf="sleeperService.sleeperUser" [(ngModel)]="highlightYourTeam">
+        Your Team
+      </mat-slide-toggle>
+      <mat-slide-toggle color="accent" style="margin-left: 15px; margin-right: 10px" [(ngModel)]="highlightFreeAgents">
+        Free Agents
+      </mat-slide-toggle>
+    </div>
+  </div>
+  <div class="margin-top-10">
+    <app-player-pos-table *ngIf="playerService.playerValues && playerService.playerStats" [players]="filteredPlayers" [selectedPosition]="selectedPosition"></app-player-pos-table>
+  </div>
+</div>
+
+<div class="center-text large-bold-header-text margin-top-50 warning__alert" *ngIf="!playerService.playerStats[playerService.playerValues[0]?.sleeper_id]">
+  Loading Player Stats...
 </div>

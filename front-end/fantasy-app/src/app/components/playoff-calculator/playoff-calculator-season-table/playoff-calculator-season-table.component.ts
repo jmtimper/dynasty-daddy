@@ -67,7 +67,8 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
         case 'teamRating':
           return this.powerRankingsService.findTeamFromRankingsByRosterId(item.roster.rosterId).sfTradeValueStarter;
         case 'record':
-          return this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.projWins + this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.medianWins;
+          return this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.projWins
+            + this.playoffCalculatorService.teamsProjectedRecord[item.roster.rosterId]?.medianWins;
         case 'makePlayoffs':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakingPlayoffs;
         case 'winDivision':
@@ -157,13 +158,13 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
    */
   getProjRecord(rosterId: number): string {
     if (this.sleeperService.selectedLeague.medianWins) {
-      return (this.playoffCalculatorService.teamsProjectedRecord[rosterId].projWins +
-        this.playoffCalculatorService.teamsProjectedRecord[rosterId].medianWins) + ' - '
-        + (this.playoffCalculatorService.teamsProjectedRecord[rosterId].projLoss +
-        this.playoffCalculatorService.teamsProjectedRecord[rosterId].medianLoss);
+      return (this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projWins +
+        this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.medianWins) + ' - '
+        + (this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projLoss +
+        this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.medianLoss);
     }
-    return this.playoffCalculatorService.teamsProjectedRecord[rosterId].projWins + ' - '
-      + this.playoffCalculatorService.teamsProjectedRecord[rosterId].projLoss;
+    return this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projWins + ' - '
+      + this.playoffCalculatorService.teamsProjectedRecord[rosterId]?.projLoss;
   }
 
   /**
@@ -172,8 +173,8 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
    * @param rosterId roster id
    */
   getActualRecord(rosterId: number): string {
-    const winsAtDate = this.playoffCalculatorService.getWinsAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
-    const lossesAtDate = this.playoffCalculatorService.getLossesAtWeek(rosterId, this.nflService.stateOfNFL.completedWeek);
+    const winsAtDate = this.playoffCalculatorService.getWinsAtWeek(rosterId, this.forecastWeek - 1);
+    const lossesAtDate = this.playoffCalculatorService.getLossesAtWeek(rosterId, this.forecastWeek - 1);
     if (this.sleeperService.selectedLeague.medianWins) {
       return (this.playoffCalculatorService.selectedGameResults[rosterId].selectedWins +
           this.playoffCalculatorService.selectedGameResults[rosterId].selectedMedianWins +

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {KTCPlayer} from '../../../model/KTCPlayer';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -14,25 +14,21 @@ import {Router} from '@angular/router';
   templateUrl: './player-pos-table.component.html',
   styleUrls: ['./player-pos-table.component.css']
 })
-export class PlayerPosTableComponent implements OnInit {
+export class PlayerPosTableComponent implements OnInit, OnChanges {
 
   /** all players */
   @Input()
   players: KTCPlayer[];
+
+  /** selection position group */
+  @Input()
+  selectedPosition: string;
 
   /** mat paginator */
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   /** mat sort */
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-
-  /** filtered list of players for searching */
-  filteredPlayers: KTCPlayer[];
-
-  /** position group filters, [qb, rb, wr/te] */
-  posGroup: {value: string, displayName: string}[] = [{value: 'qb', displayName: 'Quarterbacks'},
-    {value: 'rb', displayName: 'Running Backs'}, {value: 'wr/te', displayName: 'Wide Receivers & Tight Ends'},
-    {value: 'wr', displayName: 'Wide Receivers'}, {value: 'te', displayName: 'Tight Ends'}];
 
   /** columns to display */
   displayedColumns: string[] = [];
@@ -61,21 +57,24 @@ export class PlayerPosTableComponent implements OnInit {
   /** mat table datasource */
   dataSource: MatTableDataSource<KTCPlayer> = new MatTableDataSource<KTCPlayer>();
 
-  /** selected position from dropdown */
-  selectedPosition: string = 'qb';
-
-  /** search value from search box */
-  searchVal: string;
-
   constructor(public sleeperService: SleeperService,
               public configService: ConfigService,
               public playerService: PlayerService,
               private playerComparisonService: PlayerComparisonService,
               public router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource(this.filteredPlayers);
+    this.refreshTable();
+  }
+
+  ngOnChanges(): void {
+    this.refreshTable();
+  }
+
+  refreshTable(): void {
+    this.dataSource = new MatTableDataSource(this.players);
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
         case 'points':
@@ -93,29 +92,7 @@ export class PlayerPosTableComponent implements OnInit {
     };
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.updatePlayerFilters();
-  }
-
-
-  /**
-   * update player filters, function is called when option is selected
-   */
-  updatePlayerFilters(): void {
-    this.filteredPlayers = this.players.slice(0);
-    this.filteredPlayers = this.filteredPlayers.filter(player => {
-      return this.selectedPosition.includes(player.position.toLowerCase());
-    });
-    if (this.searchVal && this.searchVal.length > 0) {
-      this.filteredPlayers = this.filteredPlayers.filter(player => {
-        return (player.full_name.toLowerCase().indexOf(this.searchVal.toLowerCase()) >= 0
-          || player.age?.toString().indexOf(this.searchVal) >= 0
-          || ((player.owner?.ownerName.toLowerCase().indexOf(this.searchVal.toLowerCase()) >= 0)
-            && this.sleeperService.selectedLeague));
-      });
-    }
-    this.paginator.pageIndex = 0;
     this.setDisplayColumns();
-    this.dataSource.data = this.filteredPlayers;
   }
 
   /**
@@ -125,15 +102,6 @@ export class PlayerPosTableComponent implements OnInit {
   openPlayerComparison(element: KTCPlayer): void {
     this.playerComparisonService.addPlayerToCharts(element);
     this.router.navigateByUrl('players/comparison');
-  }
-
-  /**
-   * handles when position categories are changed
-   * @param event from select
-   */
-  updatePositionTable(event: any): void {
-    this.selectedPosition = event.value;
-    this.updatePlayerFilters();
   }
 
   /**

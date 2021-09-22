@@ -772,7 +772,7 @@ export class PlayoffCalculatorService {
    */
   private getMedianPointsForWeek(matchUpsWithProbElement: MatchUpProbability[]): number {
     const teamPoints = [];
-    matchUpsWithProbElement.map(matchUp => {
+    matchUpsWithProbElement?.map(matchUp => {
       teamPoints.push(matchUp.matchUpDetails.team1Points);
       teamPoints.push(matchUp.matchUpDetails.team2Points);
     });

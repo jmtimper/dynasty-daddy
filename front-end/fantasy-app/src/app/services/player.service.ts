@@ -234,6 +234,7 @@ export class PlayerService {
   /**
    * get player based on sleeper id for previous month
    * @param id
+   * TODO change value percent to be based on date passed in?
    */
   getPlayerBySleeperIdFromThreeMonth(id: string): KTCPlayerDataPoint {
     for (const player of this.prevPlayerValues) {
