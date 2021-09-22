@@ -106,7 +106,7 @@ export class PlayerService {
     forkJoin(
       [
         this.ktcApiService.getPlayerValuesForToday(),
-        this.ktcApiService.getPlayerValuesForLastThreeMonth()
+        this.ktcApiService.getPrevPlayerValues()
       ]
     ).subscribe(([currentPlayers, pastPlayers]) => {
       this.prevPlayerValues = pastPlayers;
@@ -232,13 +232,13 @@ export class PlayerService {
   }
 
   /**
-   * get player based on sleeper id for previous month
+   * get player based on name id for previous month
    * @param id
    * TODO change value percent to be based on date passed in?
    */
-  getPlayerBySleeperIdFromThreeMonth(id: string): KTCPlayerDataPoint {
+  getPrevPlayerValueByNameId(nameId: string): KTCPlayerDataPoint {
     for (const player of this.prevPlayerValues) {
-      if (id === player.sleeper_id) {
+      if (nameId === player.name_id) {
         return player;
       }
     }
@@ -380,7 +380,7 @@ export class PlayerService {
    * @param isSuperFlex boolean
    */
   getPercentChange(element: KTCPlayer, isSuperFlex: boolean): number {
-    const playerDataPoint = this.getPlayerBySleeperIdFromThreeMonth(element.sleeper_id);
+    const playerDataPoint = this.getPrevPlayerValueByNameId(element.name_id);
     // check if data point is older than 2 days
     const yesterdayDate = new Date().getTime() - 1000 * 60 * 60 * 24;
     const isCurrent = new Date(element.date).setHours(0, 0, 0, 0) > new Date(yesterdayDate).setHours(0, 0, 0, 0);

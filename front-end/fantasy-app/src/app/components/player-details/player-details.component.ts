@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
-import {KTCPlayer} from '../../model/KTCPlayer';
+import {KTCPlayer, KTCPlayerDataPoint} from '../../model/KTCPlayer';
 import {KTCApiService} from '../../services/api/ktc-api.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SleeperService} from '../../services/sleeper.service';
@@ -22,7 +22,7 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
   selectedPlayer: KTCPlayer;
 
   /** historical player value data */
-  historicalTradeValue: KTCPlayer[];
+  historicalTradeValue: KTCPlayerDataPoint[];
 
   constructor(public playerService: PlayerService,
               private ktcApiService: KTCApiService,

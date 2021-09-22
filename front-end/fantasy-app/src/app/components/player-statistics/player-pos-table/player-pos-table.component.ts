@@ -85,6 +85,8 @@ export class PlayerPosTableComponent implements OnInit, OnChanges {
           return this.playerService.playerValueAnalysis[item.name_id].trade_value;
         case 'full_name':
           return item.full_name;
+        case 'cmp_pct':
+          return this.playerService.playerStats[item.sleeper_id]?.cmp_pct / this.playerService.playerStats[item.sleeper_id]?.gp;
         default:
           return this.selectedPosition.includes(item.position.toLowerCase())
             ? this.playerService.playerStats[item.sleeper_id]?.[property] : 0;

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {KTCPlayer} from '../../model/KTCPlayer';
+import {KTCPlayer, KTCPlayerDataPoint} from '../../model/KTCPlayer';
 import {Subject} from 'rxjs';
 import {PlayerComparison} from '../model/playerComparison';
 import {ChartDataSets} from 'chart.js';
@@ -59,7 +59,7 @@ export class PlayerComparisonService {
    * @private
    * TODO clean up redundant code
    */
-  private addNewPlayer(player: KTCPlayer[], isGroup2: boolean = false): void {
+  private addNewPlayer(player: KTCPlayerDataPoint[], isGroup2: boolean = false): void {
     if (this.lineChartData[0]?.data.length === 0) {
       this.lineChartData.splice(0, 1);
     }
