@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getHistoricalPlayerValueById = exports.getLastThreeMonthPlayerValues = exports.getCurrentPlayerValues = void 0;
+exports.getHistoricalPlayerValueById = exports.getPrevPlayerValues = exports.getCurrentPlayerValues = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -52,23 +52,24 @@ var getCurrentPlayerValues = /*#__PURE__*/function () {
 
 exports.getCurrentPlayerValues = getCurrentPlayerValues;
 
-var getLastThreeMonthPlayerValues = /*#__PURE__*/function () {
+var getPrevPlayerValues = /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
-    var data;
+    var _ref3, intervalDays, data;
+
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _context2.next = 3;
-            return playersModel.select('*', ' WHERE date::date = now()::date - 90 order by sf_trade_value desc ');
+            _ref3 = req.params || 30, intervalDays = _ref3.intervalDays;
+            _context2.next = 4;
+            return playersModel.select('*', " WHERE date::date = now()::date - ".concat(intervalDays, " order by sf_trade_value desc "));
 
-          case 3:
+          case 4:
             data = _context2.sent;
             res.status(200).json(data.rows.map(function (player) {
               return {
                 name_id: player.name_id,
-                sleeper_id: player.sleeper_id,
                 full_name: player.full_name,
                 sf_position_rank: player.sf_position_rank,
                 position_rank: player.position_rank,
@@ -77,31 +78,31 @@ var getLastThreeMonthPlayerValues = /*#__PURE__*/function () {
                 date: player.date
               };
             }));
-            _context2.next = 10;
+            _context2.next = 11;
             break;
 
-          case 7:
-            _context2.prev = 7;
+          case 8:
+            _context2.prev = 8;
             _context2.t0 = _context2["catch"](0);
             res.status(405).json(_context2.t0.stack);
 
-          case 10:
+          case 11:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 7]]);
+    }, _callee2, null, [[0, 8]]);
   }));
 
-  return function getLastThreeMonthPlayerValues(_x3, _x4) {
+  return function getPrevPlayerValues(_x3, _x4) {
     return _ref2.apply(this, arguments);
   };
 }();
 
-exports.getLastThreeMonthPlayerValues = getLastThreeMonthPlayerValues;
+exports.getPrevPlayerValues = getPrevPlayerValues;
 
 var getHistoricalPlayerValueById = /*#__PURE__*/function () {
-  var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
+  var _ref4 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
     var id, data;
     return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) {
@@ -114,7 +115,17 @@ var getHistoricalPlayerValueById = /*#__PURE__*/function () {
 
           case 4:
             data = _context3.sent;
-            res.status(200).json(data.rows);
+            res.status(200).json(data.rows.map(function (player) {
+              return {
+                name_id: player.name_id,
+                full_name: player.full_name,
+                sf_position_rank: player.sf_position_rank,
+                position_rank: player.position_rank,
+                sf_trade_value: player.sf_trade_value,
+                trade_value: player.trade_value,
+                date: player.date
+              };
+            }));
             _context3.next = 11;
             break;
 
@@ -132,7 +143,7 @@ var getHistoricalPlayerValueById = /*#__PURE__*/function () {
   }));
 
   return function getHistoricalPlayerValueById(_x5, _x6) {
-    return _ref3.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }();
 

@@ -16,17 +16,17 @@ export const getCurrentPlayerValues = async (req, res) => {
   }
 };
 
-export const getLastThreeMonthPlayerValues = async (req, res) => {
+export const getPrevPlayerValues = async (req, res) => {
   try {
+    const {intervalDays} = req.params || 30;
     const data = await playersModel.select(
       '*',
-      ' WHERE date::date = now()::date - 90 order by sf_trade_value desc '
+      ` WHERE date::date = now()::date - ${intervalDays} order by sf_trade_value desc `
     );
     res.status(200).json(data.rows.map(player =>
       (
         {
           name_id: player.name_id,
-          sleeper_id: player.sleeper_id,
           full_name: player.full_name,
           sf_position_rank: player.sf_position_rank,
           position_rank: player.position_rank,
@@ -44,7 +44,18 @@ export const getHistoricalPlayerValueById = async (req, res) => {
   try {
     const {id} = req.params;
     const data = await playersModel.select('*', ` WHERE name_id = '${id}'`);
-    res.status(200).json(data.rows);
+    res.status(200).json(data.rows.map(player =>
+      (
+        {
+          name_id: player.name_id,
+          full_name: player.full_name,
+          sf_position_rank: player.sf_position_rank,
+          position_rank: player.position_rank,
+          sf_trade_value: player.sf_trade_value,
+          trade_value: player.trade_value,
+          date: player.date
+        }
+      )));
   } catch (err) {
     res.status(405).json(err.stack);
   }

@@ -47,15 +47,15 @@ export class KTCApiService {
   /**
    * get player values for last month
    */
-  getPlayerValuesForLastThreeMonth(): Observable<KTCPlayerDataPoint[]> {
-    return this.prevPlayerList ? of(this.prevPlayerList) : this.refreshPlayerValuesForLastThreeMonth();
+  getPrevPlayerValues(days: number = 30): Observable<KTCPlayerDataPoint[]> {
+    return this.prevPlayerList ? of(this.prevPlayerList) : this.refreshPrevPlayerValues(days);
   }
 
   /**
    * refresh cached player values for last month
    */
-  refreshPlayerValuesForLastThreeMonth(): Observable<KTCPlayerDataPoint[]> {
-    return this.http.get<KTCPlayerDataPoint[]>(this.ktcApiConfigService.getPlayerValuesForLastThreeMonthEndpoint)
+  refreshPrevPlayerValues(days: number): Observable<KTCPlayerDataPoint[]> {
+    return this.http.get<KTCPlayerDataPoint[]>(this.ktcApiConfigService.getPrevPlayerValuesEndpoint + days)
       .pipe(tap((players: KTCPlayerDataPoint[]) => this.prevPlayerList = players, err => {
           throw new Error(err);
         }
@@ -67,9 +67,9 @@ export class KTCApiService {
    * get historical player value over time by id
    * @param nameId player name id
    */
-  getHistoricalPlayerValueById(nameId: string): Observable<KTCPlayer[]> {
-    return this.http.get<KTCPlayer[]>(this.ktcApiConfigService.getHistoricalPlayerValues + nameId)
-      .pipe(tap((players: KTCPlayer[]) => players
+  getHistoricalPlayerValueById(nameId: string): Observable<KTCPlayerDataPoint[]> {
+    return this.http.get<KTCPlayerDataPoint[]>(this.ktcApiConfigService.getHistoricalPlayerValues + nameId)
+      .pipe(tap((players: KTCPlayerDataPoint[]) => players
       ));
   }
 }

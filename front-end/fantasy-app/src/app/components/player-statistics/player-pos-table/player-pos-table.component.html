@@ -29,7 +29,7 @@
 
         <ng-container matColumnDef="cmp_pct">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Cmp %</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.cmp_pct || 0}}%</mat-cell>
+          <mat-cell *matCellDef="let element">{{playerService.playerStats[element.sleeper_id]?.cmp_pct / playerService.playerStats[element.sleeper_id]?.gp  || 0}}%</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="pass_yd">

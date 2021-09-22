@@ -129,6 +129,8 @@ export class PlayerPosScatterChartComponent implements OnInit, OnChanges {
         return player.sf_trade_value;
       case 'trade_value':
         return player.trade_value;
+      case 'cmp_pct':
+        return this.playerService.playerStats[player.sleeper_id]?.cmp_pct / this.playerService.playerStats[player.sleeper_id]?.gp;
       default:
         if (!this.playerService.playerStats[player.sleeper_id]) {
           return 0;

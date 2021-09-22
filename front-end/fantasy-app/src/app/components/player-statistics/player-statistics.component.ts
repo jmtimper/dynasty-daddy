@@ -86,9 +86,10 @@ export class PlayerStatisticsComponent extends BaseComponent implements OnInit {
     generalMetrics: { value: string, displayName: string }[] = [
         {value: 'pts_half_ppr', displayName: 'Fantasy Points (Half PPR)'},
         {value: 'pts_ppr', displayName: 'Fantasy Points (PPR)'},
-        {value: 'pts_std_ppr', displayName: 'Fantasy Points (Standard)'},
+        {value: 'pts_std', displayName: 'Fantasy Points (Standard)'},
         {value: 'sf_trade_value', displayName: 'Trade Value (SuperFlex)'},
         {value: 'trade_value', displayName: 'Trade Value (Standard)'},
+        {value: 'gp', displayName: 'Games Played'},
     ];
 
     /** receiving Metrics */

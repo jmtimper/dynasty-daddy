@@ -19,7 +19,7 @@ export class TradeValueLineChartComponent extends BaseComponent implements OnIni
   @ViewChild(BaseChartDirective, {static: true}) chart: BaseChartDirective;
 
   /** selected filter range */
-  selectedDateFilter = 'alltime';
+  selectedDateFilter = '3month';
 
   /** ng2-chart options */
   public lineChartOptions: (ChartOptions & { annotation?: any }) = {

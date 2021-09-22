@@ -22,7 +22,6 @@ export class KTCPlayer {
 
 export class KTCPlayerDataPoint {
   name_id: string;
-  sleeper_id: string;
   full_name: string;
   sf_position_rank: string;
   position_rank: string;
