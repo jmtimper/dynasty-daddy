@@ -16,7 +16,7 @@
     </div>
     <span *ngIf="!configService.isMobile" class="container_spacer"></span>
     <div [ngClass]="{'button-right': !configService.isMobile, 'margin-top-10': configService.isMobile}">
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field appearance="standard" color="accent" style="margin-right: 15px">
         <mat-label>Select Position Group</mat-label>
         <mat-select (selectionChange)="updatePositionTable($event)" [value]="selectedPosition">
           <mat-option *ngFor="let pos of posGroup" [value]="pos.value">
@@ -24,7 +24,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-icon-button (click)="showAdvancedSettings = !showAdvancedSettings" style="margin-right: 15px">
+      <button mat-icon-button (click)="showAdvancedSettings = !showAdvancedSettings">
         <mat-icon>settings</mat-icon>
       </button>
     </div>

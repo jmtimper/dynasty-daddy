@@ -33,6 +33,9 @@ export class PlayoffCalculatorComponent implements OnInit {
   /** show playoff machine game selections */
   showPlayoffMachine: boolean = false;
 
+  /** matchup offset for upcoming matchup selection cards */
+  matchupOffset: number = 0;
+
   /** playoff machine start week */
   playoffMachineWeek: number;
   constructor(
@@ -45,7 +48,6 @@ export class PlayoffCalculatorComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.sleeperService.selectedLeague) {
-      console.log(this.sleeperService.selectedLeague);
       // TODO fix this
       if (this.matchupService.leagueMatchUpUI.length === 0 || this.playoffCalculatorService.matchUpsWithProb.length === 0) {
         console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');
@@ -65,7 +67,7 @@ export class PlayoffCalculatorComponent implements OnInit {
     this.selectableWeeks.push({week: this.sleeperService.selectedLeague.startWeek, value: 'Preseason'});
     const selectableWeekMax = this.sleeperService.selectedLeague.status !== 'complete' ? this.nflService.stateOfNFL.completedWeek
       : this.playoffCalculatorService.matchUpsWithProb.length;
-    for (let i = 1; i <= selectableWeekMax; i++) {
+    for (let i = this.sleeperService.selectedLeague.startWeek; i <= selectableWeekMax; i++) {
       const disclaimer = this.sleeperService.selectedLeague.playoffStartWeek === this.sleeperService.selectedLeague.startWeek + i ? ' (End of regular season)' : '';
       this.selectableWeeks.push({week: this.sleeperService.selectedLeague.startWeek + i, value: 'Before Week '
           + (this.sleeperService.selectedLeague.startWeek + i) + disclaimer});
@@ -160,5 +162,6 @@ export class PlayoffCalculatorComponent implements OnInit {
    */
   updatePlayoffMachineWeek(change: number): void {
     this.playoffMachineWeek += change;
+    this.matchupOffset += change;
   }
 }

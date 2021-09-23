@@ -383,7 +383,7 @@ export class PlayerService {
     const playerDataPoint = this.getPrevPlayerValueByNameId(element.name_id);
     // check if data point is older than 2 days
     const yesterdayDate = new Date().getTime() - 1000 * 60 * 60 * 24;
-    const isCurrent = new Date(element.date).setHours(0, 0, 0, 0) > new Date(yesterdayDate).setHours(0, 0, 0, 0);
+    const isCurrent = new Date(element.date).setHours(0, 0, 0, 0) >= new Date(yesterdayDate).setHours(0, 0, 0, 0);
     if (playerDataPoint) {
       const changeAmount = isSuperFlex ? (isCurrent ? element.sf_trade_value : 0) - playerDataPoint.sf_trade_value
         : (isCurrent ? element.trade_value : 0) - playerDataPoint.trade_value;
