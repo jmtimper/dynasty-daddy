@@ -60,7 +60,7 @@
         <mat-card>
           <div class="text__light">{{configService.isMobile ? 'Value' : 'Trade Value'}}</div>
           <div *ngIf="sleeperService.selectedLeague" class="large-bold-header-text">{{sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[selectedPlayer.name_id].sf_trade_value : playerService.playerValueAnalysis[selectedPlayer.name_id].trade_value}}
-          <div class="small-text__light margin-top-10">{{sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[selectedPlayer.name_id].sf_change : playerService.playerValueAnalysis[selectedPlayer.name_id].standard_change}}% change in 90 days</div></div>
+          <div class="small-text__light margin-top-10">{{sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[selectedPlayer.name_id].sf_change : playerService.playerValueAnalysis[selectedPlayer.name_id].standard_change}}% change in 30 days</div></div>
           <div *ngIf="!sleeperService.selectedLeague" [ngClass]="{'large-bold-header-text': !configService.isMobile}"><span class="small-text__light">Superflex: </span>  {{playerService.playerValueAnalysis[selectedPlayer.name_id].sf_trade_value}}
             <div *ngIf="!configService.isMobile"><span class="small-text__light">Standard: </span> {{playerService.playerValueAnalysis[selectedPlayer.name_id].trade_value}}</div>
           </div>

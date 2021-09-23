@@ -5,8 +5,8 @@
 <div *ngIf="sleeperService.leagueLoaded && playoffCalculatorService.divisions.length > 0 && (sleeperService.selectedLeague?.status !== 'pre_draft' && sleeperService.selectedLeague?.status !== 'drafting')" class="margin-top-10">
   <div class="standings-row">
     <div *ngFor="let division of playoffCalculatorService.divisions" [ngClass]="{'standings-col': !configService.isMobile}">
-    <span
-      class="center-text mid-bold-text">{{sleeperService.selectedLeague.divisionNames[division.divisionId - 1]}}</span>
+    <div
+      class="center-text mid-bold-text margin-bot-10">{{sleeperService.selectedLeague.divisionNames[division.divisionId - 1]}}</div>
       <mat-table [dataSource]="division.teams" class="mat-elevation-z8">
 
         <ng-container matColumnDef="teamName">
