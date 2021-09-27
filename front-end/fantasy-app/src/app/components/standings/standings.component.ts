@@ -44,7 +44,6 @@ export class StandingsComponent implements OnInit {
       }
       if (this.matchupService.leagueClosestWins.length === 0) {
         this.matchupService.getClosestWins(this.sleeperService.selectedLeague.startWeek, endWeek);
-        this.matchupService.getMostPointsForInWeek(this.sleeperService.selectedLeague.startWeek, endWeek);
       }
       if (this.matchupService.leagueMostPointsFor.length === 0) {
         this.matchupService.getMostPointsForInWeek(this.sleeperService.selectedLeague.startWeek, endWeek);

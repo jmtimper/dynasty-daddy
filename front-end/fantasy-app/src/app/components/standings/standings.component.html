@@ -123,7 +123,7 @@
 
             <ng-container matColumnDef="score">
               <mat-header-cell *matHeaderCellDef>Score</mat-header-cell>
-              <mat-cell *matCellDef="let matchUp">{{matchUp.details.team1Points}} - {{matchUp.details.team2Points}}</mat-cell>
+              <mat-cell *matCellDef="let matchUp">{{matchUp.points}} - {{matchUp.oppPoints}}</mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="team2Name">
