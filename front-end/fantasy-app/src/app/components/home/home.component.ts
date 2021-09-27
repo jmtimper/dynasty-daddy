@@ -11,6 +11,7 @@ import {MatchupService} from '../services/matchup.service';
 import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {ConfigService} from '../../services/init/config.service';
 import {forkJoin} from 'rxjs';
+import {TransactionsService} from '../services/transactions.service';
 
 @Component({
   selector: 'app-home',
@@ -41,7 +42,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
               private mockDraftService: MockDraftService,
               private matchupService: MatchupService,
               private playoffCalculatorService: PlayoffCalculatorService,
-              public configService: ConfigService) {
+              public configService: ConfigService,
+              private transactionService: TransactionsService) {
     super();
   }
 
@@ -81,6 +83,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
       this.playoffCalculatorService.reset();
       this.matchupService.reset();
       this.playersService.resetOwners();
+      this.transactionService.reset();
       console.time('Fetch Sleeper League Data');
       this.addSubscriptions(this.sleeperService.$loadNewLeague(this.selectedLeague).subscribe((x) => {
           this.sleeperService.sleeperTeamDetails.map((team) => {

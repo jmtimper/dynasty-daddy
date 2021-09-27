@@ -10,6 +10,7 @@ import {PlayerService} from '../../services/player.service';
 })
 export class TransactionsService {
 
+  /** aggregate values for transactions */
   transactionAggregate = {};
 
   constructor(private sleeperService: SleeperService, private nflService: NflService, private playerService: PlayerService) {
@@ -190,5 +191,10 @@ export class TransactionsService {
         });
       });
     }
+  }
+
+  /** reset aggregate */
+  reset(): void {
+    this.transactionAggregate = null;
   }
 }
