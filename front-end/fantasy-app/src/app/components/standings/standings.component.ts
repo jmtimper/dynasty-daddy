@@ -6,6 +6,7 @@ import {MatchupService} from '../services/matchup.service';
 import {ConfigService} from '../../services/init/config.service';
 import {NflService} from '../../services/utilities/nfl.service';
 import {MatchUpUI} from '../model/matchup';
+import {TransactionsService} from "../services/transactions.service";
 
 @Component({
   selector: 'app-standings',
@@ -18,7 +19,8 @@ export class StandingsComponent implements OnInit {
               public playoffCalculatorService: PlayoffCalculatorService,
               public matchupService: MatchupService,
               public configService: ConfigService,
-              private nflService: NflService) {
+              private nflService: NflService,
+              public transactionService: TransactionsService) {
   }
 
   divisionTableCols = ['teamName', 'record', 'pf', 'pot'];
@@ -40,6 +42,7 @@ export class StandingsComponent implements OnInit {
       if (this.matchupService.leagueClosestWins.length === 0) {
         this.matchupService.getClosestWins(this.sleeperService.selectedLeague.startWeek, endWeek);
       }
+      this.transactionService.generateTransactionAggregate(this.playoffCalculatorService.getStartWeek());
     }
   }
 

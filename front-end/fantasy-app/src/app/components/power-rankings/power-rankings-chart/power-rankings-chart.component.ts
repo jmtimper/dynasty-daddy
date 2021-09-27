@@ -4,6 +4,8 @@ import {ChartDataSets, ChartOptions} from 'chart.js';
 import {PowerRankingsService} from '../../services/power-rankings.service';
 import {SleeperService} from '../../../services/sleeper.service';
 import {ConfigService} from '../../../services/init/config.service';
+import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
+import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 
 @Component({
   selector: 'app-power-rankings-chart',
@@ -63,6 +65,10 @@ export class PowerRankingsChartComponent implements OnInit {
       reverse: true,
     },
     plugins: {
+      colorschemes: {
+        scheme: Classic10,
+        override: true
+      }
     }
   };
   public lineChartLegend = true;
@@ -94,31 +100,31 @@ export class PowerRankingsChartComponent implements OnInit {
     for (const team of this.powerRankingService.powerRankings) {
       const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
       temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[0].sfTradeValue : team.roster[0].tradeValue;
-      this.data[0] = {data: temp, label: 'QB'};
+      this.data[0] = {data: temp, label: 'QB', hoverBackgroundColor: []};
     }
     temp = [];
     for (const team of this.powerRankingService.powerRankings) {
       const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
       temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[1].sfTradeValue : team.roster[1].tradeValue;
-      this.data[1] = {data: temp, label: 'RB'};
+      this.data[1] = {data: temp, label: 'RB', hoverBackgroundColor: []};
     }
     temp = [];
     for (const team of this.powerRankingService.powerRankings) {
       const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
       temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[2].sfTradeValue : team.roster[2].tradeValue;
-      this.data[2] = {data: temp, label: 'WR'};
+      this.data[2] = {data: temp, label: 'WR', hoverBackgroundColor: []};
     }
     temp = [];
     for (const team of this.powerRankingService.powerRankings) {
       const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
       temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[3].sfTradeValue : team.roster[3].tradeValue;
-      this.data[3] = {data: temp, label: 'TE'};
+      this.data[3] = {data: temp, label: 'TE', hoverBackgroundColor: []};
     }
     temp = [];
     for (const team of this.powerRankingService.powerRankings) {
       const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
       temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.picks.sfTradeValue : team.picks.tradeValue;
-      this.data[4] = {data: temp, label: 'Draft Capital'};
+      this.data[4] = {data: temp, label: 'Draft Capital', hoverBackgroundColor: []};
     }
   }
 }

@@ -89,6 +89,12 @@
           </mat-card-header>
           <app-weekly-median-chart *ngIf="matchupService.leagueMedians !== 0" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
         </mat-card>
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">
+          <mat-card-header>
+            <mat-card-title>Transactions Per Team</mat-card-title>
+          </mat-card-header>
+          <app-team-transactions-chart [transactionsAggregate]="transactionService.transactionAggregate"></app-team-transactions-chart>
+        </mat-card>
       </div>
     </mat-tab>
     <mat-tab label="Schedule Comparison">
