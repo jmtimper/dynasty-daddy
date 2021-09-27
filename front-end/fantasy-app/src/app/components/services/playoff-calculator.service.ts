@@ -73,7 +73,16 @@ export class PlayoffCalculatorService {
 
     // generate mean value score and save it to position 0 of dict
     this.generateMedianProbabilities(meanRating, stdRating);
+    this.generateMatchUpsWithProb();
+    this.getProjectedRecord(week);
+    this.generatePlayoffOdds(week);
+  }
 
+  /**
+   * generates probabilities for matchups and stores matchup object with it
+   * @private
+   */
+  private generateMatchUpsWithProb(): void {
     this.matchUpsWithProb = [];
     this.matchUpService.leagueMatchUpUI.map(weekMatchups => {
       const games: MatchUpProbability[] = [];
@@ -83,8 +92,6 @@ export class PlayoffCalculatorService {
       });
       this.matchUpsWithProb.push(games);
     });
-    this.getProjectedRecord(week);
-    this.generatePlayoffOdds(week);
   }
 
   /**
@@ -287,6 +294,7 @@ export class PlayoffCalculatorService {
    */
   reset(): void {
     this.divisions = [];
+    this.matchUpsWithProb = [];
   }
 
   /**
@@ -813,6 +821,18 @@ export class PlayoffCalculatorService {
       this.medianWinProbability[team.team.roster.rosterId] = {
         meanProb: this.getPercent(0.5 + (this.teamRatingsPValues[team.team.roster.rosterId] - this.teamRatingsPValues[0]) / 2)
       };
+    }
+  }
+
+  /**
+   * calculate the league medians for each week
+   */
+  calculateLeagueMedians(): void {
+    if (this.matchUpsWithProb.length === 0) { this.generateMatchUpsWithProb(); }
+    const endWeek = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season ?
+      this.nflService.stateOfNFL.completedWeek : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
+    for (let i = 0; i < endWeek; i++) {
+      this.matchUpService.leagueMedians.push(this.getMedianPointsForWeek(this.matchUpsWithProb[i]));
     }
   }
 }

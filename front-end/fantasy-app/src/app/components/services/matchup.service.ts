@@ -3,7 +3,7 @@ import {SleeperLeagueData} from '../../model/SleeperUser';
 import {MatchUpUI, ScheduleComp, WeeklyRecordComp} from '../model/matchup';
 import {SleeperTeam} from '../../model/SleeperLeague';
 import {ChartDataSets} from 'chart.js';
-import {forkJoin, Observable, of} from "rxjs";
+import {forkJoin, Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -204,5 +204,6 @@ export class MatchupService {
     this.weeklyComparison = [];
     this.scheduleComparison = [];
     this.leagueMatchUpUI = [];
+    this.leagueMedians = [];
   }
 }

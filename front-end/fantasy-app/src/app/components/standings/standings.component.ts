@@ -4,6 +4,7 @@ import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {SleeperTeam} from '../../model/SleeperLeague';
 import {MatchupService} from '../services/matchup.service';
 import {ConfigService} from '../../services/init/config.service';
+import {main} from "@angular/compiler-cli/src/main";
 
 @Component({
   selector: 'app-standings',
@@ -22,10 +23,16 @@ export class StandingsComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO fix this
-    if (this.sleeperService.selectedLeague && this.matchupService.leagueMatchUpUI.length === 0) {
-      console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');
-      this.matchupService.initMatchUpCharts(this.sleeperService.selectedLeague);
+    if (this.sleeperService.selectedLeague) {
+      if (this.matchupService.leagueMatchUpUI.length === 0 || this.playoffCalculatorService.matchUpsWithProb.length === 0) {
+        console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');
+        this.matchupService.initMatchUpCharts(this.sleeperService.selectedLeague);
+      }
+      if (this.matchupService.leagueMedians.length === 0) {
+        this.playoffCalculatorService.calculateLeagueMedians();
+      }
     }
+
   }
 
   roundNumber(num: number): number {

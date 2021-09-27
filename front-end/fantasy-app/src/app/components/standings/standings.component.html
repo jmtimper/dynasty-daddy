@@ -38,10 +38,29 @@
   </div>
 
   <mat-tab-group mat-align-tabs="center" class="margin-top-25">
-    <mat-tab label="Strength Of Schedule">
-      <div class="mid-bold-text margin-top-10 center-text">Strength Of Schedule</div>
-      <div class="margin-top-10 center-text">A team's strength of schedule based on average opponent starter value.</div>
-      <app-strength-of-schedule-chart *ngIf="sleeperService.selectedLeague.leagueMatchUps"></app-strength-of-schedule-chart>
+    <mat-tab label="League Insights">
+      <div class="mid-bold-text margin-top-10 center-text">League Insights</div>
+      <div class="margin-top-10 center-text">A collection of league metrics and moments.</div>
+      <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-50">
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">
+          <mat-card-header>
+            <mat-card-title>Strength of Schedule</mat-card-title>
+          </mat-card-header>
+          <app-strength-of-schedule-chart *ngIf="sleeperService.selectedLeague.leagueMatchUps"></app-strength-of-schedule-chart>
+        </mat-card>
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">
+          <mat-card-header>
+            <mat-card-title>Weekly Medians</mat-card-title>
+          </mat-card-header>
+          <app-weekly-median-chart *ngIf="matchupService.leagueMedians" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
+        </mat-card>
+<!--        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">-->
+<!--          <mat-card-header>-->
+<!--            <mat-card-title>Highest Scoring Weeks</mat-card-title>-->
+<!--          </mat-card-header>-->
+<!--          <app-weekly-median-chart *ngIf="matchupService.leagueMedians" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>-->
+<!--        </mat-card>-->
+      </div>
     </mat-tab>
     <mat-tab label="Schedule Comparison">
       <div class="mid-bold-text margin-top-10 center-text">Schedule Comparisons</div>
