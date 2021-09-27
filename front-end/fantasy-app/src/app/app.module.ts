@@ -73,6 +73,8 @@ import { PlayerDetailsInsightsComponent } from './components/player-details/play
 import { PlayerStatisticsComponent } from './components/player-statistics/player-statistics.component';
 import { PlayerPosTableComponent } from './components/player-statistics/player-pos-table/player-pos-table.component';
 import { PlayerPosScatterChartComponent } from './components/player-statistics/player-pos-scatter-chart/player-pos-scatter-chart.component';
+import { WeeklyMedianChartComponent } from './components/standings/weekly-median-chart/weekly-median-chart.component';
+import { TeamTransactionsChartComponent } from './components/standings/team-transactions-chart/team-transactions-chart.component';
 
 
 export function initialize(startupService: StartupService): any {
@@ -120,6 +122,8 @@ let UniversalDeviceDetectorService;
     PlayerStatisticsComponent,
     PlayerPosTableComponent,
     PlayerPosScatterChartComponent,
+    WeeklyMedianChartComponent,
+    TeamTransactionsChartComponent,
   ],
     imports: [
         BrowserModule,

@@ -147,4 +147,12 @@ export class PlayerPosTableComponent implements OnInit, OnChanges {
         );
     }
   }
+
+  /**
+   * get percent rounded
+   * @param percent
+   */
+  roundPercent(percent: number) {
+    return Math.round(percent);
+  }
 }

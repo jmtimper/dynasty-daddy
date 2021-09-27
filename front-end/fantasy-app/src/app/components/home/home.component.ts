@@ -10,7 +10,7 @@ import {MockDraftService} from '../services/mock-draft.service';
 import {MatchupService} from '../services/matchup.service';
 import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {ConfigService} from '../../services/init/config.service';
-import {forkJoin} from "rxjs";
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-home',

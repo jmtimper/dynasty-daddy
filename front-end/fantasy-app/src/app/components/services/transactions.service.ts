@@ -10,6 +10,8 @@ import {PlayerService} from '../../services/player.service';
 })
 export class TransactionsService {
 
+  transactionAggregate = {};
+
   constructor(private sleeperService: SleeperService, private nflService: NflService, private playerService: PlayerService) {
   }
 
@@ -170,5 +172,23 @@ export class TransactionsService {
       netValue += activity.netValue;
     }
     return netValue;
+  }
+
+  /**
+   * generate transaction aggregate for teams
+   * @param endWeek
+   */
+  generateTransactionAggregate(endWeek: number): void {
+    this.transactionAggregate = {};
+    for (let rosterId = 1; rosterId <= this.sleeperService.selectedLeague.totalRosters; rosterId++) {
+      this.transactionAggregate[rosterId] = {actions: 0, trades: 0};
+    }
+    for (let i = this.sleeperService.selectedLeague.startWeek; i <= endWeek; i++) {
+      this.sleeperService.selectedLeague.leagueTransactions[i]?.map(transaction => {
+        transaction.rosterIds.map(team => {
+          transaction.type === 'trade' ? this.transactionAggregate[team].trades++ : this.transactionAggregate[team].actions++;
+        });
+      });
+    }
   }
 }
