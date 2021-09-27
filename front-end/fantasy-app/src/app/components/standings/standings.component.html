@@ -87,7 +87,7 @@
           <mat-card-header>
             <mat-card-title>Weekly Medians</mat-card-title>
           </mat-card-header>
-          <app-weekly-median-chart *ngIf="matchupService.leagueMedians" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
+          <app-weekly-median-chart *ngIf="matchupService.leagueMedians !== 0" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
         </mat-card>
       </div>
     </mat-tab>

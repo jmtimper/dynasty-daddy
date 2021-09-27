@@ -208,7 +208,7 @@ export class MatchupService {
   getClosestWins(startWeek: number, endWeek: number): void {
     const closestWins = [];
     for (let i = 0; i < endWeek - startWeek; i++) {
-      this.leagueMatchUpUI[i].map(matchUp => {
+      this.leagueMatchUpUI[i]?.map(matchUp => {
         closestWins.push(matchUp);
       });
     }

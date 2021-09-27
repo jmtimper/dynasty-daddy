@@ -41,7 +41,6 @@ export class StandingsComponent implements OnInit {
         this.matchupService.getClosestWins(this.sleeperService.selectedLeague.startWeek, endWeek);
       }
     }
-
   }
 
   roundNumber(num: number): number {
