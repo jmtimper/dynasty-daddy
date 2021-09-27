@@ -766,11 +766,11 @@ export class PlayoffCalculatorService {
    * TODO check when new weeks are processed
    * @private
    */
-  private getStartWeek(): number {
+  public getStartWeek(): number {
     if (this.nflService.stateOfNFL.season === this.sleeperService.selectedLeague.season) {
       return this.nflService.stateOfNFL.completedWeek + 1;
     }
-    return Number(this.nflService.stateOfNFL.season) < 2021 ? 17 : 18;
+    return Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18;
   }
 
   /**
@@ -830,8 +830,9 @@ export class PlayoffCalculatorService {
   calculateLeagueMedians(): void {
     if (this.matchUpsWithProb.length === 0) { this.generateMatchUpsWithProb(); }
     const endWeek = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season ?
-      this.nflService.stateOfNFL.completedWeek : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
-    for (let i = 0; i < endWeek; i++) {
+      this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek
+      : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
+    for (let i = 0; i <= endWeek; i++) {
       this.matchUpService.leagueMedians.push(this.getMedianPointsForWeek(this.matchUpsWithProb[i]));
     }
   }

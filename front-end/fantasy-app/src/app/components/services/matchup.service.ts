@@ -22,7 +22,10 @@ export class MatchupService {
   /** array of array for each weeks matchups */
   leagueMatchUpUI: MatchUpUI[][] = [];
 
+  /** List of weekly medians */
   leagueMedians: number[] = [];
+
+  leagueClosestWins: MatchUpUI[] = [];
 
   /**
    * initializes matchup data
@@ -198,6 +201,24 @@ export class MatchupService {
   }
 
   /**
+   * sort the matchups by closest wins
+   * @param startWeek
+   * @param endWeek
+   */
+  getClosestWins(startWeek: number, endWeek: number): void {
+    const closestWins = [];
+    for (let i = 0; i < endWeek - startWeek; i++) {
+      this.leagueMatchUpUI[i].map(matchUp => {
+        closestWins.push(matchUp);
+      });
+    }
+    closestWins.sort((a, b) => {
+      return (Math.abs(a.team2Points - a.team1Points)) - (Math.abs(b.team2Points - b.team1Points));
+    });
+    this.leagueClosestWins = closestWins.slice(0, 7);
+  }
+
+  /**
    * reset standings arrays
    */
   reset(): void {
@@ -205,5 +226,6 @@ export class MatchupService {
     this.scheduleComparison = [];
     this.leagueMatchUpUI = [];
     this.leagueMedians = [];
+    this.leagueClosestWins = [];
   }
 }

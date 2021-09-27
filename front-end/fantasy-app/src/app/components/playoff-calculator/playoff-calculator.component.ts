@@ -86,15 +86,19 @@ export class PlayoffCalculatorComponent implements OnInit {
     this.playoffCalculatorService.calculateGamesWithProbability(this.selectedWeek);
     if (this.playoffCalculatorService.matchUpsWithProb.length > 0) {
       if (this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season) {
+        // get upcoming match ups
         this.upcomingMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
-          this.nflService.stateOfNFL.completedWeek,
-          this.sleeperService.selectedLeague.playoffStartWeek - 1,
+          this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek + 1,
+          this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek,
         );
+        // get upcoming playoff match ups
         this.playoffMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
-          this.sleeperService.selectedLeague.playoffStartWeek - 1
+          this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek
         );
+        // get completed match ups
         this.completedMatchUps =
-          this.playoffCalculatorService.matchUpsWithProb.slice(0, this.nflService.stateOfNFL.completedWeek).reverse();
+          this.playoffCalculatorService.matchUpsWithProb.slice(0, this.nflService.stateOfNFL.completedWeek
+            - this.sleeperService.selectedLeague.startWeek + 1).reverse();
       } else {
         this.completedMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice().reverse();
       }

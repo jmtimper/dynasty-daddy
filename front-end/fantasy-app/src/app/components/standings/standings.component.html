@@ -48,18 +48,47 @@
           </mat-card-header>
           <app-strength-of-schedule-chart *ngIf="sleeperService.selectedLeague.leagueMatchUps"></app-strength-of-schedule-chart>
         </mat-card>
-        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4" *ngIf="matchupService.leagueClosestWins.length !== 0">
+          <mat-card-header>
+            <mat-card-title>Closest Weekly Match Ups</mat-card-title>
+          </mat-card-header>
+          <mat-table [dataSource]="this.matchupService.leagueClosestWins">
+
+            <ng-container matColumnDef="week">
+              <mat-header-cell *matHeaderCellDef>Week</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">Week {{matchUp.week}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="team1Name">
+              <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{this.sleeperService.getTeamByRosterId(matchUp.team1RosterId).owner.teamName}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="score">
+              <mat-header-cell *matHeaderCellDef>Points</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{matchUp.team1Points}} - {{matchUp.team2Points}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="team2Name">
+              <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{this.sleeperService.getTeamByRosterId(matchUp.team2RosterId).owner.teamName}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="diff">
+              <mat-header-cell *matHeaderCellDef>Diff</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{getPointDifference(matchUp)}}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="closestWinsCols"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: closestWinsCols;"></mat-row>
+          </mat-table>
+        </mat-card>
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4" *ngIf="matchupService.leagueMedians.length !== 0">
           <mat-card-header>
             <mat-card-title>Weekly Medians</mat-card-title>
           </mat-card-header>
           <app-weekly-median-chart *ngIf="matchupService.leagueMedians" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
         </mat-card>
-<!--        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">-->
-<!--          <mat-card-header>-->
-<!--            <mat-card-title>Highest Scoring Weeks</mat-card-title>-->
-<!--          </mat-card-header>-->
-<!--          <app-weekly-median-chart *ngIf="matchupService.leagueMedians" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>-->
-<!--        </mat-card>-->
       </div>
     </mat-tab>
     <mat-tab label="Schedule Comparison">

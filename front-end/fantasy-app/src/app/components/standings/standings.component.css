@@ -18,3 +18,20 @@
   margin-bottom: 16px;
   margin-right: 16px;
 }
+
+.mat-column-week,
+.mat-column-diff {
+  max-width: 90px;
+}
+
+.mat-column-team2Name,
+.mat-column-diff {
+  text-align: right;
+  justify-content: flex-end;
+  padding-right: 15px;
+}
+
+.mat-column-score {
+  text-align: center;
+  justify-content: center;
+}
