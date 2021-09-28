@@ -120,9 +120,10 @@ export class PlayoffCalculatorService {
       let totalMedianWins = 0;
       let selectedMedianWins = 0;
       let selectedMedianLosses = 0;
-      for (let week = startWeek; week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
+      for (let week = startWeek - this.sleeperService.selectedLeague.startWeek;
+           week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
         projectedWeeks++;
-        this.matchUpsWithProb[week - 1]?.map(matchUp => {
+        this.matchUpsWithProb[week]?.map(matchUp => {
           if (matchUp.matchUpDetails.team1RosterId === rosterId) {
             if (matchUp.matchUpDetails.selectedWinner === 0) {
               totalWins += matchUp.team1Prob;

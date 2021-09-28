@@ -48,7 +48,7 @@ export class StandingsComponent implements OnInit {
       if (this.matchupService.leagueMostPointsFor.length === 0) {
         this.matchupService.getMostPointsForInWeek(this.sleeperService.selectedLeague.startWeek, endWeek);
       }
-      if (!this.transactionService.transactionAggregate) {
+      if (!this.isTransactionAggComplete()) {
         this.transactionService.generateTransactionAggregate(this.playoffCalculatorService.getStartWeek());
       }
     }
@@ -68,5 +68,12 @@ export class StandingsComponent implements OnInit {
    */
   getPointDifference(matchUp: MatchUpUI): number {
     return Math.round(Math.abs(matchUp.team1Points - matchUp.team2Points) * 100) / 100;
+  }
+
+  /**
+   * returns true if transaction agg isn't empty
+   */
+  isTransactionAggComplete(): boolean {
+    return JSON.stringify(this.transactionService.transactionAggregate) !== '{}';
   }
 }

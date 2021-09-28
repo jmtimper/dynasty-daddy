@@ -180,21 +180,25 @@ export class TransactionsService {
    * @param endWeek
    */
   generateTransactionAggregate(endWeek: number): void {
-    this.transactionAggregate = {};
-    for (let rosterId = 1; rosterId <= this.sleeperService.selectedLeague.totalRosters; rosterId++) {
-      this.transactionAggregate[rosterId] = {actions: 0, trades: 0};
-    }
-    for (let i = this.sleeperService.selectedLeague.startWeek; i <= endWeek; i++) {
-      this.sleeperService.selectedLeague.leagueTransactions[i]?.map(transaction => {
-        transaction.rosterIds.map(team => {
-          transaction.type === 'trade' ? this.transactionAggregate[team].trades++ : this.transactionAggregate[team].actions++;
-        });
-      });
+    if (this.sleeperService.selectedLeague.leagueTransactions && this.sleeperService.selectedLeague.leagueTransactions[1]) {
+      this.transactionAggregate = {};
+      for (let rosterId = 1; rosterId <= this.sleeperService.selectedLeague.totalRosters; rosterId++) {
+        this.transactionAggregate[rosterId] = {actions: 0, trades: 0};
+      }
+      for (let i = this.sleeperService.selectedLeague.startWeek; i <= endWeek; i++) {
+        if (this.sleeperService.selectedLeague.leagueTransactions[i]) {
+          this.sleeperService.selectedLeague.leagueTransactions[i]?.map(transaction => {
+            transaction?.rosterIds.map(team => {
+              transaction.type === 'trade' ? this.transactionAggregate[team].trades++ : this.transactionAggregate[team].actions++;
+            });
+          });
+        }
+      }
     }
   }
 
   /** reset aggregate */
   reset(): void {
-    this.transactionAggregate = null;
+    this.transactionAggregate = {};
   }
 }
