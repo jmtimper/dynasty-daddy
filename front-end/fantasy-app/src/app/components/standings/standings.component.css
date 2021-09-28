@@ -19,16 +19,28 @@
   margin-right: 16px;
 }
 
+.mat-column-points,
+.mat-column-ppf,
+.mat-column-pf,
+.mat-column-pot,
 .mat-column-week,
 .mat-column-diff {
   max-width: 90px;
 }
 
+.mat-column-ppf,
+.mat-column-pf,
+.mat-column-pot,
 .mat-column-team2Name,
 .mat-column-diff {
   text-align: right;
   justify-content: flex-end;
   padding-right: 15px;
+}
+
+.mat-column-team1PointsFor {
+text-align: left;
+justify-content: start;
 }
 
 .mat-column-score {

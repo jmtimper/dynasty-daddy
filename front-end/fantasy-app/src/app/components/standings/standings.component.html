@@ -26,6 +26,11 @@
           <mat-cell *matCellDef="let team">{{roundNumber(team.roster.teamMetrics.fpts)}}</mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="ppf">
+          <mat-header-cell *matHeaderCellDef>Potential For</mat-header-cell>
+          <mat-cell *matCellDef="let team">{{roundNumber(team.roster.teamMetrics.ppts)}}</mat-cell>
+        </ng-container>
+
         <ng-container matColumnDef="pot">
           <mat-header-cell *matHeaderCellDef>Realized Points</mat-header-cell>
           <mat-cell *matCellDef="let team"><span>{{getPointPotentialPercent(team) || '0'}}%</span></mat-cell>
@@ -50,7 +55,7 @@
         </mat-card>
         <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4" *ngIf="matchupService.leagueClosestWins.length !== 0">
           <mat-card-header>
-            <mat-card-title>Closest Weekly Match Ups</mat-card-title>
+            <mat-card-title>Closest Margin of Victory</mat-card-title>
           </mat-card-header>
           <mat-table [dataSource]="this.matchupService.leagueClosestWins">
 
@@ -87,13 +92,50 @@
           <mat-card-header>
             <mat-card-title>Weekly Medians</mat-card-title>
           </mat-card-header>
-          <app-weekly-median-chart *ngIf="matchupService.leagueMedians !== 0" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
+          <app-weekly-median-chart *ngIf="matchupService.leagueMedians.length !== 0" [medians]="matchupService.leagueMedians"></app-weekly-median-chart>
         </mat-card>
-        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4">
-          <mat-card-header>
-            <mat-card-title>Transactions Per Team</mat-card-title>
-          </mat-card-header>
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4" *ngIf="isTransactionAggComplete()">
+          <div style="text-align: center;">
+            <mat-card-header>
+              <mat-card-title>Transactions Per Team</mat-card-title>
+            </mat-card-header>
+          </div>
           <app-team-transactions-chart [transactionsAggregate]="transactionService.transactionAggregate"></app-team-transactions-chart>
+        </mat-card>
+        <mat-card fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%" class="league-metric__card mat-elevation-z4" *ngIf="matchupService.leagueClosestWins.length !== 0">
+          <mat-card-header>
+            <mat-card-title>Highest Points in Match Ups</mat-card-title>
+          </mat-card-header>
+          <mat-table [dataSource]="this.matchupService.leagueMostPointsFor">
+
+            <ng-container matColumnDef="week">
+              <mat-header-cell *matHeaderCellDef>Week</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">Week {{matchUp.details.week}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="points">
+              <mat-header-cell *matHeaderCellDef>Points</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{matchUp.points}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="team1PointsFor">
+              <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{this.sleeperService.getTeamByRosterId(matchUp.rosterId).owner.teamName}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="score">
+              <mat-header-cell *matHeaderCellDef>Score</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{matchUp.points}} - {{matchUp.oppPoints}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="team2Name">
+              <mat-header-cell *matHeaderCellDef>Opponent</mat-header-cell>
+              <mat-cell *matCellDef="let matchUp">{{this.sleeperService.getTeamByRosterId(matchUp.oppRosterId).owner.teamName}}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="pointsForCols"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: pointsForCols;"></mat-row>
+          </mat-table>
         </mat-card>
       </div>
     </mat-tab>

@@ -25,7 +25,11 @@ export class MatchupService {
   /** List of weekly medians */
   leagueMedians: number[] = [];
 
+  /** closest games */
   leagueClosestWins: MatchUpUI[] = [];
+
+  /** most points for in week */
+  leagueMostPointsFor: {rosterId: number, points: number, oppRosterId: number, oppPoints: number, details: MatchUpUI}[] = [];
 
   /**
    * initializes matchup data
@@ -219,6 +223,27 @@ export class MatchupService {
   }
 
   /**
+   * sort matches by most points in a week
+   * @param startWeek
+   * @param endWeek
+   */
+  getMostPointsForInWeek(startWeek: number, endWeek: number): void {
+    const mostPointsFor = [];
+    for (let i = 0; i < endWeek - startWeek; i++) {
+      this.leagueMatchUpUI[i]?.map(matchUp => {
+        mostPointsFor.push({rosterId: matchUp.team1RosterId, points: matchUp.team1Points,
+          oppRosterId: matchUp.team2RosterId, oppPoints: matchUp.team2Points, details: matchUp});
+        mostPointsFor.push({rosterId: matchUp.team2RosterId, points: matchUp.team2Points,
+          oppRosterId: matchUp.team1RosterId, oppPoints: matchUp.team1Points, details: matchUp});
+      });
+    }
+    mostPointsFor.sort((a, b) => {
+      return b.points - a.points;
+    });
+    this.leagueMostPointsFor = mostPointsFor.splice(0, 7);
+  }
+
+  /**
    * reset standings arrays
    */
   reset(): void {
@@ -227,5 +252,6 @@ export class MatchupService {
     this.leagueMatchUpUI = [];
     this.leagueMedians = [];
     this.leagueClosestWins = [];
+    this.leagueMostPointsFor = [];
   }
 }

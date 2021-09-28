@@ -7,7 +7,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {PlayoffCalculatorService} from '../../services/playoff-calculator.service';
 import {ColorService} from '../../services/color.service';
 import {ConfigService} from '../../../services/init/config.service';
-import {NflService} from "../../../services/utilities/nfl.service";
+import {NflService} from '../../../services/utilities/nfl.service';
 
 @Component({
   selector: 'app-playoff-calculator-season-table',

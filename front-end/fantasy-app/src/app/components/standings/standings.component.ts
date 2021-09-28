@@ -6,7 +6,7 @@ import {MatchupService} from '../services/matchup.service';
 import {ConfigService} from '../../services/init/config.service';
 import {NflService} from '../../services/utilities/nfl.service';
 import {MatchUpUI} from '../model/matchup';
-import {TransactionsService} from "../services/transactions.service";
+import {TransactionsService} from '../services/transactions.service';
 
 @Component({
   selector: 'app-standings',
@@ -23,10 +23,13 @@ export class StandingsComponent implements OnInit {
               public transactionService: TransactionsService) {
   }
 
-  divisionTableCols = ['teamName', 'record', 'pf', 'pot'];
+  divisionTableCols = ['teamName', 'record', 'pf', 'ppf', 'pot'];
 
   /** closest wins columns */
   closestWinsCols = ['week', 'team1Name', 'score', 'team2Name', 'diff'];
+
+  /** closest wins columns */
+  pointsForCols = ['week', 'points', 'team1PointsFor', 'score', 'team2Name'];
 
   ngOnInit(): void {
     // TODO fix this
@@ -42,7 +45,12 @@ export class StandingsComponent implements OnInit {
       if (this.matchupService.leagueClosestWins.length === 0) {
         this.matchupService.getClosestWins(this.sleeperService.selectedLeague.startWeek, endWeek);
       }
-      this.transactionService.generateTransactionAggregate(this.playoffCalculatorService.getStartWeek());
+      if (this.matchupService.leagueMostPointsFor.length === 0) {
+        this.matchupService.getMostPointsForInWeek(this.sleeperService.selectedLeague.startWeek, endWeek);
+      }
+      if (!this.isTransactionAggComplete()) {
+        this.transactionService.generateTransactionAggregate(this.playoffCalculatorService.getStartWeek());
+      }
     }
   }
 
@@ -60,5 +68,12 @@ export class StandingsComponent implements OnInit {
    */
   getPointDifference(matchUp: MatchUpUI): number {
     return Math.round(Math.abs(matchUp.team1Points - matchUp.team2Points) * 100) / 100;
+  }
+
+  /**
+   * returns true if transaction agg isn't empty
+   */
+  isTransactionAggComplete(): boolean {
+    return JSON.stringify(this.transactionService.transactionAggregate) !== '{}';
   }
 }

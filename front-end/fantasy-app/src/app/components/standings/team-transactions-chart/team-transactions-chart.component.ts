@@ -34,6 +34,9 @@ export class TeamTransactionsChartComponent implements OnInit {
       text: 'Overall Team Value'
     },
     scales: {
+      ticks: {
+        min: 0,
+      },
       xAxes: [{
         display: true,
         gridLines: {
