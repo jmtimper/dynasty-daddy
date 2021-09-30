@@ -180,7 +180,7 @@ export class TransactionsService {
    * @param endWeek
    */
   generateTransactionAggregate(endWeek: number): void {
-    if (this.sleeperService.selectedLeague.leagueTransactions && this.sleeperService.selectedLeague.leagueTransactions[1]) {
+    if (this.sleeperService.selectedLeague.leagueTransactions) {
       this.transactionAggregate = {};
       for (let rosterId = 1; rosterId <= this.sleeperService.selectedLeague.totalRosters; rosterId++) {
         this.transactionAggregate[rosterId] = {actions: 0, trades: 0};

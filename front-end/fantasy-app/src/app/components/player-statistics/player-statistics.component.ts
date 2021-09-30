@@ -148,7 +148,7 @@ export class PlayerStatisticsComponent extends BaseComponent implements OnInit {
      * @param event from select
      */
     updatePositionTable(event: any): void {
-        this.selectedMetrics = [this.sleeperService.selectedLeague?.isSuperflex ? {value: 'trade_value', displayName: 'Trade Value (Standard)'}
+        this.selectedMetrics = [this.sleeperService.selectedLeague?.isSuperflex === false ? {value: 'trade_value', displayName: 'Trade Value (Standard)'}
             : {value: 'sf_trade_value', displayName: 'Trade Value (SuperFlex)'}, {value: 'pts_half_ppr', displayName: 'Fantasy Points (Half PPR)'}];
         this.selectedXMetric = this.selectedMetrics[0];
         this.selectedYMetric = this.selectedMetrics[1];
