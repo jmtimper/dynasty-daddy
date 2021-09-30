@@ -50,6 +50,8 @@ export class PlayoffCalculatorGamesContainerComponent implements OnInit {
   resetSelectableGames(): void {
     this.weekMatchUps.map(matchups => {
       matchups.matchUpDetails.selectedWinner = 0;
+      matchups.matchUpDetails.selectedTeam2MedianWin = 0;
+      matchups.matchUpDetails.selectedTeam1MedianWin = 0;
     });
     this.playoffCalculatorService.updateSeasonOdds();
   }

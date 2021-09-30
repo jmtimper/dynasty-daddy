@@ -121,7 +121,7 @@ export class PlayoffCalculatorService {
       let selectedMedianWins = 0;
       let selectedMedianLosses = 0;
       for (let week = startWeek - this.sleeperService.selectedLeague.startWeek;
-           week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
+           week < this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek; week++) {
         projectedWeeks++;
         this.matchUpsWithProb[week]?.map(matchUp => {
           if (matchUp.matchUpDetails.team1RosterId === rosterId) {
