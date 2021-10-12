@@ -69,24 +69,41 @@
     <!-- Pos Column -->
     <ng-container matColumnDef="team">
       <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
-      <mat-cell class="link--text__no__underline" *matCellDef="let element"
-                [routerLink]="['../team', getOwnerName(element.rosterId)]">{{getTeamName(element.rosterId.toString())}}</mat-cell>
+      <mat-cell *matCellDef="let element">{{getTeamName(element.rosterId.toString())}}</mat-cell>
     </ng-container>
 
     <!-- Age Column -->
     <ng-container matColumnDef="owner">
       <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
-      <mat-cell *matCellDef="let element" [routerLink]="['../team', getOwnerName(element.rosterId)]"
-                class="link--text__no__underline">{{getOwnerName(element.rosterId)}}</mat-cell>
+      <mat-cell *matCellDef="let element">{{getOwnerName(element.rosterId)}}</mat-cell>
     </ng-container>
 
     <!-- Value Column -->
     <ng-container matColumnDef="selectedPlayer">
       <mat-header-cell *matHeaderCellDef>Selected Pick (current value)</mat-header-cell>
-      <mat-cell *matCellDef="let element"
-                [routerLink]="getPlayerBySleeperId(element.sleeperId) !== null ? ['../../players/details/', getPlayerBySleeperId(element.sleeperId)?.name_id] : []"
-                class="link--text__no__underline">{{configService.isMobile ? element.position + ' ' + element.lastName : element.position + ' ' + element.firstName + ' ' + element.lastName}}
+      <mat-cell *matCellDef="let element">{{configService.isMobile ? element.position + ' ' + element.lastName : element.position + ' ' + element.firstName + ' ' + element.lastName}}
         - {{sleeperService.selectedLeague.isSuperflex ? getPlayerBySleeperId(element.sleeperId)?.sf_trade_value || 'None' : getPlayerBySleeperId(element.sleeperId)?.trade_value || 'None'}}
+      </mat-cell>
+    </ng-container>
+
+    <!-- actions column -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element" (click)="$event.stopPropagation();">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item *ngIf="getPlayerBySleeperId(element.sleeperId)" (click)="openPlayerComparison(getPlayerBySleeperId(element.sleeperId))">
+            <span>Add to Player Comparison</span>
+          </button>
+          <button *ngIf="element.position !== 'PI' && getPlayerBySleeperId(element.sleeperId)" mat-menu-item [routerLink]="['../../players/details/', getPlayerBySleeperId(element.sleeperId)?.name_id]">
+            <span>View Player Page</span>
+          </button>
+          <button mat-menu-item [routerLink]="['../team', getOwnerName(element.rosterId)]">
+            <span>View Team Page</span>
+          </button>
+        </mat-menu>
       </mat-cell>
     </ng-container>
 

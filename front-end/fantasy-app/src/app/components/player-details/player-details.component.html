@@ -42,8 +42,8 @@
         </div>
         <div class="standings-col vertical-break__right__dark">
           <div class="small-text__light text__light disabled__color">Experience</div>
-          <div class="mid-bold-text">{{selectedPlayer.experience}}
-            Year{{selectedPlayer.experience == 1 ? 's' : ''}}</div>
+          <div class="mid-bold-text">{{selectedPlayer.experience == 0 ? 'Rookie' : selectedPlayer.experience}}
+            Year{{selectedPlayer.experience >= 1 ? 's' : ''}}</div>
         </div>
         <div class="standings-col vertical-break__right__dark">
           <div class="small-text__light text__light disabled__color">{{playerService.playerStatsYear}} Points</div>
@@ -80,7 +80,7 @@
       <div class="mid-bold-text margin-top-10 center-text">Player Insights</div>
       <div class="margin-top-10 center-text">A collection of metrics and insights on {{selectedPlayer.full_name}}.
       </div>
-      <app-player-details-insights [selectedPlayer]="selectedPlayer"></app-player-details-insights>
+      <app-player-details-insights [selectedPlayer]="selectedPlayer" [selectedPlayerInsights]="selectedPlayerInsights"></app-player-details-insights>
     </mat-tab>
     <mat-tab label="Past Box Scores">
       <app-player-details-weekly-box-scores-table *ngIf="isPlayerStatsGenerated()" [selectedPlayer]="selectedPlayer"></app-player-details-weekly-box-scores-table>

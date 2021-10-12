@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {SleeperService} from '../../services/sleeper.service';
 import {PlayerComparisonService} from '../services/player-comparison.service';
 import {ConfigService} from '../../services/init/config.service';
+import {PlayerInsights} from '../model/playerInsights';
 
 @Component({
   selector: 'app-player-details',
@@ -20,6 +21,9 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
 
   /** selected player */
   selectedPlayer: KTCPlayer;
+
+  /** selected player insights */
+  selectedPlayerInsights: PlayerInsights;
 
   /** historical player value data */
   historicalTradeValue: KTCPlayerDataPoint[];
@@ -39,6 +43,8 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
     this.playersLoaded = (this.playerService.playerValues.length > 0);
     if (this.playersLoaded) {
       this.selectedPlayer = this.playerService.getPlayerByNameId(nameId);
+      this.selectedPlayerInsights = this.playerService.getPlayerInsights(this.selectedPlayer,
+        this.sleeperService?.selectedLeague?.isSuperflex);
     }
     this.playerService.loadPlayerValuesForToday();
     this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
@@ -103,7 +109,7 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
       this.playerService.pastSeasonWeeklyProjections[15] &&
       this.playerService.pastSeasonWeeklyProjections[16] &&
       this.playerService.pastSeasonWeeklyProjections[17] &&
-      this.playerService.pastSeasonWeeklyProjections[18]
+      this.playerService.pastSeasonWeeklyProjections[18];
   }
 
   /**

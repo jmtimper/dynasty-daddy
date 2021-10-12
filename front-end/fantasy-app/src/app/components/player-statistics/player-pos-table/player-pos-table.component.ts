@@ -143,7 +143,8 @@ export class PlayerPosTableComponent implements OnInit, OnChanges {
         this.displayedColumns = this.displayedColumns.concat(
           this.generalBoxScore,
           this.receivingBoxScore,
-          this.turnoverBoxScore
+          this.turnoverBoxScore,
+          ['actions']
         );
     }
   }
