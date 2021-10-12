@@ -1,24 +1,43 @@
-<!--<div class="center-text mid-bold-text margin-top-50">-->
-<!--  test-->
-<!--</div>-->
-<!--<div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">-->
-<!--  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">-->
-<!--    <mat-card>-->
-<!--      <div class="mid-bold-text center-text margin-bot-10">Sleeper</div>-->
-<!--      <div class="standings-row">-->
-<!--        <div class="standings-col vertical-break__right__dark">-->
-<!--          <div class="small-text__light text__light disabled__color">Position PPR Rank</div>-->
-<!--          <div class="mid-bold-text">{{this.playerService.playerStats[this.selectedPlayer.sleeper_id]?.pos_rank_ppr}}</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    </mat-card>-->
-<!--  </div>-->
+<div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
+  <div fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">
+    <mat-card *ngIf="selectedPlayerInsights">
+      <div class="mid-bold-text center-text margin-bot-10">Past 18 Games</div>
+      <div class="insight__row">
+        <div class="text__light">Games Played</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.gamesPlayed}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">18 Week High</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.high}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">18 Week Low</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.low}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Average Points Per Week</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.mean}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Variance</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.variance}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Standard Deviation</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.stdDev}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Value Per Point Ratio</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights.valuePerPointRatio}}</div>
+      </div>
+    </mat-card>
+  </div>
 <!--  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">-->
 <!--    <mat-card>-->
 <!--      <div class="mid-bold-text center-text margin-bot-10">KeepTradeCut.com</div>-->
 <!--    </mat-card>-->
 <!--  </div>-->
-<!--</div>-->
+</div>
 <div class="center-text mid-bold-text margin-top-50">
   Adjacent Player Value
 </div>

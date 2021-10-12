@@ -11,6 +11,8 @@ import {ChartOptions, ChartType} from 'chart.js';
 import {BaseChartDirective, Label} from 'ng2-charts';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
+import {PlayerComparisonService} from '../../services/player-comparison.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-completed-draft-table',
@@ -24,7 +26,7 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
   selectedDraft: CompletedDraft;
 
   /** columns */
-  displayedColumns = this.configService.isMobile ? ['pickNumber', 'owner', 'selectedPlayer'] : ['pickNumber', 'team', 'owner', 'selectedPlayer'];
+  displayedColumns = this.configService.isMobile ? ['pickNumber', 'owner', 'selectedPlayer'] : ['pickNumber', 'team', 'owner', 'selectedPlayer', 'actions'];
 
   /** mat paginator */
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -85,7 +87,9 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
 
   constructor(private sleeperService: SleeperService,
               public playerService: PlayerService,
-              public configService: ConfigService) {
+              public configService: ConfigService,
+              public playerComparisonService: PlayerComparisonService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -282,5 +286,14 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
     if (this.chart?.datasets?.length > 0) {
       this.chart.updateColors();
     }
+  }
+
+  /**
+   * open player comparison page
+   * @param selectedPlayer selected player
+   */
+  openPlayerComparison(selectedPlayer: KTCPlayer): void {
+    this.playerComparisonService.addPlayerToCharts(selectedPlayer);
+    this.router.navigateByUrl('players/comparison');
   }
 }

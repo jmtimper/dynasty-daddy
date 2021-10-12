@@ -8,6 +8,8 @@ import {SleeperTeam} from '../model/SleeperLeague';
 import {SleeperApiService} from './api/sleeper/sleeper-api.service';
 import {map} from 'rxjs/operators';
 import {NflService} from './utilities/nfl.service';
+import {mean, rootMeanSquare, standardDeviation, variance} from "simple-statistics";
+import {PlayerInsights} from "../components/model/playerInsights";
 
 @Injectable({
   providedIn: 'root'
@@ -410,5 +412,47 @@ export class PlayerService {
     } else {
       return isSuperFlex ? player.sf_trade_value : player.trade_value;
     }
+  }
+
+  /**
+   * calculate the player insights for a player
+   * @param player
+   */
+  getPlayerInsights(player: KTCPlayer, isSuperFlex: boolean = true): PlayerInsights {
+    const dataSet = [];
+    let high = 0;
+    let low = 100;
+    for (let weekNum = 1; weekNum < 19; weekNum++) {
+      // push datapoint if exists for insights
+      if (this.pastSeasonWeeklyStats[weekNum][player.sleeper_id] !== undefined
+        && this.pastSeasonWeeklyStats[weekNum][player.sleeper_id].pts_half_ppr !== undefined) {
+        // update high if weekly high
+        if (this.pastSeasonWeeklyStats[weekNum][player.sleeper_id]?.pts_half_ppr > high) {
+          high = this.pastSeasonWeeklyStats[weekNum][player.sleeper_id]?.pts_half_ppr;
+        }
+        // updated low if weekly low
+        if (this.pastSeasonWeeklyStats[weekNum][player.sleeper_id]?.pts_half_ppr < low) {
+          low = this.pastSeasonWeeklyStats[weekNum][player.sleeper_id]?.pts_half_ppr;
+        }
+        dataSet.push(this.pastSeasonWeeklyStats[weekNum][player.sleeper_id].pts_half_ppr);
+      }
+    }
+    // calculate mean from data set
+    const ptsMean = mean(dataSet);
+    // calculate variance from data set
+    const varPoint = variance(dataSet);
+    // calculate standard deviation from data set
+    const stdDev = standardDeviation(dataSet);
+    // calculate point per value ratio
+    const valuePointRatio = (isSuperFlex ? player.sf_trade_value : player.trade_value) / ptsMean;
+    return {
+      gamesPlayed: dataSet.length,
+      mean: Math.round(ptsMean * 100) / 100,
+      high,
+      low,
+      variance: Math.round(varPoint * 100) / 100,
+      stdDev: Math.round(stdDev * 100) / 100,
+      valuePerPointRatio: Math.round(valuePointRatio * 100) / 100
+    };
   }
 }

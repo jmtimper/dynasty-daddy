@@ -1,3 +1,8 @@
 .draft-metric-box{
   margin: 16px;
 }
+
+.mat-column-actions,
+.mat-column-pickNumber {
+  max-width: 82px;
+}
