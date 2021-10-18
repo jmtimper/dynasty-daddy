@@ -88,6 +88,8 @@ export class PlayoffCalculatorService {
       const games: MatchUpProbability[] = [];
       weekMatchups.map(matchup => {
         matchup.selectedWinner = 0;
+        matchup.selectedTeam1MedianWin = 0;
+        matchup.selectedTeam2MedianWin = 0;
         games.push(this.getProbabilityForGame(matchup));
       });
       this.matchUpsWithProb.push(games);
