@@ -88,6 +88,8 @@ export class PlayoffCalculatorService {
       const games: MatchUpProbability[] = [];
       weekMatchups.map(matchup => {
         matchup.selectedWinner = 0;
+        matchup.selectedTeam1MedianWin = 0;
+        matchup.selectedTeam2MedianWin = 0;
         games.push(this.getProbabilityForGame(matchup));
       });
       this.matchUpsWithProb.push(games);
@@ -341,7 +343,7 @@ export class PlayoffCalculatorService {
               if (this.getRandomInt(100) < matchUp.team1Prob) {
                 totalWins++;
               }
-              if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId]) {
+              if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId].meanProb) {
                 totalWins++;
               }
             } else if (matchUp.matchUpDetails.selectedWinner === 1) {
@@ -355,7 +357,7 @@ export class PlayoffCalculatorService {
               if (this.getRandomInt(100) < matchUp.team2Prob) {
                 totalWins++;
               }
-              if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId]) {
+              if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId].meanProb) {
                 totalWins++;
               }
             } else if (matchUp.matchUpDetails.selectedWinner === 2) {
@@ -370,11 +372,6 @@ export class PlayoffCalculatorService {
         projWins: this.teamPlayoffOdds[rosterId].winsAtStartDate.totalWins + totalWins
       });
     }
-
-    // sort by wins
-    wins.sort((a, b) => {
-      return b.projWins - a.projWins || b.team.roster.teamMetrics.fpts - a.team.roster.teamMetrics.fpts;
-    });
 
     return wins;
   }
@@ -399,6 +396,9 @@ export class PlayoffCalculatorService {
               divWinnerTeam = teamWins;
               numOfwins = teamWins.projWins;
               break;
+            } else if (numOfwins === teamWins.projWins && teamWins.team.roster.rosterId === team.roster.rosterId
+              && divWinnerTeam.team.roster.rosterId !== teamWins.team.roster.rosterId) {
+              divWinnerTeam = this.calculateTieBreaker([divWinnerTeam, teamWins]);
             }
           } else {
             if (team.roster.rosterId === teamWins.team.roster.rosterId) {
@@ -416,14 +416,14 @@ export class PlayoffCalculatorService {
         (this.teamPlayoffOdds[divWinnerTeam?.team.roster.rosterId]?.timesWinningDivision) + 1;
     });
 
-    // sort for bye
-    divisionWinners.sort((a, b) => {
-      return b.projWins - a.projWins || b.team.roster.teamMetrics.fpts - a.team.roster.teamMetrics.fpts;
-    });
     // assign bye weeks TODO what if byes are greater than division winners?
+    const byeWeekTeams = [];
     for (let i = 0; i < numOfByeWeeks; i++) {
-      this.teamPlayoffOdds[divisionWinners[i].team.roster.rosterId].timesWithBye =
-        (this.teamPlayoffOdds[divisionWinners[i].team.roster.rosterId]?.timesWithBye || 0) + 1;
+      // get unique bye week team
+      const byeWeekTeam = this.determinePlayoffTeamFromArray(divisionWinners, byeWeekTeams);
+      this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId].timesWithBye =
+        (this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId]?.timesWithBye || 0) + 1;
+      byeWeekTeams.push(byeWeekTeam);
     }
 
     return divisionWinners;
@@ -687,28 +687,62 @@ export class PlayoffCalculatorService {
     } else {
       // get byes for best teams since there is no divisions
       for (let i = 0; i < numOfByeWeeks; i++) {
-        this.teamPlayoffOdds[simulatedWins[i].team.roster.rosterId].timesWithBye =
-          (this.teamPlayoffOdds[simulatedWins[i].team.roster.rosterId]?.timesWithBye || 0) + 1;
-        this.teamPlayoffOdds[simulatedWins[i].team.roster.rosterId].timesMakingPlayoffs =
-          (this.teamPlayoffOdds[simulatedWins[i].team.roster.rosterId]?.timesMakingPlayoffs || 0) + 1;
-        nonWildCardTeams.push(simulatedWins[i]);
+        const byeWeekTeam = this.determinePlayoffTeamFromArray(simulatedWins, nonWildCardTeams);
+        this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId].timesWithBye =
+            (this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId]?.timesWithBye || 0) + 1;
+        this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId].timesMakingPlayoffs =
+            (this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId]?.timesMakingPlayoffs || 0) + 1;
+        nonWildCardTeams.push(byeWeekTeam);
       }
       numOfPlayoffSpotsLeft -= numOfByeWeeks;
     }
 
     // assign the last playoff spots
-    for (const simulatedTeam of simulatedWins) {
-      if (numOfPlayoffSpotsLeft !== 0 && !nonWildCardTeams.includes(simulatedTeam)) {
-        this.teamPlayoffOdds[simulatedTeam.team.roster.rosterId].timesMakingPlayoffs =
-          (this.teamPlayoffOdds[simulatedTeam.team.roster.rosterId]?.timesMakingPlayoffs || 0) + 1;
-        numOfPlayoffSpotsLeft--;
-        simulatedPlayoffTeams.push(simulatedTeam);
-      }
+    for (let selectedTeamCount = 0; selectedTeamCount < numOfPlayoffSpotsLeft; selectedTeamCount++) {
+      const wildcardTeam = this.determinePlayoffTeamFromArray(simulatedWins, nonWildCardTeams.concat(simulatedPlayoffTeams));
+      this.teamPlayoffOdds[wildcardTeam.team.roster.rosterId].timesMakingPlayoffs =
+        (this.teamPlayoffOdds[wildcardTeam.team.roster.rosterId]?.timesMakingPlayoffs || 0) + 1;
+      simulatedPlayoffTeams.push(wildcardTeam);
     }
     simulatedPlayoffTeams = nonWildCardTeams.concat(simulatedPlayoffTeams);
-
     // simulate playoffs
     this.simulatePlayoffs(simulatedPlayoffTeams, numOfByeWeeks);
+  }
+
+  /**
+   * determines unique playoff team from array
+   * @param simulatedTeams all teams to choose from
+   * @param excludedTeams teams not to be selected (usually teams that already qualified before)
+   * @private
+   */
+  private determinePlayoffTeamFromArray(simulatedTeams: SimulatedTeamInfo[], excludedTeams: SimulatedTeamInfo[]): SimulatedTeamInfo {
+    let selectedTeam = null;
+    let maxWinTotal = 0;
+    for (const simulatedTeam of simulatedTeams) {
+      if (!excludedTeams.includes(simulatedTeam)) {
+        if (!selectedTeam || simulatedTeam.projWins > maxWinTotal) {
+          selectedTeam = simulatedTeam;
+          maxWinTotal = simulatedTeam.projWins;
+        } else if (simulatedTeam.projWins === maxWinTotal) {
+          selectedTeam = this.calculateTieBreaker([selectedTeam, simulatedTeam]);
+        }
+      }
+    }
+    return selectedTeam;
+  }
+
+  /**
+   * calculates tie break scenario by simulating a match between the two teams
+   * @param tiedTeams 2 tied teams
+   * @private
+   */
+  private calculateTieBreaker(tiedTeams: SimulatedTeamInfo[]): SimulatedTeamInfo {
+    const team1Prob = this.getPercent(0.5 + (this.teamRatingsPValues[tiedTeams[0].team.roster.rosterId]
+      - this.teamRatingsPValues[tiedTeams[1].team.roster.rosterId]) / 2);
+    if (this.getRandomInt(100) < team1Prob) {
+      return tiedTeams[0];
+    }
+    return tiedTeams[1];
   }
 
   /**

@@ -32,61 +32,62 @@
       </div>
     </mat-card>
   </div>
-<!--  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">-->
-<!--    <mat-card>-->
-<!--      <div class="mid-bold-text center-text margin-bot-10">KeepTradeCut.com</div>-->
-<!--    </mat-card>-->
-<!--  </div>-->
+  <!--  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">-->
+  <!--    <mat-card>-->
+  <!--      <div class="mid-bold-text center-text margin-bot-10">KeepTradeCut.com</div>-->
+  <!--    </mat-card>-->
+  <!--  </div>-->
 </div>
 <div class="center-text mid-bold-text margin-top-50">
   Adjacent Player Value
 </div>
 <div class="margin-top-10 center-text">Below are the closest adjacent players by value.
-<div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
-  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
-    <div class="mid-bold-text margin-bot-10">Overall Adjacent Players</div>
-    <mat-table [dataSource]="overallAdjPlayers" class="mat-elevation-z8">
+  <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
+    <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
+      <div class="mid-bold-text margin-bot-10">Overall Adjacent Players</div>
+      <mat-table [dataSource]="overallAdjPlayers" class="mat-elevation-z8">
 
-      <ng-container matColumnDef="rank">
-        <mat-header-cell *matHeaderCellDef>Rank</mat-header-cell>
-        <mat-cell *matCellDef="let player;">{{playerService.getRankOfPlayerByNameId(player.name_id) + 1}}</mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="rank">
+          <mat-header-cell *matHeaderCellDef>Rank</mat-header-cell>
+          <mat-cell *matCellDef="let player;">{{playerService.getRankOfPlayerByNameId(player.name_id) + 1}}</mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-        <mat-cell *matCellDef="let player">{{player.full_name}}</mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+          <mat-cell *matCellDef="let player">{{player.full_name}}</mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="value">
-        <mat-header-cell *matHeaderCellDef>Trade Value</mat-header-cell>
-        <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[player.name_id].trade_value : playerService.playerValueAnalysis[player.name_id].sf_trade_value}}</mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="value">
+          <mat-header-cell *matHeaderCellDef>Trade Value</mat-header-cell>
+          <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[player.name_id].trade_value : playerService.playerValueAnalysis[player.name_id].sf_trade_value}}</mat-cell>
+        </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row class="box-score-element-row" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'mat-table-highlight': selectedPlayer.name_id === row.name_id}"></mat-row>
-    </mat-table>
-  </div>
-  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
-    <div class="mid-bold-text margin-bot-10">Positional Adjacent Players</div>
-    <mat-table [dataSource]="positionAdjPlayers" class="mat-elevation-z8">
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row class="box-score-element-row" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'mat-table-highlight': selectedPlayer.name_id === row.name_id}"></mat-row>
+      </mat-table>
+    </div>
+    <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
+      <div class="mid-bold-text margin-bot-10">Positional Adjacent Players</div>
+      <mat-table [dataSource]="positionAdjPlayers" class="mat-elevation-z8">
 
-      <ng-container matColumnDef="rank">
-        <mat-header-cell *matHeaderCellDef>Rank</mat-header-cell>
-        <mat-cell *matCellDef="let player;">{{player.position}} {{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? player.position_rank : player.sf_position_rank}}</mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="rank">
+          <mat-header-cell *matHeaderCellDef>Rank</mat-header-cell>
+          <mat-cell *matCellDef="let player;">{{player.position}} {{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? player.position_rank : player.sf_position_rank}}</mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-        <mat-cell *matCellDef="let player">{{player.full_name}}</mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+          <mat-cell *matCellDef="let player">{{player.full_name}}</mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="value">
-        <mat-header-cell *matHeaderCellDef>Trade Value</mat-header-cell>
-        <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[player.name_id].trade_value : playerService.playerValueAnalysis[player.name_id].sf_trade_value}}</mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="value">
+          <mat-header-cell *matHeaderCellDef>Trade Value</mat-header-cell>
+          <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[player.name_id].trade_value : playerService.playerValueAnalysis[player.name_id].sf_trade_value}}</mat-cell>
+        </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row class="box-score-element-row" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'mat-table-highlight': selectedPlayer.name_id === row.name_id}"></mat-row>
-    </mat-table>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row class="box-score-element-row" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'mat-table-highlight': selectedPlayer.name_id === row.name_id}"></mat-row>
+      </mat-table>
+    </div>
   </div>
 </div>
