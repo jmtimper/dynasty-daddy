@@ -8,8 +8,8 @@ import {SleeperTeam} from '../model/SleeperLeague';
 import {SleeperApiService} from './api/sleeper/sleeper-api.service';
 import {map} from 'rxjs/operators';
 import {NflService} from './utilities/nfl.service';
-import {mean, rootMeanSquare, standardDeviation, variance} from "simple-statistics";
-import {PlayerInsights} from "../components/model/playerInsights";
+import {mean, standardDeviation, variance} from 'simple-statistics';
+import {PlayerInsights} from '../components/model/playerInsights';
 
 @Injectable({
   providedIn: 'root'
@@ -437,22 +437,40 @@ export class PlayerService {
         dataSet.push(this.pastSeasonWeeklyStats[weekNum][player.sleeper_id].pts_half_ppr);
       }
     }
-    // calculate mean from data set
-    const ptsMean = mean(dataSet);
-    // calculate variance from data set
-    const varPoint = variance(dataSet);
-    // calculate standard deviation from data set
-    const stdDev = standardDeviation(dataSet);
-    // calculate point per value ratio
-    const valuePointRatio = (isSuperFlex ? player.sf_trade_value : player.trade_value) / ptsMean;
-    return {
-      gamesPlayed: dataSet.length,
-      mean: Math.round(ptsMean * 100) / 100,
-      high,
-      low,
-      variance: Math.round(varPoint * 100) / 100,
-      stdDev: Math.round(stdDev * 100) / 100,
-      valuePerPointRatio: Math.round(valuePointRatio * 100) / 100
-    };
+    try {
+      // calculate mean from data set
+      const ptsMean = mean(dataSet);
+      // calculate variance from data set
+      const varPoint = variance(dataSet);
+      // calculate standard deviation from data set
+      const stdDev = standardDeviation(dataSet);
+      // calculate point per value ratio
+      const valuePointRatio = (isSuperFlex ? player.sf_trade_value : player.trade_value) / ptsMean;
+      return {
+        gamesPlayed: dataSet.length,
+        mean: Math.round(ptsMean * 100) / 100,
+        high,
+        low,
+        variance: Math.round(varPoint * 100) / 100,
+        stdDev: Math.round(stdDev * 100) / 100,
+        valuePerPointRatio: Math.round(valuePointRatio * 100) / 100
+      };
+    } catch (e: any) {
+      console.error('Could not generate player insight. ', e);
+    }
+  }
+
+  /**
+   * returns a list of player values excluding old draft picks
+   * @param inputPlayers list of players and picks
+   */
+  removeOldDraftCapital(inputPlayers: KTCPlayer[]): KTCPlayer[] {
+    return inputPlayers.filter((player) => {
+      if (player.position === 'PI') {
+        return this.getCurrentPlayerValue(player, true) !== 0;
+      } else {
+        return player;
+      }
+    });
   }
 }

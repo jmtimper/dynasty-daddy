@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SleeperService} from '../../services/sleeper.service';
 import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {NflService} from '../../services/utilities/nfl.service';
@@ -6,7 +6,6 @@ import {MatchUpProbability} from '../model/playoffCalculator';
 import {MatchupService} from '../services/matchup.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {ConfigService} from '../../services/init/config.service';
-import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-playoff-calculator',
@@ -25,7 +24,7 @@ export class PlayoffCalculatorComponent implements OnInit {
   completedMatchUps: MatchUpProbability[][] = [];
 
   /** list of selectable weeks to choose from */
-  selectableWeeks: {week: number; value: string}[] = [];
+  selectableWeeks: { week: number; value: string }[] = [];
 
   /** currently selected forecast week */
   selectedWeek: number;
@@ -38,13 +37,15 @@ export class PlayoffCalculatorComponent implements OnInit {
 
   /** playoff machine start week */
   playoffMachineWeek: number;
+
   constructor(
     public sleeperService: SleeperService,
     public playoffCalculatorService: PlayoffCalculatorService,
     private nflService: NflService,
     public powerRankingsService: PowerRankingsService,
     private matchupService: MatchupService,
-    public configService: ConfigService) { }
+    public configService: ConfigService) {
+  }
 
   ngOnInit(): void {
     if (this.sleeperService.selectedLeague) {
@@ -69,12 +70,16 @@ export class PlayoffCalculatorComponent implements OnInit {
       this.nflService.stateOfNFL.completedWeek : this.playoffCalculatorService.matchUpsWithProb.length;
     for (let i = this.sleeperService.selectedLeague.startWeek; i <= selectableWeekMax; i++) {
       const disclaimer = this.sleeperService.selectedLeague.playoffStartWeek === this.sleeperService.selectedLeague.startWeek + i ? ' (End of regular season)' : '';
-      this.selectableWeeks.push({week: i + 1, value: 'Before Week '
-          + (i + 1) + disclaimer});
+      this.selectableWeeks.push({
+        week: i + 1, value: 'Before Week '
+          + (i + 1) + disclaimer
+      });
     }
     if (this.sleeperService.selectedLeague.status === 'complete') {
-      this.selectableWeeks.push({week: this.sleeperService.selectedLeague.startWeek
-          + this.playoffCalculatorService.matchUpsWithProb.length + 1, value: 'Today'});
+      this.selectableWeeks.push({
+        week: this.sleeperService.selectedLeague.startWeek
+          + this.playoffCalculatorService.matchUpsWithProb.length + 1, value: 'Today'
+      });
     }
     this.selectedWeek = this.selectableWeeks.reverse()[0].week;
   }
@@ -120,15 +125,17 @@ export class PlayoffCalculatorComponent implements OnInit {
   downloadPlayoffCalculatorData(): void {
 
     const seasonData: any[][] = [
-      ['rosterId', 'teamName', 'teamOwner', 'week', 'starterValue', 'projWins', 'projLosses', 'makePlayoffOdds', 'winDivisionOdds', 'winByeOdds', 'makeConfOdds', 'makeChampOdds', 'winChampOdds'],
+      ['rosterId', 'teamName', 'teamOwner', 'week', 'starterValue', 'projWins', 'projLosses', 'medianWins', 'medianLosses', 'makePlayoffOdds', 'winDivisionOdds', 'winByeOdds', 'makeConfOdds', 'makeChampOdds', 'winChampOdds'],
     ];
     for (const team of this.sleeperService.sleeperTeamDetails) {
       const row = [team.roster.rosterId, team.owner.teamName, team.owner.ownerName, this.selectedWeek];
       row.push(this.sleeperService.selectedLeague.isSuperflex
         ? this.powerRankingsService.findTeamFromRankingsByRosterId(team.roster.rosterId).sfTradeValueStarter
-      : this.powerRankingsService.findTeamFromRankingsByRosterId(team.roster.rosterId).tradeValueStarter);
+        : this.powerRankingsService.findTeamFromRankingsByRosterId(team.roster.rosterId).tradeValueStarter);
       row.push(this.playoffCalculatorService.teamsProjectedRecord[team.roster.rosterId].projWins);
       row.push(this.playoffCalculatorService.teamsProjectedRecord[team.roster.rosterId].projLoss);
+      row.push(this.playoffCalculatorService.teamsProjectedRecord[team.roster.rosterId].medianWins);
+      row.push(this.playoffCalculatorService.teamsProjectedRecord[team.roster.rosterId].medianLoss);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesMakingPlayoffs);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWinningDivision);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWithBye);
@@ -142,7 +149,7 @@ export class PlayoffCalculatorComponent implements OnInit {
 
     const filename = `${this.sleeperService.selectedLeague.name.replace(/ /g, '_')}_Season_Projections_${this.sleeperService.selectedLeague.season}_${this.selectedWeek}.csv`;
 
-    const blob = new Blob([seasonOddsCSV], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([seasonOddsCSV], {type: 'text/csv;charset=utf-8;'});
     if (navigator.msSaveBlob) { // IE 10+
       navigator.msSaveBlob(blob, filename);
     } else {

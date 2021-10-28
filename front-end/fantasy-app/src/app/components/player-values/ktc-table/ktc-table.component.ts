@@ -60,7 +60,8 @@ export class KtcTableComponent implements OnInit {
   ngOnInit(): void {
     this.isSuperFlex = this.sleeperService?.selectedLeague?.isSuperflex !== undefined ?
       this.sleeperService?.selectedLeague?.isSuperflex : true;
-    this.filteredPlayers = this.players.slice(0);
+    // create prototype of list and remove picks with no value (prev year picks)
+    this.filteredPlayers = this.playerService.removeOldDraftCapital(this.players);
     this.dataSource = new MatTableDataSource(this.filteredPlayers);
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
@@ -86,7 +87,7 @@ export class KtcTableComponent implements OnInit {
    * update player filters, function is called when option is selected
    */
   updatePlayerFilters(): void {
-    this.filteredPlayers = this.players.slice(0);
+    this.filteredPlayers = this.playerService.removeOldDraftCapital(this.players);
     const filterOptions = ['QB', 'RB', 'WR', 'TE', 'PI'];
     if (this.showRookies) {
       this.filterPosGroup[4] = false;
