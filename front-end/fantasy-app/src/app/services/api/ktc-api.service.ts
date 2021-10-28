@@ -67,8 +67,8 @@ export class KTCApiService {
    * get historical player value over time by id
    * @param nameId player name id
    */
-  getHistoricalPlayerValueById(nameId: string): Observable<KTCPlayerDataPoint[]> {
-    return this.http.get<KTCPlayerDataPoint[]>(this.ktcApiConfigService.getHistoricalPlayerValues + nameId)
+  getHistoricalPlayerValueById(nameId: string, isAllTime: boolean = false): Observable<KTCPlayerDataPoint[]> {
+    return this.http.get<KTCPlayerDataPoint[]>(this.ktcApiConfigService.getHistoricalPlayerValues + nameId + `?isAllTime=${isAllTime}`)
       .pipe(tap((players: KTCPlayerDataPoint[]) => players
       ));
   }

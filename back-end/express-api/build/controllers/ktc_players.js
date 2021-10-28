@@ -98,22 +98,33 @@ var getPrevPlayerValues = /*#__PURE__*/function () {
     return _ref2.apply(this, arguments);
   };
 }();
+/**
+ * query to get player comp table datapoints
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
+
 
 exports.getPrevPlayerValues = getPrevPlayerValues;
 
 var getHistoricalPlayerValueById = /*#__PURE__*/function () {
   var _ref4 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
-    var id, data;
+    var id, _ref5, isAllTime, sqlClause, data;
+
     return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
             id = req.params.id;
-            _context3.next = 4;
-            return playersModel.select('*', " WHERE name_id = '".concat(id, "'"));
+            _ref5 = req.query || 'false', isAllTime = _ref5.isAllTime;
+            sqlClause = isAllTime === 'false' ? " WHERE name_id = '".concat(id, "' AND date::date >= now()::date - 180") : " WHERE name_id = '".concat(id, "'");
+            console.log(isAllTime, sqlClause);
+            _context3.next = 7;
+            return playersModel.select('*', sqlClause);
 
-          case 4:
+          case 7:
             data = _context3.sent;
             res.status(200).json(data.rows.map(function (player) {
               return {
@@ -126,20 +137,20 @@ var getHistoricalPlayerValueById = /*#__PURE__*/function () {
                 date: player.date
               };
             }));
-            _context3.next = 11;
+            _context3.next = 14;
             break;
 
-          case 8:
-            _context3.prev = 8;
+          case 11:
+            _context3.prev = 11;
             _context3.t0 = _context3["catch"](0);
             res.status(405).json(_context3.t0.stack);
 
-          case 11:
+          case 14:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 8]]);
+    }, _callee3, null, [[0, 11]]);
   }));
 
   return function getHistoricalPlayerValueById(_x5, _x6) {

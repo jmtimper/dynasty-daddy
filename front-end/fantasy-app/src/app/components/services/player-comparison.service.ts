@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {KTCPlayer, KTCPlayerDataPoint} from '../../model/KTCPlayer';
-import {Subject} from 'rxjs';
+import {forkJoin, Observable, of, Subject} from 'rxjs';
 import {PlayerComparison} from '../model/playerComparison';
 import {ChartDataSets} from 'chart.js';
 import {Label} from 'ng2-charts';
 import {KTCApiService} from '../../services/api/ktc-api.service';
 import {SleeperService} from '../../services/sleeper.service';
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,9 @@ export class PlayerComparisonService {
 
   /** is league superflex, defaults to true */
   isSuperFlex = true;
+
+  /** should api request fetch all time data instead of 6 months */
+  isAllTime = false;
 
   /** when a player is added/removed */
   $updatePlayer: Subject<PlayerComparison> = new Subject<PlayerComparison>();
@@ -50,7 +54,24 @@ export class PlayerComparisonService {
   /** is query desc or asc */
   isOrderByDesc: boolean = true;
 
-  constructor(private ktcApiService: KTCApiService, private sleeperService: SleeperService) {
+  constructor(private ktcApiService: KTCApiService, private spinner: NgxSpinnerService) {
+  }
+
+  regeneratePlayerCompData(): Observable<any> {
+    const playersToUpdate = [];
+    this.selectedPlayers.map(player => {
+      playersToUpdate.push(player.id);
+    });
+    this.selectedPlayers = [];
+    this.group2SelectedPlayers = [];
+    return of(forkJoin(playersToUpdate.map(player => {
+      this.ktcApiService.getHistoricalPlayerValueById(player, this.isAllTime).subscribe((data) => {
+        this.addNewPlayer(data);
+        }
+      );
+    }))).pipe(() => {
+      return of(true);
+    });
   }
 
   /**
@@ -71,7 +92,7 @@ export class PlayerComparisonService {
           data[index] = this.isSuperFlex ? dataPoint.sf_trade_value : dataPoint.trade_value;
         }
       }
-      this.lineChartData.push({data, label: player[0].full_name});
+      this.lineChartData.push({data, label: player[0].full_name });
       this.selectedPlayers.push({name: player[0].full_name, id: player[0].name_id, data: player} as PlayerComparison);
       this.$updatePlayer.next({name: player[0].full_name, id: player[0].name_id, data: player} as PlayerComparison);
     } else {
@@ -173,7 +194,7 @@ export class PlayerComparisonService {
    * @param player
    */
   addPlayerToCharts(player: KTCPlayer, isGroup2: boolean = false): void {
-    this.ktcApiService.getHistoricalPlayerValueById(player.name_id).subscribe((data) => {
+    this.ktcApiService.getHistoricalPlayerValueById(player.name_id, this.isAllTime).subscribe((data) => {
         !this.isGroupMode ? this.addNewPlayer(data) : this.addNewPlayer(data, isGroup2);
       }
     );

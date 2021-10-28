@@ -33,15 +33,12 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
     this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
       if (this.playerComparisonService.lineChartData.length === 1
         && this.playerComparisonService.selectedPlayers[0] === undefined) {
-        const playerNum = this.getRandomPlayer(true);
-        this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum]);
-        this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum + 1]);
+        this.resetPlayerCompPlayers();
       }
     }));
     if (this.playerComparisonService.selectedPlayers.length === 0 && this.playerService.playerValues.length > 0) {
-      const playerNum = this.getRandomPlayer(true);
-      this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum]);
-      this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum + 1]);    }
+      this.resetPlayerCompPlayers();
+    }
   }
 
   /**
@@ -96,6 +93,14 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
     this.playerComparisonService.selectedPlayers = [];
     this.playerComparisonService.group2SelectedPlayers = [];
     this.playerComparisonService.refreshTable();
+    this.resetPlayerCompPlayers();
+  }
+
+  /**
+   * helper function to reset players in player comparison table
+   * @private
+   */
+  private resetPlayerCompPlayers(): void {
     const playerNum = this.getRandomPlayer(true);
     this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum]);
     this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum + 1]);
