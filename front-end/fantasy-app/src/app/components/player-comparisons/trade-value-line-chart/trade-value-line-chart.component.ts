@@ -6,6 +6,7 @@ import {BaseComponent} from '../../base-component.abstract';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 import {ConfigService} from '../../../services/init/config.service';
+import {tap} from 'rxjs/operators';
 
 
 @Component({
@@ -114,6 +115,14 @@ export class TradeValueLineChartComponent extends BaseComponent implements OnIni
       default:
         displayDays = 30;
         break;
+    }
+    // make new api requests if data is toggled between all time
+    if (this.selectedDateFilter === 'alltime' && !this.playerComparisonService.isAllTime) {
+      this.playerComparisonService.isAllTime = true;
+      this.playerComparisonService.regeneratePlayerCompData().pipe(tap(res => console.log('test', res)));
+    } else if (this.selectedDateFilter !== 'alltime' && this.playerComparisonService.isAllTime) {
+      this.playerComparisonService.isAllTime = false;
+      this.playerComparisonService.regeneratePlayerCompData();
     }
     for (let i = 0; i < displayDays + 1; i++) {
       const today = new Date();

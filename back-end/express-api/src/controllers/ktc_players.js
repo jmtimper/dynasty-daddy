@@ -40,10 +40,19 @@ export const getPrevPlayerValues = async (req, res) => {
   }
 };
 
+/**
+ * query to get player comp table datapoints
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
 export const getHistoricalPlayerValueById = async (req, res) => {
   try {
     const {id} = req.params;
-    const data = await playersModel.select('*', ` WHERE name_id = '${id}'`);
+    const {isAllTime} = req.query || 'false';
+    // updated where to include all time data if specified
+    const sqlClause = isAllTime === 'false' ? ` WHERE name_id = '${id}' AND date::date >= now()::date - 180` : ` WHERE name_id = '${id}'`;
+    const data = await playersModel.select('*', sqlClause);
     res.status(200).json(data.rows.map(player =>
       (
         {
