@@ -461,15 +461,18 @@ export class PlayerService {
   }
 
   /**
-   * returns a list of player values excluding old draft picks
+   * returns a list of player values excluding old draft picks and players
    * @param inputPlayers list of players and picks
    */
-  removeOldDraftCapital(inputPlayers: KTCPlayer[]): KTCPlayer[] {
+  cleanOldPlayerData(inputPlayers: KTCPlayer[]): KTCPlayer[] {
     return inputPlayers.filter((player) => {
       if (player.position === 'PI') {
         return this.getCurrentPlayerValue(player, true) !== 0;
       } else {
-        return player;
+        // return player if they have had a data point in the past year
+        const yearInThePast = new Date().getTime() - 1000 * 60 * 60 * 24 * 365;
+        return new Date(player.date).setHours(0, 0, 0, 0)
+          >= new Date(yearInThePast).setHours(0, 0, 0, 0);
       }
     });
   }

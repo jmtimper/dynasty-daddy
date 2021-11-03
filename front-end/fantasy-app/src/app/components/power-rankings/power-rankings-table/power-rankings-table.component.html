@@ -84,6 +84,9 @@
                     [ngClass]="{'success__alert': element.starterRank < alertThreshold, 'warning__alert': element.starterRank > alertThreshold * 2}">{{element.starterRank}}</span>)</span>
                 </div>
               </div>
+              <div class="margin-top-25">
+                <button mat-icon-button matTooltip="Copy Starters Roster" matTooltipPosition="above" (click)="copyStartersFromTeam(element)"><mat-icon>content_copy</mat-icon></button>
+              </div>
             </div>
             <div *ngFor="let positionGroup of element.roster" class="grid-16">
               <div>

@@ -7,6 +7,7 @@ import {KTCPlayer} from '../../../model/KTCPlayer';
 import {SleeperService} from '../../../services/sleeper.service';
 import {ConfigService} from '../../../services/init/config.service';
 import {PlayerService} from '../../../services/player.service';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 // details animation
 export const detailExpand = trigger('detailExpand',
@@ -48,7 +49,10 @@ export class PowerRankingsTableComponent implements OnInit {
   // mat sort element
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor(public sleeperService: SleeperService, public configService: ConfigService, public playerService: PlayerService) { }
+  constructor(public sleeperService: SleeperService,
+              public configService: ConfigService,
+              public playerService: PlayerService,
+              private clipboard: Clipboard) { }
 
   ngOnInit(): void {
     this.alertThreshold = this.powerRankings.length / 3;
@@ -126,5 +130,34 @@ export class PowerRankingsTableComponent implements OnInit {
    */
   isStarter(team: TeamPowerRanking, player: KTCPlayer): boolean {
     return team.starters.includes(player);
+  }
+
+  /**
+   * copies starters to clipboard
+   * @param rosterId team id
+   */
+  copyStartersFromTeam(team: TeamPowerRanking): void {
+    const starterStrings = 'Team\n' +
+      `QB: ${this.getListOfPlayerNames('qb', team.starters)}\n` +
+      `RB: ${this.getListOfPlayerNames('rb', team.starters)}\n` +
+      `WR: ${this.getListOfPlayerNames('wr', team.starters)}\n` +
+      `TE: ${this.getListOfPlayerNames('te', team.starters)} `;
+    this.clipboard.copy(starterStrings);
+  }
+
+  /**
+   * get list of players by position
+   * @param pos string
+   * @param players list of players
+   * @private
+   */
+  private getListOfPlayerNames(pos: string, players: KTCPlayer[]): string {
+    const filteredPlayers = [];
+    players.map(player => {
+      if (player.position.toLowerCase() === pos.toLowerCase()) {
+        filteredPlayers.push(player.full_name);
+      }
+    });
+    return filteredPlayers.toString();
   }
 }
