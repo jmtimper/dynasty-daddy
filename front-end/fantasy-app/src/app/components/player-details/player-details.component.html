@@ -26,8 +26,8 @@
       </div>
       <div *ngIf="sleeperService.selectedLeague">
         <div *ngIf="selectedPlayer.owner">
-          <span class="small-text__light disabled__color">Owned By</span>
-          <span style="padding-left: 10px" class="link--text__no__underline" [routerLink]="['../../../league/team', selectedPlayer.owner?.ownerName]">{{selectedPlayer.owner?.ownerName || 'None'}}</span>
+          <span class="small-text__light disabled__color">Plays on</span>
+          <span style="padding-left: 10px" class="link--text__no__underline" [routerLink]="['../../../league/team', selectedPlayer.owner?.ownerName]">{{selectedPlayer.owner?.teamName || 'None'}}</span>
         </div>
         <div *ngIf="!selectedPlayer.owner">
           <span class="small-text__light disabled__color">Free Agent</span>

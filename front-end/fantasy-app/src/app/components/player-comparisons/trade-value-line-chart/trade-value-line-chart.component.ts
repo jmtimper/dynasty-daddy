@@ -122,7 +122,6 @@ export class TradeValueLineChartComponent extends BaseComponent implements OnIni
       this.playerComparisonService.regeneratePlayerCompData().pipe(tap(res => console.log('test', res)));
     } else if (this.selectedDateFilter !== 'alltime' && this.playerComparisonService.isAllTime) {
       this.playerComparisonService.isAllTime = false;
-      this.playerComparisonService.regeneratePlayerCompData();
     }
     for (let i = 0; i < displayDays + 1; i++) {
       const today = new Date();

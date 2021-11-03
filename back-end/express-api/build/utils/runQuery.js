@@ -13,14 +13,6 @@ var _queryFunctions = require("./queryFunctions");
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.next = 2;
-          return (0, _queryFunctions.createTables)();
-
-        case 2:
-          _context.next = 4;
-          return (0, _queryFunctions.insertIntoTables)();
-
-        case 4:
         case "end":
           return _context.stop();
       }

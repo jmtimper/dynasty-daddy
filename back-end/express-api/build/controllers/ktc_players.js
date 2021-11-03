@@ -118,13 +118,13 @@ var getHistoricalPlayerValueById = /*#__PURE__*/function () {
           case 0:
             _context3.prev = 0;
             id = req.params.id;
-            _ref5 = req.query || 'false', isAllTime = _ref5.isAllTime;
+            _ref5 = req.query || 'false', isAllTime = _ref5.isAllTime; // updated where to include all time data if specified
+
             sqlClause = isAllTime === 'false' ? " WHERE name_id = '".concat(id, "' AND date::date >= now()::date - 180") : " WHERE name_id = '".concat(id, "'");
-            console.log(isAllTime, sqlClause);
-            _context3.next = 7;
+            _context3.next = 6;
             return playersModel.select('*', sqlClause);
 
-          case 7:
+          case 6:
             data = _context3.sent;
             res.status(200).json(data.rows.map(function (player) {
               return {
@@ -137,20 +137,20 @@ var getHistoricalPlayerValueById = /*#__PURE__*/function () {
                 date: player.date
               };
             }));
-            _context3.next = 14;
+            _context3.next = 13;
             break;
 
-          case 11:
-            _context3.prev = 11;
+          case 10:
+            _context3.prev = 10;
             _context3.t0 = _context3["catch"](0);
             res.status(405).json(_context3.t0.stack);
 
-          case 14:
+          case 13:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 11]]);
+    }, _callee3, null, [[0, 10]]);
   }));
 
   return function getHistoricalPlayerValueById(_x5, _x6) {
