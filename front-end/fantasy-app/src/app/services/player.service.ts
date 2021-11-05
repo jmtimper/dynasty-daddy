@@ -324,9 +324,9 @@ export class PlayerService {
    * return index of player in player values
    * @param nameId
    */
-  getRankOfPlayerByNameId(nameId: string): number {
-    for (let i = 0; i < this.playerValues.length; i++) {
-      if (nameId === this.playerValues[i].name_id) {
+  getRankOfPlayerByNameId(nameId: string, playerList: KTCPlayer[] = this.playerValues): number {
+    for (let i = 0; i < playerList.length; i++) {
+      if (nameId === playerList[i].name_id) {
         return i;
       }
     }
@@ -340,21 +340,22 @@ export class PlayerService {
    * @param isSuperflex is value superflex or standard, default to true
    */
   getAdjacentPlayersByNameId(nameId: string, posFilter: string = '', isSuperflex: boolean = true): KTCPlayer[] {
+    const cleanedPlayerList = this.cleanOldPlayerData(this.playerValues);
     const players = [];
     if (!isSuperflex) {
-      this.playerValues.sort((a, b) => {
+      cleanedPlayerList.sort((a, b) => {
         return this.playerValueAnalysis[b.name_id].trade_value - this.playerValueAnalysis[a.name_id].trade_value;
       });
     }
-    const playerRank = this.getRankOfPlayerByNameId(nameId);
+    const playerRank = this.getRankOfPlayerByNameId(nameId, cleanedPlayerList);
     for (let upInd = playerRank - 1; upInd >= 0 && players.length < 4; upInd--) {
-      if (posFilter.length === 0 || this.playerValues[upInd].position === posFilter) {
-        players.push(this.playerValues[upInd]);
+      if (posFilter.length === 0 || cleanedPlayerList[upInd].position === posFilter) {
+        players.push(cleanedPlayerList[upInd]);
       }
     }
-    for (let downInd = playerRank; downInd < this.playerValues.length && players.length < 9; downInd++) {
-      if (posFilter.length === 0 || this.playerValues[downInd].position === posFilter) {
-        players.push(this.playerValues[downInd]);
+    for (let downInd = playerRank; downInd < cleanedPlayerList.length && players.length < 9; downInd++) {
+      if (posFilter.length === 0 || cleanedPlayerList[downInd].position === posFilter) {
+        players.push(cleanedPlayerList[downInd]);
       }
     }
     return players.sort((a, b) => {

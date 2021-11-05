@@ -346,8 +346,13 @@ export class PlayoffCalculatorService {
               if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId].meanProb) {
                 totalWins++;
               }
-            } else if (matchUp.matchUpDetails.selectedWinner === 1) {
-              totalWins++;
+            } else if (matchUp.matchUpDetails.selectedWinner !== 0) {
+              if (matchUp.matchUpDetails.selectedWinner === 1) {
+                totalWins++;
+              }
+              if (matchUp.matchUpDetails.selectedTeam1MedianWin === 1) {
+                totalWins++;
+              }
             }
             return;
           } else if (matchUp.matchUpDetails.team2RosterId === rosterId) {
@@ -360,8 +365,13 @@ export class PlayoffCalculatorService {
               if (this.sleeperService.selectedLeague.medianWins && this.getRandomInt(100) < this.medianWinProbability[rosterId].meanProb) {
                 totalWins++;
               }
-            } else if (matchUp.matchUpDetails.selectedWinner === 2) {
-              totalWins++;
+            } else if (matchUp.matchUpDetails.selectedWinner !== 0) {
+              if (matchUp.matchUpDetails.selectedWinner === 2) {
+                totalWins++;
+              }
+              if (matchUp.matchUpDetails.selectedTeam2MedianWin === 1) {
+                totalWins++;
+              }
             }
             return;
           }
