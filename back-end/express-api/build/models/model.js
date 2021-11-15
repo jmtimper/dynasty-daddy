@@ -38,10 +38,9 @@ var Model = /*#__PURE__*/function () {
               case 0:
                 query = "SELECT ".concat(columns, " FROM ").concat(this.table);
                 if (clause) query += clause;
-                console.log(query);
                 return _context.abrupt("return", this.pool.query(query));
 
-              case 4:
+              case 3:
               case "end":
                 return _context.stop();
             }
@@ -65,10 +64,9 @@ var Model = /*#__PURE__*/function () {
             switch (_context2.prev = _context2.next) {
               case 0:
                 query = "Select ".concat(columns, " FROM ").concat(subQuery);
-                console.log(query);
                 return _context2.abrupt("return", this.pool.query(query));
 
-              case 3:
+              case 2:
               case "end":
                 return _context2.stop();
             }

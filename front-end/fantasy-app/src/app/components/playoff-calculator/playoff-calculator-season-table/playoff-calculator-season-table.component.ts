@@ -23,6 +23,10 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
   @Input()
   forecastWeek: number;
 
+  /** selected metrics to display in table */
+  @Input()
+  selectedMetrics: {display: string, value: string, isDisabled: boolean}[];
+
   /** datasource for table */
   public dataSource: MatTableDataSource<any>;
 
@@ -30,8 +34,7 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
               public powerRankingsService: PowerRankingsService,
               public playoffCalculatorService: PlayoffCalculatorService,
               private colorService: ColorService,
-              public configService: ConfigService,
-              private nflService: NflService) {
+              public configService: ConfigService) {
   }
 
   /** team properties like name division value */
@@ -79,6 +82,10 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakeConfRd;
         case 'makeChampionship':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakeChampionship;
+        case 'winOut':
+          return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesTeamWonOut;
+        case 'worstRecord':
+          return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWithWorstRecord;
         case 'winChampionship':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWinChampionship
             || this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakeChampionship;
@@ -94,26 +101,7 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
    * TODO clean up this function
    */
   ngOnChanges(): void {
-    if (this.forecastWeek >= this.sleeperService.selectedLeague.playoffStartWeek) {
-      this.probabilityCols = ['makePlayoffs', 'makeConfChamp', 'makeChampionship', 'winChampionship'];
-    } else {
-      this.probabilityCols = ['record', 'makePlayoffs', 'winDivision', 'getBye', 'winChampionship'];
-      if (this.sleeperService.selectedLeague.playoffTeams % 4 === 0) {
-        this.probabilityCols.splice(3, 1);
-      }
-      if (this.sleeperService.selectedLeague.divisions < 2) {
-        this.probabilityCols.splice(2, 1);
-      }
-      if (this.probabilityCols.length === 3) {
-        this.probabilityCols = ['record', 'makePlayoffs', 'makeConfChamp', 'makeChampionship', 'winChampionship'];
-      }
-      if (this.probabilityCols.length === 4) {
-        this.probabilityCols.splice(3, 0, 'makeChampionship');
-      }
-      if (this.configService.isMobile) {
-        this.probabilityCols.splice(0, 1);
-      }
-    }
+    this.probabilityCols = this.selectedMetrics.map(element => element.value);
     this.divisionTableCols = this.teamDetails.concat(this.probabilityCols);
     if (this.dataSource) {
       this.dataSource.data = this.sleeperService.sleeperTeamDetails;
