@@ -258,7 +258,10 @@ export class PlayoffCalculatorComponent implements OnInit {
       this.selectableMetrics[5].isDisabled = false;
     }
     if (this.sleeperService.selectedLeague.divisions <= 1) {
-      this.selectableMetrics[1].isDisabled = true;
+      this.selectableMetrics[2].isDisabled = true;
+    }
+    if (this.sleeperService.selectedLeague.playoffTeams % 4 === 0) {
+      this.selectableMetrics[3].isDisabled = true;
     }
   }
 }
