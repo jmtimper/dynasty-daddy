@@ -45,8 +45,9 @@ export class PlayoffCalculatorComponent implements OnInit {
     {display: 'Make playoffs', value: 'makePlayoffs', isDisabled: true},
     {display: 'Win division', value: 'winDivision', isDisabled: false},
     {display: 'Bye week', value: 'getBye', isDisabled: false},
-    {display: 'Run the table (from selected week)', value: 'winOut', isDisabled: false},
+    {display: 'Best Record', value: 'bestRecord', isDisabled: false},
     {display: 'Worst Record', value: 'worstRecord', isDisabled: false},
+    {display: 'Run the table (from selected week)', value: 'winOut', isDisabled: false},
     {display: 'Make semi finals', value: 'makeConfChamp', isDisabled: false},
     {display: 'Make championship', value: 'makeChampionship', isDisabled: false},
     {display: 'Win championship', value: 'winChampionship', isDisabled: false}];
@@ -214,9 +215,6 @@ export class PlayoffCalculatorComponent implements OnInit {
       }
       if (defaultMetrics.length === 3) {
         defaultMetrics = this.buildMetricsListOnValues(['record', 'makePlayoffs', 'makeConfChamp', 'makeChampionship', 'winChampionship']);
-      }
-      if (defaultMetrics.length === 4) {
-        defaultMetrics.splice(3, 0, {display: 'Odds to make championship', value: 'makeChampionship'});
       }
       if (this.configService.isMobile) {
         defaultMetrics.splice(0, 1);

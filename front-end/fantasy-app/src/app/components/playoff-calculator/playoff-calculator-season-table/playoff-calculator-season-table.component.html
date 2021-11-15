@@ -1,4 +1,4 @@
-<div class="playoff-calc-table-container" [ngStyle]="divisionTableCols.indexOf('teamDivision') !== -1?{'max-width': '1400px', 'min-width': '500px'} : {'max-width': '1000px', 'min-width': '500px'}">
+<div class="playoff-calc-table-container" [ngStyle]="divisionTableCols.indexOf('teamDivision') !== -1?{'max-width': '1500px', 'min-width': '500px'} : {'max-width': '1100px', 'min-width': '500px'}">
   <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort matSortActive="teamRating" matSortDirection="desc">
 
     <ng-container matColumnDef="teamRating">
@@ -60,6 +60,13 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header>Worst Record</mat-header-cell>
       <mat-cell *matCellDef="let team" style="background: {{getProbColor(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesWithWorstRecord)}}">
         <span>{{getDisplayValue(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesWithWorstRecord)}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bestRecord">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Best Record</mat-header-cell>
+      <mat-cell *matCellDef="let team" style="background: {{getProbColor(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesWithBestRecord)}}">
+        <span>{{getDisplayValue(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesWithBestRecord)}}</span>
       </mat-cell>
     </ng-container>
 
