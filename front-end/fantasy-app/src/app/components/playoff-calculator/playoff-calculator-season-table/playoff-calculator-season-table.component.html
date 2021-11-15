@@ -49,6 +49,20 @@
       </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="winOut">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Run The Table</mat-header-cell>
+      <mat-cell *matCellDef="let team" style="background: {{getProbColor(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesTeamWonOut)}}">
+        <span>{{getDisplayValue(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesTeamWonOut)}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="worstRecord">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Worst Record</mat-header-cell>
+      <mat-cell *matCellDef="let team" style="background: {{getProbColor(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesWithWorstRecord)}}">
+        <span>{{getDisplayValue(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesWithWorstRecord)}}</span>
+      </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="makeConfChamp">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Make Semi-Finals</mat-header-cell>
       <mat-cell *matCellDef="let team" style="background: {{getProbColor(playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId]?.timesMakeConfRd)}}">

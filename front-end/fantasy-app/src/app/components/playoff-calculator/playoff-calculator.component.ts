@@ -6,6 +6,7 @@ import {MatchUpProbability} from '../model/playoffCalculator';
 import {MatchupService} from '../services/matchup.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {ConfigService} from '../../services/init/config.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-playoff-calculator',
@@ -38,6 +39,22 @@ export class PlayoffCalculatorComponent implements OnInit {
   /** playoff machine start week */
   playoffMachineWeek: number;
 
+  /** selectable metrics */
+  selectableMetrics: { display: string, value: string, isDisabled: boolean }[] = [
+    {display: 'Projected record', value: 'record', isDisabled: false},
+    {display: 'Make playoffs', value: 'makePlayoffs', isDisabled: true},
+    {display: 'Win division', value: 'winDivision', isDisabled: false},
+    {display: 'Bye week', value: 'getBye', isDisabled: false},
+    {display: 'Run the table (from selected week)', value: 'winOut', isDisabled: false},
+    {display: 'Worst Record', value: 'worstRecord', isDisabled: false},
+    {display: 'Make semi finals', value: 'makeConfChamp', isDisabled: false},
+    {display: 'Make championship', value: 'makeChampionship', isDisabled: false},
+    {display: 'Win championship', value: 'winChampionship', isDisabled: false}];
+
+  /** form control for metrics dropdown */
+  selectedMetrics = new FormControl();
+
+
   constructor(
     public sleeperService: SleeperService,
     public playoffCalculatorService: PlayoffCalculatorService,
@@ -57,6 +74,7 @@ export class PlayoffCalculatorComponent implements OnInit {
       this.playoffMachineWeek = this.nflService.stateOfNFL.completedWeek;
       this.refreshGames();
       this.generateSelectableWeeks();
+      this.selectedMetrics.setValue(this.setDefaultSelectedMetrics());
     }
   }
 
@@ -116,6 +134,7 @@ export class PlayoffCalculatorComponent implements OnInit {
    */
   updateProbability(value: number): void {
     this.selectedWeek = value;
+    this.selectedMetrics.setValue(this.setDefaultSelectedMetrics());
     this.playoffCalculatorService.updateSeasonOdds(value);
   }
 
@@ -174,5 +193,75 @@ export class PlayoffCalculatorComponent implements OnInit {
   updatePlayoffMachineWeek(change: number): void {
     this.playoffMachineWeek += change;
     this.matchupOffset += change;
+  }
+
+  /**
+   * generate default selected metrics on init
+   * @private
+   */
+  private setDefaultSelectedMetrics(): { display: string, name: string, isDisabled: boolean }[] {
+    let defaultMetrics = [];
+    this.updateDisabledSelectedMetrics();
+    if (this.selectedWeek >= this.sleeperService.selectedLeague.playoffStartWeek) {
+      defaultMetrics = this.buildMetricsListOnValues(['makePlayoffs', 'makeConfChamp', 'makeChampionship', 'winChampionship']);
+    } else {
+      defaultMetrics = this.buildMetricsListOnValues(['record', 'makePlayoffs', 'winDivision', 'getBye', 'winChampionship']);
+      if (this.sleeperService.selectedLeague.playoffTeams % 4 === 0) {
+        defaultMetrics.splice(3, 1);
+      }
+      if (this.sleeperService.selectedLeague.divisions < 2) {
+        defaultMetrics.splice(2, 1);
+      }
+      if (defaultMetrics.length === 3) {
+        defaultMetrics = this.buildMetricsListOnValues(['record', 'makePlayoffs', 'makeConfChamp', 'makeChampionship', 'winChampionship']);
+      }
+      if (defaultMetrics.length === 4) {
+        defaultMetrics.splice(3, 0, {display: 'Odds to make championship', value: 'makeChampionship'});
+      }
+      if (this.configService.isMobile) {
+        defaultMetrics.splice(0, 1);
+      }
+    }
+    return defaultMetrics;
+  }
+
+  /**
+   * returns a list in correct format of selected metric objects
+   * @param valueList
+   * @private
+   */
+  private buildMetricsListOnValues(valueList: string[]): { display: string, value: string, isDisabled: boolean }[] {
+    const selectedValues = [];
+    valueList.map(value => {
+      selectedValues.push(this.selectableMetrics.find(element => element.value === value));
+    });
+    return selectedValues;
+  }
+
+  /**
+   * helper to handle disabling fields based on conditions
+   * @private
+   */
+  private updateDisabledSelectedMetrics(): void {
+    if (this.selectedWeek >= this.sleeperService.selectedLeague.playoffStartWeek) {
+      // disable during season metrics
+      this.selectableMetrics[0].isDisabled = true;
+      this.selectableMetrics[2].isDisabled = true;
+      this.selectableMetrics[3].isDisabled = true;
+      this.selectableMetrics[4].isDisabled = true;
+      this.selectableMetrics[5].isDisabled = true;
+    } else {
+      this.selectableMetrics[0].isDisabled = false;
+      this.selectableMetrics[2].isDisabled = false;
+      this.selectableMetrics[3].isDisabled = false;
+      this.selectableMetrics[4].isDisabled = false;
+      this.selectableMetrics[5].isDisabled = false;
+    }
+    if (this.sleeperService.selectedLeague.divisions <= 1) {
+      this.selectableMetrics[2].isDisabled = true;
+    }
+    if (this.sleeperService.selectedLeague.playoffTeams % 4 === 0) {
+      this.selectableMetrics[3].isDisabled = true;
+    }
   }
 }

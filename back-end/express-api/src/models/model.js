@@ -14,13 +14,11 @@ class Model {
   async select(columns, clause) {
     let query = `SELECT ${columns} FROM ${this.table}`;
     if (clause) query += clause;
-    console.log(query);
     return this.pool.query(query);
   }
 
   async selectSubQuery(columns, subQuery) {
     const query = `Select ${columns} FROM ${subQuery}`;
-    console.log(query);
     return this.pool.query(query);
   }
 
