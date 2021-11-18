@@ -18,7 +18,7 @@
 </div>
 <div class="mid-bold-text margin-top-50 center-text">Past 18 Box Scores</div>
 <div class="margin-top-10 center-text">Below is the past 18 weeks of stats from Sleeper for the following player. The fantasy scoring is <span class="info__alert">0.5 PPR scoring</span>.</div>
-<div class="margin-top-50 box-score-table-container">
+<div class="margin-top-50 box-score-table-container" *ngIf="datasource?.data?.length !== 0">
   <mat-table [dataSource]="datasource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="week">
@@ -135,4 +135,7 @@
     <mat-row class="box-score-element-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
+</div>
+<div class="margin-top-50 mid-bold-text warning__alert center-text" *ngIf="datasource?.data?.length === 0">
+  No gamelogs found for this player in the past 18 months.
 </div>

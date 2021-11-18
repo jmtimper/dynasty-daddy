@@ -213,7 +213,7 @@ export class PlayoffCalculatorComponent implements OnInit {
       if (this.sleeperService.selectedLeague.divisions < 2) {
         defaultMetrics.splice(2, 1);
       }
-      if (defaultMetrics.length === 3) {
+      if (defaultMetrics.length <= 3) {
         defaultMetrics = this.buildMetricsListOnValues(['record', 'makePlayoffs', 'makeConfChamp', 'makeChampionship', 'winChampionship']);
       }
       if (this.configService.isMobile) {
@@ -248,12 +248,14 @@ export class PlayoffCalculatorComponent implements OnInit {
       this.selectableMetrics[3].isDisabled = true;
       this.selectableMetrics[4].isDisabled = true;
       this.selectableMetrics[5].isDisabled = true;
+      this.selectableMetrics[6].isDisabled = true;
     } else {
       this.selectableMetrics[0].isDisabled = false;
       this.selectableMetrics[2].isDisabled = false;
       this.selectableMetrics[3].isDisabled = false;
       this.selectableMetrics[4].isDisabled = false;
       this.selectableMetrics[5].isDisabled = false;
+      this.selectableMetrics[6].isDisabled = false;
     }
     if (this.sleeperService.selectedLeague.divisions <= 1) {
       this.selectableMetrics[2].isDisabled = true;
