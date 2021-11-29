@@ -448,7 +448,7 @@ export class PlayoffCalculatorService {
     const byeWeekTeams = [];
     for (let i = 0; i < numOfByeWeeks; i++) {
       // get unique bye week team
-      const byeWeekTeam = this.determinePlayoffTeamFromArray(divisionWinners, byeWeekTeams);
+      const byeWeekTeam = this.determineBestTeamFromArray(divisionWinners, byeWeekTeams);
       this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId].timesWithBye =
         (this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId]?.timesWithBye || 0) + 1;
       byeWeekTeams.push(byeWeekTeam);
@@ -697,6 +697,11 @@ export class PlayoffCalculatorService {
     // determine worst record and update odds
     this.determineWorstRecordTeam(simulatedWins);
 
+    // determine best record and update odds
+    const bestTeam = this.determineBestTeamFromArray(simulatedWins, []);
+    this.teamPlayoffOdds[bestTeam.team.roster.rosterId].timesWithBestRecord += 1;
+
+
     // determine number of bye weeks
     const numOfByeWeeks = this.sleeperService.selectedLeague.playoffTeams % 4;
 
@@ -718,7 +723,7 @@ export class PlayoffCalculatorService {
     } else {
       // get byes for best teams since there is no divisions
       for (let i = 0; i < numOfByeWeeks; i++) {
-        const byeWeekTeam = this.determinePlayoffTeamFromArray(simulatedWins, nonWildCardTeams);
+        const byeWeekTeam = this.determineBestTeamFromArray(simulatedWins, nonWildCardTeams);
         this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId].timesWithBye =
           (this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId]?.timesWithBye || 0) + 1;
         this.teamPlayoffOdds[byeWeekTeam.team.roster.rosterId].timesMakingPlayoffs =
@@ -730,7 +735,7 @@ export class PlayoffCalculatorService {
 
     // assign the last playoff spots
     for (let selectedTeamCount = 0; selectedTeamCount < numOfPlayoffSpotsLeft; selectedTeamCount++) {
-      const wildcardTeam = this.determinePlayoffTeamFromArray(simulatedWins, nonWildCardTeams.concat(simulatedPlayoffTeams));
+      const wildcardTeam = this.determineBestTeamFromArray(simulatedWins, nonWildCardTeams.concat(simulatedPlayoffTeams));
       this.teamPlayoffOdds[wildcardTeam.team.roster.rosterId].timesMakingPlayoffs =
         (this.teamPlayoffOdds[wildcardTeam.team.roster.rosterId]?.timesMakingPlayoffs || 0) + 1;
       simulatedPlayoffTeams.push(wildcardTeam);
@@ -746,7 +751,7 @@ export class PlayoffCalculatorService {
    * @param excludedTeams teams not to be selected (usually teams that already qualified before)
    * @private
    */
-  private determinePlayoffTeamFromArray(simulatedTeams: SimulatedTeamInfo[], excludedTeams: SimulatedTeamInfo[]): SimulatedTeamInfo {
+  private determineBestTeamFromArray(simulatedTeams: SimulatedTeamInfo[], excludedTeams: SimulatedTeamInfo[]): SimulatedTeamInfo {
     let selectedTeam = null;
     let maxWinTotal = 0;
     for (const simulatedTeam of simulatedTeams) {
@@ -793,6 +798,7 @@ export class PlayoffCalculatorService {
         timesWinChampionship: 0,
         timesTeamWonOut: 0,
         timesWithWorstRecord: 0,
+        timesWithBestRecord: 0,
         winsAtStartDate: this.getWinsAtWeek(team.roster.rosterId, startWeek - 1)
       };
     }
@@ -818,6 +824,7 @@ export class PlayoffCalculatorService {
         timesWinChampionship: Math.round(this.teamPlayoffOdds[team.roster.rosterId].timesWinChampionship / divisor),
         timesTeamWonOut: Math.round(this.teamPlayoffOdds[team.roster.rosterId].timesTeamWonOut / divisor),
         timesWithWorstRecord: Math.round(this.teamPlayoffOdds[team.roster.rosterId].timesWithWorstRecord / divisor),
+        timesWithBestRecord: Math.round(this.teamPlayoffOdds[team.roster.rosterId].timesWithBestRecord / divisor),
       };
     }
     // console.table(this.teamPlayoffOdds);

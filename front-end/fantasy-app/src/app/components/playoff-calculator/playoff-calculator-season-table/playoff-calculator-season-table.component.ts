@@ -86,6 +86,8 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesTeamWonOut;
         case 'worstRecord':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWithWorstRecord;
+        case 'bestRecord':
+          return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWithBestRecord;
         case 'winChampionship':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWinChampionship
             || this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakeChampionship;

@@ -34,82 +34,128 @@
       <div>{{worstTeamDraft.team.owner.ownerName}} <span [ngClass]="{'urgent__alert': worstTeamDraft.valueAdded < 0, 'success__alert': worstTeamDraft.valueAdded > 0}">{{worstTeamDraft.valueAdded}}</span></div>
     </mat-card>
   </div>
-  <div class="center-text mid-bold-text margin-top-25">
-    Completed Draft: {{selectedDraft.draft.rounds}} Rounds
-  </div>
   <div>
-    <mat-form-field class="button-left player-value-checkbox-margin mat-dropdown-wide-300" color="accent">
-      <mat-label>Search Player, Round, or Owner</mat-label>
-      <input matInput type="text" (keyup)="updateDraftFilters()" [(ngModel)]="searchVal">
-    </mat-form-field>
+    <mat-tab-group mat-align-tabs="center" class="margin-top-25">
+      <mat-tab label="Completed Draft Breakdown">
+        <div>
+          <div class="center-text mid-bold-text margin-top-25">
+            Completed Draft: {{selectedDraft.draft.rounds}} Rounds
+          </div>
+
+        </div>
+        <div>
+          <mat-form-field class="button-left player-value-checkbox-margin mat-dropdown-wide-300" color="accent">
+            <mat-label>Search Player, Round, or Owner</mat-label>
+            <input matInput type="text" (keyup)="updateDraftFilters()" [(ngModel)]="searchVal">
+          </mat-form-field>
+        </div>
+        <div class="margin-top-10">
+          <span class="container_spacer"></span>
+          <span class="button-right">
+            <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[0]"
+                          (change)="updateDraftFilters()">QB
+            </mat-checkbox>
+            <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[1]"
+                          (change)="updateDraftFilters()">RB
+            </mat-checkbox>
+            <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[2]"
+                          (change)="updateDraftFilters()">WR
+            </mat-checkbox>
+            <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[3]"
+                          (change)="updateDraftFilters()">TE
+            </mat-checkbox>
+          </span>
+        </div>
+
+        <div class="margin-top-90">
+          <mat-table [dataSource]="dataSource">
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="pickNumber">
+              <mat-header-cell *matHeaderCellDef>Pick</mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.pickNumber}}</mat-cell>
+            </ng-container>
+
+            <!-- Pos Column -->
+            <ng-container matColumnDef="team">
+              <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
+              <mat-cell *matCellDef="let element">{{getTeamName(element.rosterId.toString())}}</mat-cell>
+            </ng-container>
+
+            <!-- Age Column -->
+            <ng-container matColumnDef="owner">
+              <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
+              <mat-cell *matCellDef="let element">{{getOwnerName(element.rosterId)}}</mat-cell>
+            </ng-container>
+
+            <!-- Value Column -->
+            <ng-container matColumnDef="selectedPlayer">
+              <mat-header-cell *matHeaderCellDef>Selected Pick (current value)</mat-header-cell>
+              <mat-cell *matCellDef="let element">{{configService.isMobile ? element.position + ' ' + element.lastName : element.position + ' ' + element.firstName + ' ' + element.lastName}}
+                - {{sleeperService.selectedLeague.isSuperflex ? getPlayerBySleeperId(element.sleeperId)?.sf_trade_value || 'None' : getPlayerBySleeperId(element.sleeperId)?.trade_value || 'None'}}
+              </mat-cell>
+            </ng-container>
+
+            <!-- actions column -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef></mat-header-cell>
+              <mat-cell *matCellDef="let element" (click)="$event.stopPropagation();">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item *ngIf="getPlayerBySleeperId(element.sleeperId)" (click)="openPlayerComparison(getPlayerBySleeperId(element.sleeperId))">
+                    <span>Add to Player Comparison</span>
+                  </button>
+                  <button *ngIf="element.position !== 'PI' && getPlayerBySleeperId(element.sleeperId)" mat-menu-item [routerLink]="['../../players/details/', getPlayerBySleeperId(element.sleeperId)?.name_id]">
+                    <span>View Player Page</span>
+                  </button>
+                  <button mat-menu-item [routerLink]="['../team', getOwnerName(element.rosterId)]">
+                    <span>View Team Page</span>
+                  </button>
+                </mat-menu>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="draft-element-row"
+                     [ngClass]="{'accent__color__background': sleeperService.sleeperUser?.userData.username === getOwnerName(row.rosterId)}"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSizeOptions]="[pageLength, 2 * pageLength, 4 * pageLength]" showFirstLastButtons></mat-paginator>
+        </div>
+      </mat-tab>
+      <mat-tab label="Keeper Redraft Candidates" style="overflow: hidden">
+        <div class="mid-bold-text margin-top-10 center-text">Keeper Redraft Candidates</div>
+        <div class="margin-top-10 center-text">Below are the top 5 redraft candidates for each team. This is calculated by averaging player values for each draft round to get the pick value for that draft round. Once the average pick value per round has been calculated, it will subtract the pick value from the player values to find the highest value player per round for each team. This can help narrow down deep value picks for redraft quickly and opens up trades to capitalize on redraft player value disparity.</div>
+        <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-50">
+          <mat-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="40%" class="keeper-card mat-elevation-z4" *ngFor="let team of sleeperService.sleeperTeamDetails">
+            <mat-card-header>
+              <mat-card-title>{{getTeamName(team.roster.rosterId.toString())}}</mat-card-title>
+            </mat-card-header>
+            <mat-table [dataSource]="keepersByTeam[team.roster.rosterId]">
+
+              <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef>Player</mat-header-cell>
+                <mat-cell *matCellDef="let player">{{player.player}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="pick">
+                <mat-header-cell *matHeaderCellDef>Pick</mat-header-cell>
+                <mat-cell *matCellDef="let player">{{player.pick}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="value">
+                <mat-header-cell *matHeaderCellDef>Value Vs Pick Value</mat-header-cell>
+                <mat-cell *matCellDef="let player"><span [ngClass]="{'success__alert': player.value > 0, 'urgent__alert': player.value < 0}">{{player.value}}</span></mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="['pick', 'name', 'value']"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: ['pick', 'name', 'value'];"></mat-row>
+            </mat-table>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
-  <div>
-    <span class="button-left">
-      <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[0]"
-                    (change)="updateDraftFilters()">QB</mat-checkbox>
-      <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[1]"
-                    (change)="updateDraftFilters()">RB</mat-checkbox>
-      <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[2]"
-                    (change)="updateDraftFilters()">WR</mat-checkbox>
-      <mat-checkbox class="player-value-checkbox-margin" color="primary" [(ngModel)]="filterPosGroup[3]"
-                    (change)="updateDraftFilters()">TE</mat-checkbox>
-    </span>
-    <span class="container_spacer"></span>
-    <span class="button-right">
-    </span>
-  </div>
-  <mat-table [dataSource]="dataSource" class="margin-top-10">
-
-    <!-- Name Column -->
-    <ng-container matColumnDef="pickNumber">
-      <mat-header-cell *matHeaderCellDef>Pick</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.pickNumber}}</mat-cell>
-    </ng-container>
-
-    <!-- Pos Column -->
-    <ng-container matColumnDef="team">
-      <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{getTeamName(element.rosterId.toString())}}</mat-cell>
-    </ng-container>
-
-    <!-- Age Column -->
-    <ng-container matColumnDef="owner">
-      <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{getOwnerName(element.rosterId)}}</mat-cell>
-    </ng-container>
-
-    <!-- Value Column -->
-    <ng-container matColumnDef="selectedPlayer">
-      <mat-header-cell *matHeaderCellDef>Selected Pick (current value)</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{configService.isMobile ? element.position + ' ' + element.lastName : element.position + ' ' + element.firstName + ' ' + element.lastName}}
-        - {{sleeperService.selectedLeague.isSuperflex ? getPlayerBySleeperId(element.sleeperId)?.sf_trade_value || 'None' : getPlayerBySleeperId(element.sleeperId)?.trade_value || 'None'}}
-      </mat-cell>
-    </ng-container>
-
-    <!-- actions column -->
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef></mat-header-cell>
-      <mat-cell *matCellDef="let element" (click)="$event.stopPropagation();">
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_horiz</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item *ngIf="getPlayerBySleeperId(element.sleeperId)" (click)="openPlayerComparison(getPlayerBySleeperId(element.sleeperId))">
-            <span>Add to Player Comparison</span>
-          </button>
-          <button *ngIf="element.position !== 'PI' && getPlayerBySleeperId(element.sleeperId)" mat-menu-item [routerLink]="['../../players/details/', getPlayerBySleeperId(element.sleeperId)?.name_id]">
-            <span>View Player Page</span>
-          </button>
-          <button mat-menu-item [routerLink]="['../team', getOwnerName(element.rosterId)]">
-            <span>View Team Page</span>
-          </button>
-        </mat-menu>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" class="draft-element-row"
-             [ngClass]="{'accent__color__background': sleeperService.sleeperUser?.userData.username === getOwnerName(row.rosterId)}"></mat-row>
-  </mat-table>
-  <mat-paginator [pageSizeOptions]="[pageLength, 2 * pageLength, 4 * pageLength]" showFirstLastButtons></mat-paginator>
 </div>
+
