@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, Input, OnChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {SleeperCompletedPickData, SleeperTeam} from '../../../model/SleeperLeague';
 import {CompletedDraft} from '../../../model/SleeperUser';
@@ -67,6 +67,12 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
   /** is superflex */
   isSuperFlex: boolean = true;
 
+  /** average value of pick in round */
+  roundPickValue: number[] = [];
+
+  /** keepers by roster id */
+  keepersByTeam: {} = {};
+
   /** filtered draft list */
   filteredDraftPicks: SleeperCompletedPickData[] = [];
 
@@ -85,7 +91,7 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
   /** pick array of values */
   pickValues: KTCPlayer[] = [];
 
-  constructor(private sleeperService: SleeperService,
+  constructor(public sleeperService: SleeperService,
               public playerService: PlayerService,
               public configService: ConfigService,
               public playerComparisonService: PlayerComparisonService,
@@ -115,6 +121,8 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
    * @private
    */
   private refreshMetrics(): void {
+    this.roundPickValue = this.getAVGValuePerRound();
+    this.keepersByTeam = this.getTopKeeperForEachTeam();
     this.bestOverallPickStr = this.getBestOverallPick();
     this.bestValuePickStr = this.getBestValuePick();
     this.findBestAndWorstDraftsForTeams();
@@ -223,9 +231,7 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
    * @private
    */
   private getPickValueRatio(pick: SleeperCompletedPickData): number {
-    const pickValue = this.isSuperFlex ? this.pickValues[(pick.round - 1) * 3 + 1]?.sf_trade_value
-      || this.pickValues[this.pickValues.length - 1]?.sf_trade_value :
-      this.pickValues[(pick.round - 1) * 3 + 1]?.trade_value || this.pickValues[this.pickValues.length - 1]?.trade_value;
+    const pickValue = this.getPickValue(pick.round);
     return this.isSuperFlex ? (this.playerService.getPlayerBySleeperId(pick.sleeperId)?.sf_trade_value || 0) / pickValue :
       (this.playerService.getPlayerBySleeperId(pick.sleeperId)?.trade_value || 0) / pickValue;
   }
@@ -236,11 +242,23 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
    * @private
    */
   private getPickValueAdded(pick: SleeperCompletedPickData): number {
-    const pickValue = this.isSuperFlex ? this.pickValues[(pick.round - 1) * 3 + 1]?.sf_trade_value
-      || this.pickValues[this.pickValues.length - 1]?.sf_trade_value :
-      this.pickValues[(pick.round - 1) * 3 + 1]?.trade_value || this.pickValues[this.pickValues.length - 1]?.trade_value;
+    const pickValue = this.getPickValue(pick.round);
     return this.isSuperFlex ? (this.playerService.getPlayerBySleeperId(pick.sleeperId)?.sf_trade_value || 0) - pickValue :
       (this.playerService.getPlayerBySleeperId(pick.sleeperId)?.trade_value || 0) - pickValue;
+  }
+
+  /**
+   * get pick value for round. If rookie draft use keep trade cut, else use the round pick value array
+   * @param round
+   * @private
+   */
+  private getPickValue(round: number): number {
+    if (this.selectedDraft.draft.playerType === 1) {
+      return this.isSuperFlex ? this.pickValues[(round - 1) * 3 + 1]?.sf_trade_value
+        || this.pickValues[this.pickValues.length - 1]?.sf_trade_value :
+        this.pickValues[(round - 1) * 3 + 1]?.trade_value || this.pickValues[this.pickValues.length - 1]?.trade_value;
+    }
+    return this.roundPickValue[round - 1];
   }
 
   /**
@@ -286,6 +304,60 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
     if (this.chart?.datasets?.length > 0) {
       this.chart.updateColors();
     }
+  }
+
+  /**
+   * get average value of round pick
+   */
+  private getAVGValuePerRound(): number[] {
+    const roundValue = [];
+    for (let round = 0; round < this.selectedDraft.draft.rounds; round++) {
+      let totalValue = 0;
+      for (let pickNum = 0; pickNum < this.sleeperService.selectedLeague.totalRosters; pickNum++) {
+        totalValue += this.sleeperService.selectedLeague.isSuperflex ?
+          this.getPlayerBySleeperId(
+            this.selectedDraft.picks[round * this.sleeperService.selectedLeague.totalRosters + pickNum]?.sleeperId
+          )?.sf_trade_value || 0 :
+          this.getPlayerBySleeperId(
+            this.selectedDraft.picks[round * this.sleeperService.selectedLeague.totalRosters + pickNum]?.sleeperId
+          )?.trade_value || 0;
+      }
+      roundValue.push(Math.round(totalValue / this.sleeperService.selectedLeague.totalRosters));
+    }
+    return roundValue;
+  }
+
+  /**
+   * returns dictionary of top players to redraft in keeper league
+   */
+  getTopKeeperForEachTeam(): {} {
+    const keeperPlayersByTeam = {};
+    for (const team of this.sleeperService.sleeperTeamDetails) {
+      const pickWithValues = [];
+      for (const sleeperId of team.roster.players) {
+        for (const pick of this.selectedDraft.picks) {
+          // if player is picked by team
+          if (pick.sleeperId === sleeperId) {
+            const ktcPlayer = this.getPlayerBySleeperId(pick.sleeperId);
+            // if player exists
+            if (ktcPlayer) {
+              pickWithValues.push({
+                player: ktcPlayer.full_name,
+                pick: `${pick.round}.${pick.pickNumber % this.sleeperService.selectedLeague.totalRosters}`,
+                value: this.isSuperFlex ? ktcPlayer.sf_trade_value - this.roundPickValue[pick.round - 1]
+                  : ktcPlayer.sf_trade_value - this.roundPickValue[pick.round - 1]
+              });
+            }
+          }
+        }
+      }
+      pickWithValues.sort((a, b) => {
+        return b.value - a.value;
+      });
+      keeperPlayersByTeam[team.roster.rosterId] = pickWithValues.slice(0, 5);
+    }
+    console.log(keeperPlayersByTeam)
+    return keeperPlayersByTeam;
   }
 
   /**

@@ -3,6 +3,17 @@
 }
 
 .mat-column-actions,
+.mat-column-pick,
 .mat-column-pickNumber {
   max-width: 82px;
+}
+
+.mat-column-value {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.keeper-card {
+  margin-bottom: 16px;
+  margin-right: 16px;
 }
