@@ -24,3 +24,4 @@ create unique index ktc_players_id_uindex
 alter table ktc_players
 	add constraint ktc_players_pk
 		primary key (id);
+
