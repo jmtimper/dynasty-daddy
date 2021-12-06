@@ -81,18 +81,19 @@ var Model = /*#__PURE__*/function () {
       return selectSubQuery;
     }()
   }, {
-    key: "insertWithReturn",
+    key: "selectQuery",
     value: function () {
-      var _insertWithReturn = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(columns, values) {
+      var _selectQuery = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(rawQuery, clause) {
         var query;
         return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                query = "\n        INSERT INTO ".concat(this.table, "(").concat(columns, ")\n        VALUES (").concat(values, ")\n        RETURNING id, ").concat(columns, "\n    ");
+                query = rawQuery;
+                if (clause) query += clause;
                 return _context3.abrupt("return", this.pool.query(query));
 
-              case 2:
+              case 3:
               case "end":
                 return _context3.stop();
             }
@@ -100,7 +101,33 @@ var Model = /*#__PURE__*/function () {
         }, _callee3, this);
       }));
 
-      function insertWithReturn(_x5, _x6) {
+      function selectQuery(_x5, _x6) {
+        return _selectQuery.apply(this, arguments);
+      }
+
+      return selectQuery;
+    }()
+  }, {
+    key: "insertWithReturn",
+    value: function () {
+      var _insertWithReturn = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(columns, values) {
+        var query;
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                query = "\n        INSERT INTO ".concat(this.table, "(").concat(columns, ")\n        VALUES (").concat(values, ")\n        RETURNING id, ").concat(columns, "\n    ");
+                return _context4.abrupt("return", this.pool.query(query));
+
+              case 2:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function insertWithReturn(_x7, _x8) {
         return _insertWithReturn.apply(this, arguments);
       }
 
