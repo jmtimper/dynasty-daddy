@@ -219,10 +219,10 @@ try:
             player.id, player.sfPositionRank, player.positionRank, player.sf_value, player.value))
 
             # legacy table insert
-            cursor.execute('''INSERT into ktc_players(name_id, sleeper_id, full_name, first_name, last_name, team, position, sf_position_rank, position_rank, age, experience, sf_trade_value, trade_value)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )''', (
-            player.id, player.sleeperId, player.name, player.first_name, player.last_name, player.team, player.position,
-            player.sfPositionRank, player.positionRank, player.age, player.experience, player.sf_value, player.value))
+            # cursor.execute('''INSERT into ktc_players(name_id, sleeper_id, full_name, first_name, last_name, team, position, sf_position_rank, position_rank, age, experience, sf_trade_value, trade_value)
+            # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )''', (
+            # player.id, player.sleeperId, player.name, player.first_name, player.last_name, player.team, player.position,
+            # player.sfPositionRank, player.positionRank, player.age, player.experience, player.sf_value, player.value))
 
         # Commit your changes in the database
         conn.commit()
