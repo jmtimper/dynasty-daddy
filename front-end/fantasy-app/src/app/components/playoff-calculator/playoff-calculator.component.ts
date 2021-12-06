@@ -145,7 +145,7 @@ export class PlayoffCalculatorComponent implements OnInit {
   downloadPlayoffCalculatorData(): void {
 
     const seasonData: any[][] = [
-      ['rosterId', 'teamName', 'teamOwner', 'week', 'starterValue', 'projWins', 'projLosses', 'medianWins', 'medianLosses', 'makePlayoffOdds', 'winDivisionOdds', 'winByeOdds', 'makeConfOdds', 'makeChampOdds', 'winChampOdds'],
+      ['rosterId', 'teamName', 'teamOwner', 'week', 'starterValue', 'projWins', 'projLosses', 'medianWins', 'medianLosses', 'makePlayoffOdds', 'winDivisionOdds', 'winByeOdds', 'bestRecord', 'worstRecord', 'winOut', 'makeConfOdds', 'makeChampOdds', 'winChampOdds'],
     ];
     for (const team of this.sleeperService.sleeperTeamDetails) {
       const row = [team.roster.rosterId, team.owner.teamName, team.owner.ownerName, this.selectedWeek];
@@ -159,6 +159,9 @@ export class PlayoffCalculatorComponent implements OnInit {
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesMakingPlayoffs);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWinningDivision);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWithBye);
+      row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWithBestRecord);
+      row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWithWorstRecord);
+      row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesTeamWonOut);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesMakeConfRd);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesMakeChampionship);
       row.push(this.playoffCalculatorService.teamPlayoffOdds[team.roster.rosterId].timesWinChampionship);

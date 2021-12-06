@@ -22,6 +22,12 @@ class Model {
     return this.pool.query(query);
   }
 
+  async selectQuery(rawQuery, clause) {
+    let query = rawQuery;
+    if (clause) query += clause;
+    return this.pool.query(query);
+  }
+
   async insertWithReturn(columns, values) {
     const query = `
         INSERT INTO ${this.table}(${columns})
