@@ -88,7 +88,7 @@ export class PlayoffCalculatorComponent implements OnInit {
     const selectableWeekMax = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season ?
       this.nflService.stateOfNFL.completedWeek : this.playoffCalculatorService.matchUpsWithProb.length;
     for (let i = this.sleeperService.selectedLeague.startWeek; i <= selectableWeekMax; i++) {
-      const disclaimer = this.sleeperService.selectedLeague.playoffStartWeek === this.sleeperService.selectedLeague.startWeek + i ? ' (End of regular season)' : '';
+      const disclaimer = this.sleeperService.selectedLeague.playoffStartWeek === i + 1 ? ' (End of regular season)' : '';
       this.selectableWeeks.push({
         week: i + 1, value: 'Before Week '
           + (i + 1) + disclaimer
