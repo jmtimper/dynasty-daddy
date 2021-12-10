@@ -14,6 +14,7 @@ export const getCurrentPlayerValues = async (req, res) => {
       + '           player_info.position as position,\n'
       + '           player_info.age as age,\n'
       + '           player_info.experience as experience,\n'
+      + '           player_info.injury_status as injury_status,\n'
       + '           pv.trade_value as trade_value,\n'
       + '           pv.sf_trade_value as sf_trade_value,\n'
       + '           pv.sf_position_rank as sf_position_rank,\n'

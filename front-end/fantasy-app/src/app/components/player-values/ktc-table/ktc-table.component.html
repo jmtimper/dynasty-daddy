@@ -58,6 +58,13 @@
           *matCellDef="let element"> {{(element.age == -1 || !element.age) ? '??' : element.age + ' y.o.'}} </mat-cell>
       </ng-container>
 
+      <!-- Injury Icon -->
+      <ng-container matColumnDef="injury">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell
+          *matCellDef="let element"><span *ngIf="element.injury_status != null" [matTooltip]="element.injury_status" [matTooltipPosition]="'above'"><mat-icon class="color_yellow" *ngIf="element.injury_status == 'Questionable'">question_mark</mat-icon><mat-icon color="warn" *ngIf="element.injury_status == 'Doubtful'">question_mark</mat-icon><mat-icon color="warn" *ngIf="element.injury_status == 'COV'">coronavirus</mat-icon><mat-icon color="warn" *ngIf="element.injury_status == 'IR' || element.injury_status == 'PUP'">healing</mat-icon><mat-icon color="warn" *ngIf="element.injury_status == 'Sus'">report_problem</mat-icon><mat-icon class="color_yellow" *ngIf="element.injury_status == 'Out'">healing</mat-icon></span></mat-cell>
+      </ng-container>
+
       <!-- Fantasy Points -->
       <ng-container matColumnDef="halfppr">
         <mat-header-cell *matHeaderCellDef mat-sort-header>{{playerService.playerStatsYear}} Points</mat-header-cell>

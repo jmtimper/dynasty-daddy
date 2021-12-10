@@ -132,9 +132,9 @@ export class KtcTableComponent implements OnInit {
   updateSuperFlex(): void {
     this.displayedColumns = [];
     if (this.sleeperService.selectedLeague) {
-      this.displayedColumns = this.configService.isMobile ? ['full_name', 'position', 'owner', this.isSuperFlex ? 'sf_trade_value' : 'trade_value'] : ['full_name', 'position', 'age', 'owner', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value', 'change', 'actions'];
+      this.displayedColumns = this.configService.isMobile ? ['full_name', 'position', 'owner', this.isSuperFlex ? 'sf_trade_value' : 'trade_value'] : ['full_name', 'position', 'age', 'injury', 'owner', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value', 'change', 'actions'];
     } else {
-      this.displayedColumns = this.configService.isMobile ? ['full_name', 'position', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value'] : ['full_name', 'position', 'age', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value', 'change', 'actions'];
+      this.displayedColumns = this.configService.isMobile ? ['full_name', 'position', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value'] : ['full_name', 'position', 'age', 'injury', 'halfppr', this.isSuperFlex ? 'sf_trade_value' : 'trade_value', 'change', 'actions'];
     }
     this.dataSource.data = this.filteredPlayers;
     this.dataSource.sort.sort({
