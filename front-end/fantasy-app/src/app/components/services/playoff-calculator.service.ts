@@ -348,7 +348,7 @@ export class PlayoffCalculatorService {
     for (let rosterId = 1; rosterId <= this.sleeperService.selectedLeague.totalRosters; rosterId++) {
       let totalWins = 0;
       for (let week = startWeek; week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
-        this.matchUpsWithProb[week - 1]?.map(matchUp => {
+        this.matchUpsWithProb[week - this.sleeperService.selectedLeague.startWeek]?.map(matchUp => {
           if (matchUp.matchUpDetails.team1RosterId === rosterId) {
             // check if game was manually selected
             if (matchUp.matchUpDetails.selectedWinner === 0) {
@@ -400,7 +400,6 @@ export class PlayoffCalculatorService {
         this.teamPlayoffOdds[rosterId].timesTeamWonOut += 1;
       }
     }
-
     return wins;
   }
 
@@ -700,7 +699,6 @@ export class PlayoffCalculatorService {
     // determine best record and update odds
     const bestTeam = this.determineBestTeamFromArray(simulatedWins, []);
     this.teamPlayoffOdds[bestTeam.team.roster.rosterId].timesWithBestRecord += 1;
-
 
     // determine number of bye weeks
     const numOfByeWeeks = this.sleeperService.selectedLeague.playoffTeams % 4;
