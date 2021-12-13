@@ -133,6 +133,16 @@ export class PowerRankingsTableComponent implements OnInit {
   }
 
   /**
+   * is player injured
+   * @param player player to check
+   * returns true if player is injured
+   */
+  isInjured(player: KTCPlayer): boolean {
+    const injuries = ['PUP', 'IR', 'Sus', 'COV'];
+    return injuries.includes(player.injury_status);
+  }
+
+  /**
    * copies starters to clipboard
    * @param rosterId team id
    */

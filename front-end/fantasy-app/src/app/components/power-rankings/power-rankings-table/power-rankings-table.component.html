@@ -99,6 +99,7 @@
               <hr class="dark">
               <div *ngFor="let player of positionGroup.players">
                 <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isStarter(element, player)">grade</mat-icon></span>
+                <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isInjured(player)">healing</mat-icon></span>
                 <span>{{configService.isMobile ? player.last_name : player.full_name}} </span>
                 <span [ngClass]="{'success__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) > 6000, 'urgent__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) < 2000}">{{isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value}}</span>
               </div>
