@@ -1,10 +1,9 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {PowerRankingsService} from '../../services/power-rankings.service';
 import {BaseChartDirective, Label} from 'ng2-charts';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import {SleeperService} from '../../../services/sleeper.service';
 import {Color} from 'chartjs-plugin-datalabels/types/options';
-import Gradient from 'javascript-color-gradient';
 import {ColorService} from '../../services/color.service';
 
 

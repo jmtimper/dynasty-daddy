@@ -1,10 +1,9 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {BaseChartDirective, Label} from 'ng2-charts';
-import {KTCPlayer} from '../../../model/KTCPlayer';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
-import {SleeperService} from "../../../services/sleeper.service";
+import {SleeperService} from '../../../services/sleeper.service';
 
 @Component({
   selector: 'app-weekly-median-chart',
@@ -60,7 +59,8 @@ export class WeeklyMedianChartComponent implements OnInit {
   public lineChartType = 'line';
   public lineChartPlugins = [];
 
-  constructor(private sleeperService: SleeperService) { }
+  constructor(private sleeperService: SleeperService) {
+  }
 
   ngOnInit(): void {
     this.generateDataSets();
@@ -83,6 +83,7 @@ export class WeeklyMedianChartComponent implements OnInit {
     if (this.chart && this.chart.chart) {
       this.chart.chart.data.datasets = this.lineChartData;
       this.chart.chart.data.labels = this.lineChartLabels;
+      this.chart.chart.update();
     }
   }
 

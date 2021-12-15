@@ -356,7 +356,6 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
       });
       keeperPlayersByTeam[team.roster.rosterId] = pickWithValues.slice(0, 5);
     }
-    console.log(keeperPlayersByTeam)
     return keeperPlayersByTeam;
   }
 
