@@ -280,7 +280,7 @@ export class PowerRankingsService {
       const topTe = team.roster[3]?.players[processedPlayers[3]];
       const flexPlayer = this.getBetterPlayer(topTe, this.getBetterPlayer(topRb, topWr));
       // if no player is found return
-      if (flexPlayer === null) {
+      if (!flexPlayer) {
         return teamRosterCount;
       }
       processedPlayers[this.positionGroups.indexOf(flexPlayer.position)]++;

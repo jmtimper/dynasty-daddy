@@ -1,5 +1,5 @@
 <div class="games-container">
-  <div class="margin-top-25" *ngIf="!selectable">
+  <div class="margin-top-25" *ngIf="!selectable && weekMatchUps[0]">
     <span class="mid-bold-text">Week {{weekMatchUps[0]?.matchUpDetails.week}}</span>
     <span *ngIf="recordString.length > 0" class="small-text__light" style="padding-left: 15px">({{recordString}})</span>
     <span *ngIf="weekMatchUps[0]?.matchUpDetails.week === sleeperService.selectedLeague.playoffStartWeek - 1" class="small-text__light" style="padding-left: 15px">Last week of the regular season.</span>
