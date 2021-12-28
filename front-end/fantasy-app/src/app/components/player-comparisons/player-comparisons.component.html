@@ -2,7 +2,7 @@
   <div class="margin-top-10 large-bold-header-text center-text">Player Value Comparisons</div>
   <div class="center-text margin-top-10">
     Player values are scraped from <a class="info__alert" href="https://keeptradecut.com/" target="_blank">KeepTradeCut.com</a>
-    dynasty rankings calculated from over <span class="info__alert">600,000+</span> data points.
+    dynasty rankings calculated from over <span class="info__alert">2.5 million</span> data points.
     <div>The scoring is <span class="info__alert">0.5 PPR</span>, the table below will update depending on whether your
       league is Superflex or not.
     </div>
@@ -52,6 +52,7 @@
     <mat-chip-list *ngIf="playerComparisonService.selectedPlayers.length !== 0"
                    cdkDropList
                    cdkDropListOrientation="horizontal"
+                   #group1List="cdkDropList"
                    [cdkDropListData]="playerComparisonService.selectedPlayers"
                    (cdkDropListDropped)="drop($event)">
       <mat-chip cdkDrag *ngFor="let player of playerComparisonService.selectedPlayers"
@@ -71,6 +72,7 @@
     <mat-chip-list *ngIf="playerComparisonService.group2SelectedPlayers.length !== 0"
                    cdkDropList
                    cdkDropListOrientation="horizontal"
+                   #group2List="cdkDropList"
                    [cdkDropListData]="playerComparisonService.group2SelectedPlayers"
                    (cdkDropListDropped)="drop($event)">
       <mat-chip cdkDrag *ngFor="let player of playerComparisonService.group2SelectedPlayers"

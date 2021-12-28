@@ -80,7 +80,7 @@
       <div class="mid-bold-text margin-top-10 center-text">Player Insights</div>
       <div class="margin-top-10 center-text">A collection of metrics and insights on {{selectedPlayer.full_name}}.
       </div>
-      <app-player-details-insights [selectedPlayer]="selectedPlayer" [selectedPlayerInsights]="selectedPlayerInsights"></app-player-details-insights>
+      <app-player-details-insights [selectedPlayer]="selectedPlayer" [selectedPlayerInsights]="selectedPlayerInsights" [selectedPlayerValues]="historicalTradeValue"></app-player-details-insights>
     </mat-tab>
     <mat-tab label="Past Box Scores">
       <app-player-details-weekly-box-scores-table *ngIf="isPlayerStatsGenerated()" [selectedPlayer]="selectedPlayer"></app-player-details-weekly-box-scores-table>

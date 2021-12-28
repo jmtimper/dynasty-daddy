@@ -1,3 +1,4 @@
+import null as null
 from bs4 import BeautifulSoup
 import requests
 import psycopg2
@@ -205,13 +206,15 @@ try:
             cursor.execute(playerInfoStatement, (player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active, player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active))
 
             # player id linking table insert
-            playerIdsStatement = '''INSERT INTO player_ids (name_id, sleeper_id) VALUES (%s, %s)
+            if player.sleeperId is None and player.position != 'PI': print(player.name + ': Error finding Sleeper Id')
+            if player.sleeperId is not None and player.position != 'PI':
+                playerIdsStatement = '''INSERT INTO player_ids (name_id, sleeper_id) VALUES (%s, %s)
                     ON CONFLICT (name_id) DO UPDATE
                     SET
                     name_id = %s,
                     sleeper_id = %s,
                     updated_at = now(); '''
-            cursor.execute(playerIdsStatement, (player.id, player.sleeperId, player.id, player.sleeperId))
+                cursor.execute(playerIdsStatement, (player.id, player.sleeperId, player.id, player.sleeperId))
 
             # player values insert daily values
             cursor.execute('''INSERT into player_values(name_id, sf_position_rank, position_rank, sf_trade_value, trade_value)
