@@ -87,7 +87,7 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.overallAdjPlayers = this.playerService.getAdjacentPlayersByNameId(
-      this.selectedPlayer.name_id,  '', this.sleeperService.selectedLeague?.isSuperflex);
+      this.selectedPlayer.name_id, '', this.sleeperService.selectedLeague?.isSuperflex);
     this.positionAdjPlayers = this.playerService.getAdjacentPlayersByNameId(
       this.selectedPlayer.name_id, this.selectedPlayer.position, this.sleeperService.selectedLeague?.isSuperflex);
   }
@@ -105,13 +105,29 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
       this.lineChartLabels = [];
       const dataList = [];
       if (this.selectedPlayerValues) {
+        let dataPointInd = 1;
         for (let ind = 1; ind <= 40; ind++) {
-          const dataPoint = this.selectedPlayerValues[this.selectedPlayerValues?.length - ind];
-          dataList.push(this.sleeperService.selectedLeague?.isSuperflex === false ? dataPoint.trade_value : dataPoint.sf_trade_value);
-          this.lineChartLabels.push(dataPoint.date?.slice(0, 10));
+          // date iterator value
+          const dateLabel = new Date().getTime() - 1000 * 60 * 60 * 24 * (40 - ind);
+          // check all found points and compare dates
+          this.selectedPlayerValues.map(dataPoint => {
+            if (new Date(new Date(dateLabel).setHours(0, 0, 0, 0)).getTime()
+              === new Date(new Date(dataPoint.date).setHours(0, 0, 0, 0)).getTime()) {
+              dataList.push(this.sleeperService.selectedLeague?.isSuperflex === false ? dataPoint.trade_value : dataPoint.sf_trade_value);
+              this.lineChartLabels.push(dataPoint.date?.slice(0, 10));
+              dataPointInd++;
+            }
+          });
+          // if no point matches
+          if (dataList.length < ind) {
+            dataList.push(0);
+            this.lineChartLabels.push(new Date(dateLabel).toISOString().slice(0, 10));
+          }
         }
-        this.lineChartData.push({label: this.selectedPlayer.full_name, data: dataList.reverse()});
-        if (dataList[39] > dataList[0]) {
+        // reverse data
+        this.lineChartData.push({label: this.selectedPlayer.full_name, data: dataList});
+        this.lineChartLabels.reverse();
+        if (dataList[dataList.length - 1] > dataList[0]) {
           this.chartColors = [
             {
               backgroundColor: 'rgba(55,185,32,0.4)',
