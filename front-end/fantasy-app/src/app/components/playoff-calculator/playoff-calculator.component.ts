@@ -116,9 +116,17 @@ export class PlayoffCalculatorComponent implements OnInit {
           this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek,
         );
         // get upcoming playoff match ups
-        this.playoffMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
-          this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek
-        );
+        if (this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season) {
+          // week diff if mid playoffs
+          const activeWeekDiff = this.nflService.stateOfNFL.week - this.sleeperService.selectedLeague.playoffStartWeek;
+          // set week diff value for slice
+          const weekOffset = activeWeekDiff > 0 ? activeWeekDiff : 0;
+          this.playoffMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
+            this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek + weekOffset
+          );
+        } else {
+          this.playoffMatchUps = [];
+        }
         // get completed match ups
         this.completedMatchUps =
           this.playoffCalculatorService.matchUpsWithProb.slice(0, this.nflService.stateOfNFL.completedWeek

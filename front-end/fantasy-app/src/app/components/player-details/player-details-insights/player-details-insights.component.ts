@@ -120,14 +120,16 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
           });
           // if no point matches
           if (dataList.length < ind) {
-            dataList.push(0);
+            dataList.push(ind === 40 ? null : 0);
             this.lineChartLabels.push(new Date(dateLabel).toISOString().slice(0, 10));
           }
         }
         // reverse data
         this.lineChartData.push({label: this.selectedPlayer.full_name, data: dataList});
         this.lineChartLabels.reverse();
-        if (dataList[dataList.length - 1] > dataList[0]) {
+        if (dataList[dataList.length - 1] === null ?
+          dataList[dataList.length - 2] > dataList[0]
+          : dataList[dataList.length - 1] > dataList[0]) {
           this.chartColors = [
             {
               backgroundColor: 'rgba(55,185,32,0.4)',

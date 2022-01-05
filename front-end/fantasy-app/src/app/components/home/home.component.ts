@@ -108,7 +108,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
    */
   generateYears(): string[] {
     const years = [];
-    const currentYear = new Date().getFullYear();
+    const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() - 5);
+    const currentYear = currentDate.getFullYear();
     for (let i = 0; i < 16; i++) {
       years.push((currentYear - i).toString());
     }

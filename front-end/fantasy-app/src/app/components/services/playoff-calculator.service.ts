@@ -516,6 +516,9 @@ export class PlayoffCalculatorService {
    * @private
    */
   private processTeamsLeft(teamsLeft: number[], matchup: SleeperPlayoffMatchUp): number[] {
+    if (matchup.win === null && matchup.loss === null) {
+      return teamsLeft;
+    }
     if (matchup.win === matchup.team1) {
       if (!teamsLeft.includes(matchup.team1)) {
         teamsLeft.push(matchup.team1);
@@ -574,10 +577,10 @@ export class PlayoffCalculatorService {
           this.teamPlayoffOdds[matchup.team2].timesMakeConfRd = this.NUMBER_OF_SIMULATIONS;
         } else if (matchup.round === 3 && (teamsLeft.includes(matchup.team1) || teamsLeft.includes(matchup.team2))) {
           this.processTeamsLeft(teamsLeft, matchup);
-          teamsEliminated.push(matchup.loss);
+          if (matchup.loss) { teamsEliminated.push(matchup.loss); }
           this.teamPlayoffOdds[matchup.team1].timesMakeChampionship = this.NUMBER_OF_SIMULATIONS;
           this.teamPlayoffOdds[matchup.team2].timesMakeChampionship = this.NUMBER_OF_SIMULATIONS;
-          if (weekDiff > 3) {
+          if (weekDiff > 3 && matchup.loss !== null) {
             if (!teamsEliminated.includes(matchup.team1)) {
               this.teamPlayoffOdds[matchup.team1].timesWinChampionship = this.NUMBER_OF_SIMULATIONS;
             } else {
@@ -923,15 +926,15 @@ export class PlayoffCalculatorService {
     let selectedTeam = null;
     let minWinTotal = this.sleeperService.selectedLeague.playoffStartWeek;
     for (const simulatedTeam of simulatedWins) {
-        if (!selectedTeam || simulatedTeam.projWins < minWinTotal) {
+      if (!selectedTeam || simulatedTeam.projWins < minWinTotal) {
+        selectedTeam = simulatedTeam;
+        minWinTotal = simulatedTeam.projWins;
+      } else if (simulatedTeam.projWins === minWinTotal) {
+        const winner = this.calculateTieBreaker([selectedTeam, simulatedTeam]);
+        if (winner.team.roster.rosterId === selectedTeam.team.roster.rosterId) {
           selectedTeam = simulatedTeam;
-          minWinTotal = simulatedTeam.projWins;
-        } else if (simulatedTeam.projWins === minWinTotal) {
-          const winner = this.calculateTieBreaker([selectedTeam, simulatedTeam]);
-          if (winner.team.roster.rosterId === selectedTeam.team.roster.rosterId) {
-            selectedTeam = simulatedTeam;
-          }
         }
+      }
     }
     this.teamPlayoffOdds[selectedTeam.team.roster.rosterId].timesWithWorstRecord += 1;
   }
