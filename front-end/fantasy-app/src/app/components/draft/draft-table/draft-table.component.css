@@ -1,3 +1,19 @@
 .actions-bar {
   position: fixed;
 }
+
+.mat-column-pickNumber {
+  max-width: 82px;
+}
+
+.mat-column-owner,
+.mat-column-team {
+  min-width: 120px;
+  text-align: left;
+  justify-content: start;
+}
+
+.mat-column-pickValue {
+  text-align: right;
+  justify-content: flex-end;
+}

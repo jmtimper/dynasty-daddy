@@ -577,7 +577,9 @@ export class PlayoffCalculatorService {
           this.teamPlayoffOdds[matchup.team2].timesMakeConfRd = this.NUMBER_OF_SIMULATIONS;
         } else if (matchup.round === 3 && (teamsLeft.includes(matchup.team1) || teamsLeft.includes(matchup.team2))) {
           this.processTeamsLeft(teamsLeft, matchup);
-          if (matchup.loss) { teamsEliminated.push(matchup.loss); }
+          if (matchup.loss) {
+            teamsEliminated.push(matchup.loss);
+          }
           this.teamPlayoffOdds[matchup.team1].timesMakeChampionship = this.NUMBER_OF_SIMULATIONS;
           this.teamPlayoffOdds[matchup.team2].timesMakeChampionship = this.NUMBER_OF_SIMULATIONS;
           if (weekDiff > 3 && matchup.loss !== null) {
@@ -845,7 +847,10 @@ export class PlayoffCalculatorService {
    * @private
    */
   public getStartWeek(): number {
-    if (this.nflService.stateOfNFL.season === this.sleeperService.selectedLeague.season) {
+    if (
+      this.nflService.stateOfNFL.season === this.sleeperService.selectedLeague.season
+      && this.nflService.stateOfNFL.seasonType !== 'post'
+    ) {
       return this.nflService.stateOfNFL.completedWeek + 1;
     }
     return Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18;

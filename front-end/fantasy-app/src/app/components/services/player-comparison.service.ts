@@ -5,7 +5,8 @@ import {PlayerComparison} from '../model/playerComparison';
 import {ChartDataSets} from 'chart.js';
 import {Label} from 'ng2-charts';
 import {KTCApiService} from '../../services/api/ktc-api.service';
-import {NgxSpinnerService} from "ngx-spinner";
+import {NgxSpinnerService} from 'ngx-spinner';
+import {PlayerService} from '../../services/player.service';
 
 @Injectable({
   providedIn: 'root'
@@ -53,19 +54,31 @@ export class PlayerComparisonService {
   /** is query desc or asc */
   isOrderByDesc: boolean = true;
 
-  constructor(private ktcApiService: KTCApiService, private spinner: NgxSpinnerService) {
+  constructor(
+    private ktcApiService: KTCApiService,
+    private spinner: NgxSpinnerService,
+    private playerService: PlayerService
+  ) {
   }
 
   regeneratePlayerCompData(): Observable<any> {
     const playersToUpdate = [];
     this.selectedPlayers.map(player => {
-      playersToUpdate.push(player.id);
+      playersToUpdate.push(this.playerService.getPlayerByNameId(player.id));
+    });
+    this.group2SelectedPlayers.map(player => {
+      playersToUpdate.push(this.playerService.getPlayerByNameId(player.id));
     });
     this.selectedPlayers = [];
+    // create list of players in group 2
+    const group2Players = [];
+    this.group2SelectedPlayers.map(g2Player => {
+      group2Players.push(g2Player.id);
+    });
     this.group2SelectedPlayers = [];
     return of(forkJoin(playersToUpdate.map(player => {
-      this.ktcApiService.getHistoricalPlayerValueById(player, this.isAllTime).subscribe((data) => {
-        this.addNewPlayer(data, player);
+      this.ktcApiService.getHistoricalPlayerValueById(player.name_id, this.isAllTime).subscribe((data) => {
+        this.addNewPlayer(data, player, group2Players.includes(player.name_id));
         }
       );
     }))).pipe(() => {

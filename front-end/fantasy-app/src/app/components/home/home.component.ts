@@ -20,8 +20,6 @@ import {TransactionsService} from '../services/transactions.service';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
 
-  pathSource: string = './assets/cn.jpg';
-
   usernameInput: string = '';
 
   leagueIdInput: string = '';
@@ -33,6 +31,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
   supportedYears: string[] = [];
 
   loginMethod: string = 'sleeper_username';
+
+  DEMO_ID: string = '553670046391185408';
 
   constructor(private spinner: NgxSpinnerService,
               private sleeperApiService: SleeperApiService,
@@ -50,7 +50,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.supportedYears = this.generateYears();
     if (!this.sleeperService.selectedYear) {
-      this.selectedYear = this.supportedYears[0];
+      this.selectedYear = this.supportedYears[1];
     } else {
       this.selectedYear = this.sleeperService.selectedYear;
     }
@@ -109,8 +109,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
   generateYears(): string[] {
     const years = [];
     const currentDate = new Date();
-    currentDate.setMonth(currentDate.getMonth() - 5);
-    const currentYear = currentDate.getFullYear();
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    const currentYear = currentDate.getFullYear() + 1;
     for (let i = 0; i < 16; i++) {
       years.push((currentYear - i).toString());
     }
@@ -121,7 +121,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
    * handles logging in for demo
    */
   loginWithDemo(): void {
-    this.loginWithLeagueId('553670046391185408');
+    this.sleeperService.sleeperUser = null;
+    this.loginWithLeagueId(this.DEMO_ID);
   }
 
   /**
@@ -129,7 +130,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
    * @param demoId string of demo league id
    */
   loginWithLeagueId(demoId?: string): void {
-    this.sleeperService.sleeperUser = null;
     this.sleeperApiService.getSleeperLeagueByLeagueId(demoId || this.leagueIdInput).subscribe(leagueData => {
       this.loadLeague(leagueData);
     });
