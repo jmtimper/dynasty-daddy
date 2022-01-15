@@ -914,9 +914,10 @@ export class PlayoffCalculatorService {
     if (this.matchUpsWithProb.length === 0) {
       this.generateMatchUpsWithProb();
     }
-    const endWeek = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season ?
-      this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek
-      : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
+    const endWeek = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season
+      && this.nflService.stateOfNFL.seasonType !== 'post' ?
+        this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek
+        : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
     for (let i = 0; i <= endWeek; i++) {
       this.matchUpService.leagueMedians.push(this.getMedianPointsForWeek(this.matchUpsWithProb[i]));
     }

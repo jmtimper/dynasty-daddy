@@ -169,7 +169,7 @@ export class PlayerService {
         }
         return of(this.playerStats);
       })));
-      let currentWeekInd = this.nflService.stateOfNFL.completedWeek;
+      let currentWeekInd = this.nflService.stateOfNFL.seasonType !== 'post' ? this.nflService.stateOfNFL.completedWeek : 18;
       let currentYearInd = Number(this.nflService.stateOfNFL.season);
       for (let weekNum = 1; weekNum < 19; weekNum++) {
         if (currentWeekInd === 0) {
