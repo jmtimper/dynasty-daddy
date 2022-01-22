@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 import requests
 import psycopg2
@@ -168,7 +170,7 @@ for player in sf_rankings:
 try:
     # Establishing the connection
     conn = psycopg2.connect(
-        database="docker", user='docker', password='docker', host='localhost', port='5432'
+        database=os.environ['HEROKU_DATABASE'], user=os.environ['HEROKU_USER'], password=os.environ['HEROKU_PASSWORD'], host=os.environ['HEROKU_HOST'], port=os.environ['HEROKU_PORT']
     )
 
     # conn = psycopg2.connect(
