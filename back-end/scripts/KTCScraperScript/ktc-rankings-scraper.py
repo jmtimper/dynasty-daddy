@@ -1,6 +1,5 @@
-import os
-
 from bs4 import BeautifulSoup
+import os
 import requests
 import psycopg2
 from sleeper_wrapper import Players

@@ -7,6 +7,7 @@ colorama==0.4.4
 idna==2.8
 importlib-metadata==3.10.1
 more-itertools==8.7.0
+null==0.6.1
 packaging==20.9
 pluggy==0.13.1
 psycopg2==2.8.6
