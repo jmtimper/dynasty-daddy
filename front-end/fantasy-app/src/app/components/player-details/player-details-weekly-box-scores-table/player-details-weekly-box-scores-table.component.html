@@ -32,8 +32,8 @@
     </ng-container>
 
     <ng-container matColumnDef="off_snp">
-      <mat-header-cell *matHeaderCellDef>Off Snp %</mat-header-cell>
-      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.off_snp || gamelog?.stats?.snp || 0}}%</mat-cell>
+      <mat-header-cell *matHeaderCellDef>Off Snp</mat-header-cell>
+      <mat-cell *matCellDef="let gamelog">{{gamelog?.stats?.off_snp || gamelog?.stats?.snp || 0}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="pass_att">
@@ -137,5 +137,5 @@
 
 </div>
 <div class="margin-top-50 mid-bold-text warning__alert center-text" *ngIf="datasource?.data?.length === 0">
-  No gamelogs found for this player in the past 18 months.
+  No gamelogs found for this player in the past 18 weeks.
 </div>

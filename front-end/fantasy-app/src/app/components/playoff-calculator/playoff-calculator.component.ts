@@ -85,10 +85,11 @@ export class PlayoffCalculatorComponent implements OnInit {
    */
   private generateSelectableWeeks(): void {
     this.selectableWeeks.push({week: this.sleeperService.selectedLeague.startWeek, value: 'Preseason'});
-    const selectableWeekMax = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season ?
+    const selectableWeekMax = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season
+    && this.nflService.stateOfNFL.seasonType !== 'post' ?
       this.nflService.stateOfNFL.completedWeek : this.playoffCalculatorService.matchUpsWithProb.length;
     for (let i = this.sleeperService.selectedLeague.startWeek; i <= selectableWeekMax; i++) {
-      const disclaimer = this.sleeperService.selectedLeague.playoffStartWeek === this.sleeperService.selectedLeague.startWeek + i ? ' (End of regular season)' : '';
+      const disclaimer = this.sleeperService.selectedLeague.playoffStartWeek === i + 1 ? ' (End of regular season)' : '';
       this.selectableWeeks.push({
         week: i + 1, value: 'Before Week '
           + (i + 1) + disclaimer
@@ -109,16 +110,24 @@ export class PlayoffCalculatorComponent implements OnInit {
   refreshGames(): void {
     this.playoffCalculatorService.calculateGamesWithProbability(this.selectedWeek);
     if (this.playoffCalculatorService.matchUpsWithProb.length > 0) {
-      if (this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season) {
+      if (this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season && this.nflService.stateOfNFL.seasonType !== 'post') {
         // get upcoming match ups
         this.upcomingMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
           this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek + 1,
           this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek,
         );
         // get upcoming playoff match ups
-        this.playoffMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
-          this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek
-        );
+        if (this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season) {
+          // week diff if mid playoffs
+          const activeWeekDiff = this.nflService.stateOfNFL.week - this.sleeperService.selectedLeague.playoffStartWeek;
+          // set week diff value for slice
+          const weekOffset = activeWeekDiff > 0 ? activeWeekDiff : 0;
+          this.playoffMatchUps = this.playoffCalculatorService.matchUpsWithProb.slice(
+            this.sleeperService.selectedLeague.playoffStartWeek - this.sleeperService.selectedLeague.startWeek + weekOffset
+          );
+        } else {
+          this.playoffMatchUps = [];
+        }
         // get completed match ups
         this.completedMatchUps =
           this.playoffCalculatorService.matchUpsWithProb.slice(0, this.nflService.stateOfNFL.completedWeek

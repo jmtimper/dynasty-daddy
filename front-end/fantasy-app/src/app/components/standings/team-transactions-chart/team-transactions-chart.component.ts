@@ -74,7 +74,8 @@ export class TeamTransactionsChartComponent implements OnInit {
   public dataLabels: Label[] = [];
   public chartColors: Color;
 
-  constructor(private sleeperService: SleeperService) { }
+  constructor(private sleeperService: SleeperService) {
+  }
 
   ngOnInit(): void {
     this.generateDataSet();
@@ -98,6 +99,7 @@ export class TeamTransactionsChartComponent implements OnInit {
     if (this.chart && this.chart.chart) {
       this.chart.chart.data.datasets = this.data;
       this.chart.chart.data.labels = this.dataLabels;
+      this.chart.chart.update();
     }
   }
 

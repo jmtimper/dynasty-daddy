@@ -1,42 +1,59 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
-  <div fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">
-    <mat-card *ngIf="selectedPlayerInsights">
-      <div class="mid-bold-text center-text margin-bot-10">Past 18 Games</div>
-      <div class="insight__row">
-        <div class="text__light">Games Played</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.gamesPlayed}}</div>
+  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
+    <mat-card>
+      <div class="mid-bold-text center-text margin-bot-10">Trade Value (Past 40 Days)</div>
+      <div *ngIf="lineChartData.length > 0">
+        <canvas baseChart height="300" width="400"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"
+                [colors]="chartColors"
+                [plugins]="lineChartPlugins">
+        </canvas>
       </div>
-      <div class="insight__row">
-        <div class="text__light">18 Week High</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.high}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">18 Week Low</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.low}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">Average Points Per Week</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.mean}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">Variance</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.variance}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">Standard Deviation</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.stdDev}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">Value Per Point Ratio</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights.valuePerPointRatio}}</div>
+      <div *ngIf="lineChartData.length === 0">
+        <div style="min-height: 220px">
+          <div class="text__light margin-top-90 center-text">No trade value for {{selectedPlayer.full_name}}.</div>
+        </div>
       </div>
     </mat-card>
   </div>
-  <!--  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">-->
-  <!--    <mat-card>-->
-  <!--      <div class="mid-bold-text center-text margin-bot-10">KeepTradeCut.com</div>-->
-  <!--    </mat-card>-->
-  <!--  </div>-->
+  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">
+    <mat-card style="min-height: 360px">
+      <div class="mid-bold-text center-text margin-bot-10">Past 18 Games</div>
+      <div class="insight__row">
+        <div class="text__light">Games Played</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.gamesPlayed || '???'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">18 Week High</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.high || '???'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">18 Week Low</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.low || '???'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Average Points Per Week</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.mean || '???'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Variance</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.variance || '???'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Standard Deviation</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.stdDev || '???'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Value Per Point Ratio</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.valuePerPointRatio || '???'}}</div>
+      </div>
+    </mat-card>
+
+  </div>
 </div>
 <div class="center-text mid-bold-text margin-top-50">
   Adjacent Player Value

@@ -41,7 +41,7 @@
             <span class="mid-bold-text">Week {{playoffMachineWeek + 1}}</span>
             <button mat-icon-button [disabled]="playoffMachineWeek + 1 === this.sleeperService.selectedLeague.playoffStartWeek - 1" (click)="updatePlayoffMachineWeek(1)"><mat-icon >chevron_right</mat-icon></button>
           </div>
-          <app-playoff-calculator-games-container [weekMatchUps]="upcomingMatchUps[matchupOffset]" [selectable]="true"></app-playoff-calculator-games-container>
+          <app-playoff-calculator-games-container *ngIf="upcomingMatchUps.length > 0" [weekMatchUps]="upcomingMatchUps[matchupOffset]" [selectable]="true"></app-playoff-calculator-games-container>
         </div>
       </div>
     </mat-tab>
@@ -75,7 +75,7 @@
     </mat-tab>
   </mat-tab-group>
   <div class="margin-top-10 margin-bot-20 center-text"><span class="mid-bold-text">How this works:</span> Our forecast uses <span class="info__alert">{{playoffCalculatorService.NUMBER_OF_SIMULATIONS}}</span> simulations of the season and updates after every week. Our traditional model uses team starter value determined by the current player values on <span class="info__alert">KeepTradeCut.com</span>.
-    Our forecast currently doesn't take in to consideration injuries or player bye weeks.
+    Our forecast currently doesn't take in to consideration bye weeks.
   </div>
   <div class="center-text">
     <button mat-stroked-button (click)="downloadPlayoffCalculatorData()">Download this Data</button>

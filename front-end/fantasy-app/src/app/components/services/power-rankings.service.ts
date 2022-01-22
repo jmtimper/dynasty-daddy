@@ -200,28 +200,29 @@ export class PowerRankingsService {
       let teamRosterCount: number[] = positionGroupCount.slice();
       if (teamRosterCount[0] > 0) // qb
       {
-        team.starters.push(...team.roster[0].players.slice(0, teamRosterCount[0]));
+        team.starters.push(...this.getHealthyPlayersFromList(team.roster[0].players, teamRosterCount[0]));
       }
       if (teamRosterCount[1] > 0) // rb
       {
-        team.starters.push(...team.roster[1].players.slice(0, teamRosterCount[1]));
+        team.starters.push(...this.getHealthyPlayersFromList(team.roster[1].players, teamRosterCount[1]));
       }
       if (teamRosterCount[2] > 0) // wr
       {
-        team.starters.push(...team.roster[2].players.slice(0, teamRosterCount[2]));
+        team.starters.push(...this.getHealthyPlayersFromList(team.roster[2].players, teamRosterCount[2]));
       }
       if (teamRosterCount[3] > 0) // te
       {
-        team.starters.push(...team.roster[3].players.slice(0, teamRosterCount[3]));
+        team.starters.push(...this.getHealthyPlayersFromList(team.roster[3].players, teamRosterCount[3]));
       }
       if (teamRosterCount[4] > 0) // flex
       {
         teamRosterCount = this.getBestAvailableFlex(teamRosterCount[4], teamRosterCount, team);
       }
-      if (teamRosterCount[5] > 0) // flex
+      if (teamRosterCount[5] > 0) // sflex
       {
-        if (team.roster[0].players.length > teamRosterCount[0]) {
-          team.starters.push(team.roster[0].players[teamRosterCount[0]]);
+        const superFlexQB = this.getHealthyPlayersFromList(team.roster[0].players, 1, team.starters);
+        if (superFlexQB.length > 0) {
+          team.starters.push(...superFlexQB);
           teamRosterCount[0]++;
         } else {
           teamRosterCount = this.getBestAvailableFlex(teamRosterCount[5], teamRosterCount, team);
@@ -235,6 +236,29 @@ export class PowerRankingsService {
   }
 
   /**
+   * return list of healthy players from list
+   * @param players list of players to choose from
+   * @param numberOfPlayer number of players to choose
+   * @param excludedPlayers players to exclude from search
+   * @param excludedStatus injury status to exclude from active
+   * @private
+   */
+  private getHealthyPlayersFromList(
+    players: KTCPlayer[],
+    numberOfPlayer: number,
+    excludedPlayers: KTCPlayer[] = [],
+    excludedStatus: string[] = ['PUP', 'IR', 'Sus', 'COV']
+  ): KTCPlayer[] {
+    const activePlayers = [];
+    players.map( player => {
+      if (!excludedStatus.includes(player.injury_status) && activePlayers.length < numberOfPlayer && !excludedPlayers.includes(player)) {
+        activePlayers.push(player);
+      }
+    });
+    return activePlayers;
+  }
+
+  /**
    * determines the best available flex option for team by trade value
    * @param spots
    * @param teamRosterCount
@@ -243,14 +267,28 @@ export class PowerRankingsService {
    * @private
    */
   private getBestAvailableFlex(spots: number, teamRosterCount: number[], team: TeamPowerRanking): number[] {
-    for (let i = 0; i < spots; i++) {
-      const topRb = team.roster[1]?.players[teamRosterCount[1]];
-      const topWr = team.roster[2]?.players[teamRosterCount[2]];
-      const topTe = team.roster[3]?.players[teamRosterCount[3]];
+    // create clone for tracking flex
+    const processedPlayers = teamRosterCount.slice();
+
+    // selected player count
+    let selectedCount = 0;
+
+    // loop and get best flex option
+    for (let i = 0; selectedCount < spots; i++) {
+      const topRb = team.roster[1]?.players[processedPlayers[1]];
+      const topWr = team.roster[2]?.players[processedPlayers[2]];
+      const topTe = team.roster[3]?.players[processedPlayers[3]];
       const flexPlayer = this.getBetterPlayer(topTe, this.getBetterPlayer(topRb, topWr));
-      if (flexPlayer) {
-        teamRosterCount[this.positionGroups.indexOf(flexPlayer.position)]++;
+      // if no player is found return
+      if (!flexPlayer) {
+        return teamRosterCount;
+      }
+      processedPlayers[this.positionGroups.indexOf(flexPlayer.position)]++;
+      const activeFlex = this.getHealthyPlayersFromList([flexPlayer], 1, team.starters);
+      if (activeFlex.length > 0) {
         team.starters.push(flexPlayer);
+        teamRosterCount[this.positionGroups.indexOf(flexPlayer.position)]++;
+        selectedCount++;
       }
     }
     return teamRosterCount;

@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BaseChartDirective, Color, Label} from 'ng2-charts';
-import {ChartDataSets, ChartOptions} from 'chart.js';
+import {BaseChartDirective} from 'ng2-charts';
+import {ChartOptions} from 'chart.js';
 import {PlayerComparisonService} from '../../services/player-comparison.service';
 import {BaseComponent} from '../../base-component.abstract';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
@@ -119,7 +119,7 @@ export class TradeValueLineChartComponent extends BaseComponent implements OnIni
     // make new api requests if data is toggled between all time
     if (this.selectedDateFilter === 'alltime' && !this.playerComparisonService.isAllTime) {
       this.playerComparisonService.isAllTime = true;
-      this.playerComparisonService.regeneratePlayerCompData().pipe(tap(res => console.log('test', res)));
+      this.playerComparisonService.regeneratePlayerCompData().pipe(tap(res => console.log('player data: ', res)));
     } else if (this.selectedDateFilter !== 'alltime' && this.playerComparisonService.isAllTime) {
       this.playerComparisonService.isAllTime = false;
     }

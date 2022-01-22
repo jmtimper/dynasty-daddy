@@ -8,6 +8,7 @@ import {PlayerComparisonService} from '../services/player-comparison.service';
 import {SleeperService} from '../../services/sleeper.service';
 import {moveItemInArray} from '@angular/cdk/drag-drop';
 import {ConfigService} from '../../services/init/config.service';
+import {KTCPlayer} from '../../model/KTCPlayer';
 
 @Component({
   selector: 'app-player-comparisons',
@@ -25,12 +26,20 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
     super();
   }
 
+  /**
+   * active players filtered from players service
+   */
+  activePlayers: KTCPlayer[] = [];
+
   ngOnInit(): void {
     if (this.sleeperService.leagueLoaded) {
       this.playerComparisonService.isSuperFlex = this.sleeperService.selectedLeague.isSuperflex;
     }
     this.playerService.loadPlayerValuesForToday();
+
+    this.filterActivePlayers();
     this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
+      this.filterActivePlayers();
       if (this.playerComparisonService.lineChartData.length === 1
         && this.playerComparisonService.selectedPlayers[0] === undefined) {
         this.resetPlayerCompPlayers();
@@ -42,22 +51,36 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
   }
 
   /**
+   * filter player list to use active only players
+   * @private
+   */
+  private filterActivePlayers(): void {
+    this.activePlayers = this.playerService.playerValues.filter(player => {
+      const yesterdayDate = new Date().getTime() - 1000 * 60 * 60 * 24;
+      const isCurrent = new Date(player.date).setHours(0, 0, 0, 0) >= new Date(yesterdayDate).setHours(0, 0, 0, 0);
+      if (isCurrent) {
+        return player;
+      }
+    });
+  }
+
+  /**
    * selects random player to add to list
    * @param stars if true choose top 50 valuable player
    * @private
    * returns player number
    */
   private getRandomPlayer(stars: boolean = false): number {
-    return Math.floor(Math.random() * (stars ? 50 : this.playerService.playerValues.length - 1)) + 1;
+    return Math.floor(Math.random() * (stars ? 50 : this.activePlayers.length - 1)) + 1;
   }
 
   /**
    * adds random player to list
    */
   addRandomPlayer(): void {
-    this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[this.getRandomPlayer()]);
+    this.playerComparisonService.addPlayerToCharts(this.activePlayers[this.getRandomPlayer()]);
     if (this.playerComparisonService.isGroupMode) {
-      this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[this.getRandomPlayer()], true);
+      this.playerComparisonService.addPlayerToCharts(this.activePlayers[this.getRandomPlayer()], true);
     }
   }
 
@@ -101,8 +124,10 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
    * @private
    */
   private resetPlayerCompPlayers(): void {
-    const playerNum = this.getRandomPlayer(true);
-    this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum]);
-    this.playerComparisonService.addPlayerToCharts(this.playerService.playerValues[playerNum + 1]);
+    if (this.activePlayers.length > 0) {
+      const playerNum = this.getRandomPlayer(true);
+      this.playerComparisonService.addPlayerToCharts(this.activePlayers[playerNum]);
+      this.playerComparisonService.addPlayerToCharts(this.activePlayers[playerNum + 1]);
+    }
   }
 }

@@ -14,6 +14,7 @@ export class KTCPlayer {
   position_rank: string;
   age: number;
   experience: number;
+  injury_status: string;
   sf_trade_value: number;
   trade_value: number;
   owner: SleeperOwnerData = null;

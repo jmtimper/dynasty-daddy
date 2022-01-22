@@ -4,6 +4,10 @@
   max-width: 82px;
 }
 
+.mat-column-injury {
+  max-width: 60px;
+}
+
 .mat-column-full_name {
   min-width: 120px;
 }
@@ -16,6 +20,7 @@
 .mat-column-full_name,
 .mat-column-position,
 .mat-column-age,
+.mat-column-injury,
 .mat-column-owner {
   text-align: right;
   justify-content: flex-start;
@@ -37,3 +42,5 @@
 .ktc-table-element-row:active {
   background: #c33163;
 }
+
+.material-icons.color_yellow { color: #fdca40; }

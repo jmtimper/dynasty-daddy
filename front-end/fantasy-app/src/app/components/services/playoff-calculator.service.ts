@@ -348,7 +348,7 @@ export class PlayoffCalculatorService {
     for (let rosterId = 1; rosterId <= this.sleeperService.selectedLeague.totalRosters; rosterId++) {
       let totalWins = 0;
       for (let week = startWeek; week < this.sleeperService.selectedLeague.playoffStartWeek; week++) {
-        this.matchUpsWithProb[week - 1]?.map(matchUp => {
+        this.matchUpsWithProb[week - this.sleeperService.selectedLeague.startWeek]?.map(matchUp => {
           if (matchUp.matchUpDetails.team1RosterId === rosterId) {
             // check if game was manually selected
             if (matchUp.matchUpDetails.selectedWinner === 0) {
@@ -400,7 +400,6 @@ export class PlayoffCalculatorService {
         this.teamPlayoffOdds[rosterId].timesTeamWonOut += 1;
       }
     }
-
     return wins;
   }
 
@@ -517,6 +516,9 @@ export class PlayoffCalculatorService {
    * @private
    */
   private processTeamsLeft(teamsLeft: number[], matchup: SleeperPlayoffMatchUp): number[] {
+    if (matchup.win === null && matchup.loss === null) {
+      return teamsLeft;
+    }
     if (matchup.win === matchup.team1) {
       if (!teamsLeft.includes(matchup.team1)) {
         teamsLeft.push(matchup.team1);
@@ -575,10 +577,12 @@ export class PlayoffCalculatorService {
           this.teamPlayoffOdds[matchup.team2].timesMakeConfRd = this.NUMBER_OF_SIMULATIONS;
         } else if (matchup.round === 3 && (teamsLeft.includes(matchup.team1) || teamsLeft.includes(matchup.team2))) {
           this.processTeamsLeft(teamsLeft, matchup);
-          teamsEliminated.push(matchup.loss);
+          if (matchup.loss) {
+            teamsEliminated.push(matchup.loss);
+          }
           this.teamPlayoffOdds[matchup.team1].timesMakeChampionship = this.NUMBER_OF_SIMULATIONS;
           this.teamPlayoffOdds[matchup.team2].timesMakeChampionship = this.NUMBER_OF_SIMULATIONS;
-          if (weekDiff > 3) {
+          if (weekDiff > 3 && matchup.loss !== null) {
             if (!teamsEliminated.includes(matchup.team1)) {
               this.teamPlayoffOdds[matchup.team1].timesWinChampionship = this.NUMBER_OF_SIMULATIONS;
             } else {
@@ -700,7 +704,6 @@ export class PlayoffCalculatorService {
     // determine best record and update odds
     const bestTeam = this.determineBestTeamFromArray(simulatedWins, []);
     this.teamPlayoffOdds[bestTeam.team.roster.rosterId].timesWithBestRecord += 1;
-
 
     // determine number of bye weeks
     const numOfByeWeeks = this.sleeperService.selectedLeague.playoffTeams % 4;
@@ -844,7 +847,10 @@ export class PlayoffCalculatorService {
    * @private
    */
   public getStartWeek(): number {
-    if (this.nflService.stateOfNFL.season === this.sleeperService.selectedLeague.season) {
+    if (
+      this.nflService.stateOfNFL.season === this.sleeperService.selectedLeague.season
+      && this.nflService.stateOfNFL.seasonType !== 'post'
+    ) {
       return this.nflService.stateOfNFL.completedWeek + 1;
     }
     return Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18;
@@ -908,9 +914,10 @@ export class PlayoffCalculatorService {
     if (this.matchUpsWithProb.length === 0) {
       this.generateMatchUpsWithProb();
     }
-    const endWeek = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season ?
-      this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek
-      : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
+    const endWeek = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season
+      && this.nflService.stateOfNFL.seasonType !== 'post' ?
+        this.nflService.stateOfNFL.completedWeek - this.sleeperService.selectedLeague.startWeek
+        : (Number(this.sleeperService.selectedLeague.season) < 2021 ? 17 : 18);
     for (let i = 0; i <= endWeek; i++) {
       this.matchUpService.leagueMedians.push(this.getMedianPointsForWeek(this.matchUpsWithProb[i]));
     }
@@ -925,15 +932,15 @@ export class PlayoffCalculatorService {
     let selectedTeam = null;
     let minWinTotal = this.sleeperService.selectedLeague.playoffStartWeek;
     for (const simulatedTeam of simulatedWins) {
-        if (!selectedTeam || simulatedTeam.projWins < minWinTotal) {
+      if (!selectedTeam || simulatedTeam.projWins < minWinTotal) {
+        selectedTeam = simulatedTeam;
+        minWinTotal = simulatedTeam.projWins;
+      } else if (simulatedTeam.projWins === minWinTotal) {
+        const winner = this.calculateTieBreaker([selectedTeam, simulatedTeam]);
+        if (winner.team.roster.rosterId === selectedTeam.team.roster.rosterId) {
           selectedTeam = simulatedTeam;
-          minWinTotal = simulatedTeam.projWins;
-        } else if (simulatedTeam.projWins === minWinTotal) {
-          const winner = this.calculateTieBreaker([selectedTeam, simulatedTeam]);
-          if (winner.team.roster.rosterId === selectedTeam.team.roster.rosterId) {
-            selectedTeam = simulatedTeam;
-          }
         }
+      }
     }
     this.teamPlayoffOdds[selectedTeam.team.roster.rosterId].timesWithWorstRecord += 1;
   }

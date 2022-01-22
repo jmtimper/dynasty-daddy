@@ -1,13 +1,11 @@
 import {AfterViewInit, Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {SleeperService} from '../../../services/sleeper.service';
-import Gradient from 'javascript-color-gradient';
 import {PowerRankingsService} from '../../services/power-rankings.service';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {PlayoffCalculatorService} from '../../services/playoff-calculator.service';
 import {ColorService} from '../../services/color.service';
 import {ConfigService} from '../../../services/init/config.service';
-import {NflService} from '../../../services/utilities/nfl.service';
 
 @Component({
   selector: 'app-playoff-calculator-season-table',
@@ -89,8 +87,7 @@ export class PlayoffCalculatorSeasonTableComponent implements OnInit, AfterViewI
         case 'bestRecord':
           return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWithBestRecord;
         case 'winChampionship':
-          return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWinChampionship
-            || this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesMakeChampionship;
+          return this.playoffCalculatorService.teamPlayoffOdds[item.roster.rosterId]?.timesWinChampionship;
         default:
           return item[property];
       }
