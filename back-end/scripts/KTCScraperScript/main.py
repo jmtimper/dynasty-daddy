@@ -1,4 +1,3 @@
-import null as null
 from bs4 import BeautifulSoup
 import requests
 import psycopg2

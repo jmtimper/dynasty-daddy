@@ -30,4 +30,8 @@ RUN chmod 0644 /etc/cron.d/ktc-crontab
 RUN touch /var/log/cron.log
 #RUN crontab /etc/cron.d/ktc-crontab
 
+# set cron user
+RUN useradd -m cronUser
+USER cronUser
+
 CMD cron && tail -f /var/log/cron.log
