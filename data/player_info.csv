@@ -1,4 +1,3 @@
-id,name_id,full_name,first_name,last_name,team,position,age,experience,college,injury_status,weight,height,jersey_number,active,updated_at,created_at
 5,lamarjacksonqb,Lamar Jackson,Lamar,Jackson,BAL,QB,24,3,Louisville,,212,"6'2""",8,true,2021-12-05 22:50:31.811757 +00:00,2021-12-05 22:23:32.028955 +00:00
 6,justinherbertqb,Justin Herbert,Justin,Herbert,LAC,QB,23,1,Oregon,,237,"6'6""",10,true,2021-12-05 22:50:31.812428 +00:00,2021-12-05 22:23:32.029764 +00:00
 7,justinjeffersonwr,Justin Jefferson,Justin,Jefferson,MIN,WR,22,1,LSU,,195,"6'1""",18,true,2021-12-05 22:50:31.813048 +00:00,2021-12-05 22:23:32.030573 +00:00

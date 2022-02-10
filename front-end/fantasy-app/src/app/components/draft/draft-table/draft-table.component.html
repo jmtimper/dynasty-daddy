@@ -1,73 +1,51 @@
-<div class="table-container">
-  <div>
-    <mat-button-toggle-group [(ngModel)]="mockDraftConfig" (change)="changeMockDraftType()" class="button-left"
-                             style="overflow: auto">
-      <mat-button-toggle value="player">Player Value</mat-button-toggle>
-      <!--      <mat-button-toggle value="team">Team Needs</mat-button-toggle>-->
-      <mat-button-toggle value="custom">Custom</mat-button-toggle>
-    </mat-button-toggle-group>
-    <span class="container_spacer"></span>
-    <button class="button-right" mat-raised-button color="accent" (click)="resetMockDraft()">Reset</button>
-  </div>
+<div class="margin-top-10">
+  <mat-table [dataSource]="dataSource">
 
-  <div class="margin-top-10 mat-elevation-z8">
-    <mat-table [dataSource]="dataSource">
+    <!-- Name Column -->
+    <ng-container matColumnDef="pickNumber">
+      <mat-header-cell *matHeaderCellDef>Pick</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.pickdisplay}}</mat-cell>
+    </ng-container>
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="pickNumber">
-        <mat-header-cell *matHeaderCellDef>Pick</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.pickdisplay}}</mat-cell>
-      </ng-container>
+    <!-- Pos Column -->
+    <ng-container matColumnDef="team">
+      <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.pickTeam}}</mat-cell>
+    </ng-container>
 
-      <!-- Pos Column -->
-      <ng-container matColumnDef="team">
-        <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.pickTeam}}</mat-cell>
-      </ng-container>
+    <!-- Age Column -->
+    <ng-container matColumnDef="owner">
+      <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.pickOwner}}</mat-cell>
+    </ng-container>
 
-      <!-- Age Column -->
-      <ng-container matColumnDef="owner">
-        <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.pickOwner}}</mat-cell>
-      </ng-container>
+    <ng-container matColumnDef="pickValue">
+      <mat-header-cell *matHeaderCellDef>Pick Trade Value</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.pickOwner}}</mat-cell>
+    </ng-container>
 
-      <ng-container matColumnDef="pickValue">
-        <mat-header-cell *matHeaderCellDef>Pick Trade Value</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.pickOwner}}</mat-cell>
-      </ng-container>
-
-      <!-- Value Column -->
-      <ng-container matColumnDef="projectedPlayer">
-        <mat-header-cell *matHeaderCellDef>Projected Pick</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <!-- player value mock draft dropdown-->
-          <mat-form-field *ngIf="element.pick <= selectedPlayers.length && mockDraftConfig == 'player'"
-                          appearance="standard" class="mat-dropdown-wide-300">
-            <mat-select [(ngModel)]="selectedPlayers[element.pick-1]"
-                        (selectionChange)="updateDraftSelections(element.pick)" placeholder="Select Player">
-              <mat-option *ngFor="let player of selectedPlayers.slice(element.pick-1)"
-                          [value]="player">{{player.position}} {{player.full_name}}
-                - {{player.sf_trade_value}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <!-- custom mock draft dropdown-->
-          <mat-form-field *ngIf="element.pick <= mockDraftService.selectablePlayers.length && mockDraftConfig == 'custom'"
-                          appearance="standard" class="mat-dropdown-wide-300">
-            <mat-select [(ngModel)]="selectedPlayers[element.pick-1]" drlr placeholder="Select Player">
-              <mat-option *ngFor="let player of mockDraftService.selectablePlayers" [disabled]="isPlayerAlreadySelected(player)"
-                          [value]="player">{{player.position}} {{player.full_name}}
-                - {{player.sf_trade_value}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <span *ngIf="element.pick > mockDraftService.selectablePlayers.length">
-          No more rookies in system
+    <!-- Value Column -->
+    <ng-container matColumnDef="projectedPlayer">
+      <mat-header-cell *matHeaderCellDef>Projected Pick</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <!-- player value mock draft dropdown-->
+        <mat-form-field *ngIf="element.pick <= mockDraftService.selectablePlayers.length"
+                        appearance="standard" class="mat-dropdown-wide-300" color="accent">
+          <mat-select [(ngModel)]="selectedPlayers[element.pick-1]"
+                      (selectionChange)="updateDraftSelections(element.pick)" placeholder="Select Player">
+            <mat-option *ngFor="let player of mockDraftService.selectablePlayers" [disabled]="isPlayerAlreadySelected(player, this.selectedPlayers.slice(0, element.pick - 1))"
+                        [value]="player">{{player.position}} {{player.full_name}}
+              - {{player.sf_trade_value}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <span *ngIf="element.pick > mockDraftService.selectablePlayers.length">
+          No more players in system
         </span>
-        </mat-cell>
-      </ng-container>
+      </mat-cell>
+    </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'accent__color__background': sleeperService.sleeperUser?.userData.username === row.pickOwner}"></mat-row>
-    </mat-table>
-    <mat-paginator [pageSizeOptions]="[pageLength, 2 * pageLength, 4 * pageLength]" showFirstLastButtons></mat-paginator>
-  </div>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'accent__color__background': sleeperService.sleeperUser?.userData.username === row.pickOwner}"></mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[pageLength, 2 * pageLength, 4 * pageLength]" showFirstLastButtons></mat-paginator>
 </div>

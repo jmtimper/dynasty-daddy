@@ -4,13 +4,18 @@ import requests
 import psycopg2
 from sleeper_wrapper import Players
 
+
 # cleans player ids in order to map ktc value to sleeper data
 def cleanPlayerIdString(playerId):
-    return playerId.lower().replace("jr.", "").replace("sr.", "").replace("iii", "").replace(" ", "").replace(".","").replace("-", "").replace("'", "")
+    return playerId.lower().replace("jr.", "").replace("sr.", "").replace("iii", "").replace(" ", "").replace(".",
+                                                                                                              "").replace(
+        "-", "").replace("'", "")
+
 
 # API calls to sleeper
 players = Players()
 sleeperData = players.get_all_players()
+
 
 # creates a dict of sleeper ids mapped to name ids
 def getSleeperData():
@@ -37,7 +42,8 @@ def getSleeperData():
 # Player class that is inserted into table
 class Player:
     def __init__(self, id, name, first_name, last_name, team, position, sfPositionRank, positionRank, age, experience,
-                 sf_value, value, sleeperId=None, college=None, injury_status=None, weight=None, height=None, jersey_number=-1, active=None):
+                 sf_value, value, sleeperId=None, college=None, injury_status=None, weight=None, height=None,
+                 jersey_number=-1, active=None):
         self.id = id
         self.name = name
         self.first_name = first_name
@@ -156,7 +162,8 @@ for player in sf_rankings:
                None if str(playerPosition.text.strip())[2:] == 'CK' else str(playerPosition.text.strip())[2:],
                None if str(oneQBPostion.text.strip())[2:] == 'CK' else str(oneQBPostion.text.strip())[2:],
                None if playerAge is None else str(playerAge.text.strip())[:2], playerExp,
-               sfTradeValue.text.strip(), tradeValue.text.strip(), sleeperId, college, injuryStatus, weight, height, jerseyNum, active))
+               sfTradeValue.text.strip(), tradeValue.text.strip(), sleeperId, college, injuryStatus, weight, height,
+               jerseyNum, active))
 
 # for player in players:
 #      player.toString()
@@ -168,13 +175,13 @@ for player in sf_rankings:
 
 try:
     # Establishing the connection
-    conn = psycopg2.connect(
-        database=os.environ['HEROKU_DATABASE'], user=os.environ['HEROKU_USER'], password=os.environ['HEROKU_PASSWORD'], host=os.environ['HEROKU_HOST'], port=os.environ['HEROKU_PORT']
-    )
-
     # conn = psycopg2.connect(
-    #     database="player_rankings", user='postgres', password='postgres', host='localhost', port='5432'
+    #     database=os.environ['HEROKU_DATABASE'], user=os.environ['HEROKU_USER'], password=os.environ['HEROKU_PASSWORD'], host=os.environ['HEROKU_HOST'], port=os.environ['HEROKU_PORT']
     # )
+
+    conn = psycopg2.connect(
+        database="docker", user='docker', password='docker', host='db', port='5432'
+    )
 
     # Setting auto commit false
     conn.autocommit = True
@@ -184,8 +191,10 @@ try:
     try:
         # Preparing SQL queries to INSERT a record into the database.
         for player in players:
-            # player info table insert
-            playerInfoStatement = '''INSERT INTO player_info (name_id, full_name, first_name, last_name, team, position, age, experience, college, injury_status, weight, height, jersey_number, active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            if player.sleeperId is None and player.position != 'PI': print(player.name + ': Error finding Sleeper Id')
+            if player.sleeperId is not None and player.position != 'PI':
+                # player info table insert
+                playerInfoStatement = '''INSERT INTO player_info (name_id, full_name, first_name, last_name, team, position, age, experience, college, injury_status, weight, height, jersey_number, active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (name_id) DO UPDATE
                     SET
                     name_id = %s,
@@ -203,27 +212,27 @@ try:
                     jersey_number = %s,
                     active = %s,
                     updated_at = now(); '''
-            cursor.execute(playerInfoStatement, (player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active, player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active))
+                cursor.execute(playerInfoStatement, (
+                    player.id, player.name, player.first_name, player.last_name, player.team, player.position,
+                    player.age,
+                    player.experience, player.college, player.injury_status, player.weight, player.height,
+                    player.jersey_number, player.active, player.id, player.name, player.first_name, player.last_name,
+                    player.team, player.position, player.age, player.experience, player.college, player.injury_status,
+                    player.weight, player.height, player.jersey_number, player.active))
 
-            # player id linking table insert
-            playerIdsStatement = '''INSERT INTO player_ids (name_id, sleeper_id) VALUES (%s, %s)
+                # player id linking table insert
+                playerIdsStatement = '''INSERT INTO player_ids (name_id, sleeper_id) VALUES (%s, %s)
                     ON CONFLICT (name_id) DO UPDATE
                     SET
                     name_id = %s,
                     sleeper_id = %s,
                     updated_at = now(); '''
-            cursor.execute(playerIdsStatement, (player.id, player.sleeperId, player.id, player.sleeperId))
+                cursor.execute(playerIdsStatement, (player.id, player.sleeperId, player.id, player.sleeperId))
 
             # player values insert daily values
             cursor.execute('''INSERT into player_values(name_id, sf_position_rank, position_rank, sf_trade_value, trade_value)
             VALUES (%s, %s, %s, %s, %s)''', (
-            player.id, player.sfPositionRank, player.positionRank, player.sf_value, player.value))
-
-            # legacy table insert
-            # cursor.execute('''INSERT into ktc_players(name_id, sleeper_id, full_name, first_name, last_name, team, position, sf_position_rank, position_rank, age, experience, sf_trade_value, trade_value)
-            # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )''', (
-            # player.id, player.sleeperId, player.name, player.first_name, player.last_name, player.team, player.position,
-            # player.sfPositionRank, player.positionRank, player.age, player.experience, player.sf_value, player.value))
+                player.id, player.sfPositionRank, player.positionRank, player.sf_value, player.value))
 
         # Commit your changes in the database
         conn.commit()

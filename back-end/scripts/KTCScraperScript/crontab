@@ -1,1 +1,1 @@
-* * * * * python /app/ktc-rankings-scraper.py >> /var/log/cron.log 2>&1
+* * * * * root /usr/local/bin/python /app/ktc-rankings-scraper.py >> /var/log/cron.log 2>&1

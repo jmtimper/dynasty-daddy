@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {SleeperService} from '../../services/sleeper.service';
-import {PowerRankingsService} from '../services/power-rankings.service';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
 import {MockDraftService} from '../services/mock-draft.service';
@@ -12,7 +11,12 @@ import {CompletedDraft} from '../../model/SleeperUser';
   styleUrls: ['./draft.component.css']
 })
 export class DraftComponent extends BaseComponent implements OnInit {
+
+  /** currently selected draft */
   selectedDraft: CompletedDraft | string;
+
+  /** rerender table when refreshed */
+  resetTrigger: boolean = true;
 
   constructor(public sleeperService: SleeperService,
               private playersService: PlayerService,
@@ -48,6 +52,14 @@ export class DraftComponent extends BaseComponent implements OnInit {
     if (this.mockDraftService.teamPicks.length > 0) {
       this.selectedDraft = 'upcoming';
     }
+  }
+
+  /**
+   * wraps mock draft service call to reset
+   */
+  resetMockDraft(): void {
+    this.mockDraftService.resetDraftList();
+    this.resetTrigger = !this.resetTrigger;
   }
 
 }

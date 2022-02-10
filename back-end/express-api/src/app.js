@@ -7,8 +7,7 @@ import cors from 'cors';
 const app = express();
 
 var originsWhitelist = [
-  'http://localhost:4200',
-  'https://dynasty-daddy.herokuapp.com/'
+  'http://localhost:4200'
 ];
 var corsOptions = {
   origin: function(origin, callback){

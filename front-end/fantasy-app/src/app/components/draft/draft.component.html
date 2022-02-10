@@ -18,8 +18,18 @@
 </div>
 
 <div *ngIf="sleeperService.leagueLoaded">
-  <div *ngIf="selectedDraft == 'upcoming'" class="margin-top-25">
-    <app-draft-table></app-draft-table>
+  <div *ngIf="selectedDraft == 'upcoming'" class="margin-top-25 mock-draft-table-container">
+    <div>
+      <mat-button-toggle-group [(ngModel)]="mockDraftService.mockDraftConfig" class="button-left"
+                               style="overflow: auto">
+        <mat-button-toggle value="player">Player Value</mat-button-toggle>
+        <!--      <mat-button-toggle value="team">Team Needs</mat-button-toggle>-->
+        <mat-button-toggle value="custom">Custom</mat-button-toggle>
+      </mat-button-toggle-group>
+      <span class="container_spacer"></span>
+      <button class="button-right" mat-raised-button color="accent" (click)="resetMockDraft()">Reset</button>
+    </div>
+    <app-draft-table [mockDraftConfig]="mockDraftService.mockDraftConfig" [isReset]="resetTrigger"></app-draft-table>
   </div>
 
   <div *ngIf="selectedDraft && selectedDraft !== 'upcoming'" class="margin-top-25">
