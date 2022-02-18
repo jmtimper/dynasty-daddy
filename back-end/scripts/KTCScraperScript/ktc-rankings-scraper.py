@@ -175,13 +175,13 @@ for player in sf_rankings:
 
 try:
     # Establishing the connection
-    # conn = psycopg2.connect(
-    #     database=os.environ['HEROKU_DATABASE'], user=os.environ['HEROKU_USER'], password=os.environ['HEROKU_PASSWORD'], host=os.environ['HEROKU_HOST'], port=os.environ['HEROKU_PORT']
-    # )
-
     conn = psycopg2.connect(
-        database="docker", user='docker', password='docker', host='db', port='5432'
+        database=os.environ['DO_DATABASE'], user=os.environ['DO_DB_USER'], password=os.environ['DO_DB_PASSWORD'], host=os.environ['DO_DB_HOST'], port=os.environ['DO_DB_PORT']
     )
+
+    # conn = psycopg2.connect(
+    #     database="docker", user='docker', password='docker', host='db', port='5432'
+    # )
 
     # Setting auto commit false
     conn.autocommit = True
