@@ -88,6 +88,7 @@ export class PlayerService {
       });
       this.$loadPlayerStatsForSeason().subscribe((playerStatsResponse) => {
         this.spinner.hide();
+        console.log('state of nfl: ', this.nflService.stateOfNFL);
         this.$currentPlayerValuesLoaded.next();
       }, sleeperError => {
         console.error(`Could Not Load Player Points from sleeper - ${sleeperError}`);
@@ -136,7 +137,7 @@ export class PlayerService {
         return of(this.playerStats);
       })));
       let currentWeekInd = this.nflService.stateOfNFL.seasonType !== 'post' ? this.nflService.stateOfNFL.completedWeek : 18;
-      let currentYearInd = Number(this.nflService.stateOfNFL.season);
+      let currentYearInd = Number(this.nflService.getYearForStats());
       for (let weekNum = 1; weekNum < 19; weekNum++) {
         if (currentWeekInd === 0) {
           currentYearInd = currentYearInd - 1;
@@ -251,7 +252,7 @@ export class PlayerService {
     index--;
     if (this.nflService.stateOfNFL) {
       let weekNum = this.nflService.stateOfNFL.completedWeek - index;
-      let year = Number(this.nflService.stateOfNFL.season);
+      let year = Number(this.nflService.getYearForStats());
       if (weekNum < 1) {
         year--;
         weekNum = (year < 2021 ? 17 : 18) - Math.abs(weekNum);

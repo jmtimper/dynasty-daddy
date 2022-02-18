@@ -60,7 +60,7 @@ export class NflService {
       this.stateOfNFL = season;
       this.stateOfNFL.completedWeek = season.seasonType !== 'pre' && season.week > 0 ? season.week - 1 : 0;
       // weird api issue with sleeper fix
-      if (season.seasonType === 'star' && new Date().getFullYear() > Number(season.season)) {
+      if ((season.seasonType === 'star' || season.seasonType === 'off') && new Date().getFullYear() > Number(season.season)) {
         this.stateOfNFL.seasonType = 'post';
         this.stateOfNFL.completedWeek = 18;
       }
@@ -72,7 +72,11 @@ export class NflService {
    * handles edge case when switching between seasons in playoffs
    */
   getYearForStats(): string {
-    return this.stateOfNFL.seasonType === 'off'
-    || this.stateOfNFL.seasonType === 'pre' ? this.stateOfNFL.previousSeason : this.stateOfNFL.season;
+    switch (this.stateOfNFL.seasonType) {
+      case 'off' || 'pre':
+        return this.stateOfNFL.previousSeason;
+      default:
+        return this.stateOfNFL.season;
+    }
   }
 }
