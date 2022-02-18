@@ -67,7 +67,6 @@ class Player:
 #       Scraping KTC data       #
 #  written by: Jeremy Timperio  #
 #################################
-
 # URL to scrape data uses requests import
 sf_URL = 'https://keeptradecut.com/dynasty-rankings?format=2'
 sf_page = requests.get(sf_URL)
@@ -183,8 +182,10 @@ try:
     try:
         # Preparing SQL queries to INSERT a record into the database.
         for player in players:
-            # player info table insert
-            playerInfoStatement = '''INSERT INTO player_info (name_id, full_name, first_name, last_name, team, position, age, experience, college, injury_status, weight, height, jersey_number, active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            if player.sleeperId is None and player.position != 'PI': print(player.name + ': Error finding Sleeper Id')
+            if player.sleeperId is not None and player.position != 'PI':
+                # player info table insert
+                playerInfoStatement = '''INSERT INTO player_info (name_id, full_name, first_name, last_name, team, position, age, experience, college, injury_status, weight, height, jersey_number, active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (name_id) DO UPDATE
                     SET
                     name_id = %s,
@@ -202,11 +203,9 @@ try:
                     jersey_number = %s,
                     active = %s,
                     updated_at = now(); '''
-            cursor.execute(playerInfoStatement, (player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active, player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active))
+                cursor.execute(playerInfoStatement, (player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active, player.id, player.name, player.first_name, player.last_name, player.team, player.position, player.age, player.experience, player.college, player.injury_status, player.weight, player.height, player.jersey_number, player.active))
 
-            # player id linking table insert
-            if player.sleeperId is None and player.position != 'PI': print(player.name + ': Error finding Sleeper Id')
-            if player.sleeperId is not None and player.position != 'PI':
+                # player id linking table insert
                 playerIdsStatement = '''INSERT INTO player_ids (name_id, sleeper_id) VALUES (%s, %s)
                     ON CONFLICT (name_id) DO UPDATE
                     SET
@@ -219,12 +218,6 @@ try:
             cursor.execute('''INSERT into player_values(name_id, sf_position_rank, position_rank, sf_trade_value, trade_value)
             VALUES (%s, %s, %s, %s, %s)''', (
             player.id, player.sfPositionRank, player.positionRank, player.sf_value, player.value))
-
-            # legacy table insert
-            # cursor.execute('''INSERT into ktc_players(name_id, sleeper_id, full_name, first_name, last_name, team, position, sf_position_rank, position_rank, age, experience, sf_trade_value, trade_value)
-            # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )''', (
-            # player.id, player.sleeperId, player.name, player.first_name, player.last_name, player.team, player.position,
-            # player.sfPositionRank, player.positionRank, player.age, player.experience, player.sf_value, player.value))
 
         # Commit your changes in the database
         conn.commit()

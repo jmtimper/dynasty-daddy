@@ -13,8 +13,6 @@ import {HeaderComponent} from './components/header/header.component';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {KtcTableComponent} from './components/player-values/ktc-table/ktc-table.component';
 import {PlayerValuesComponent} from './components/player-values/player-values.component';
-
-
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
@@ -75,7 +73,6 @@ import { PlayerPosTableComponent } from './components/player-statistics/player-p
 import { PlayerPosScatterChartComponent } from './components/player-statistics/player-pos-scatter-chart/player-pos-scatter-chart.component';
 import { WeeklyMedianChartComponent } from './components/standings/weekly-median-chart/weekly-median-chart.component';
 import { TeamTransactionsChartComponent } from './components/standings/team-transactions-chart/team-transactions-chart.component';
-
 
 export function initialize(startupService: StartupService): any {
   return (): Promise<any> => {

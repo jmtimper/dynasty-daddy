@@ -19,6 +19,9 @@ export class PlayerService {
   /** player values for today */
   playerValues: KTCPlayer[] = [];
 
+  /** player values for today with no filtering */
+  unfilteredPlayerValues: KTCPlayer[] = [];
+
   /** player values for last month */
   prevPlayerValues: KTCPlayerDataPoint[] = [];
 
@@ -33,43 +36,6 @@ export class PlayerService {
 
   /** dict of trade value calculations by player name id */
   playerValueAnalysis = {};
-
-  /** full team name based on acc */
-  private teamAccToFullName = {
-    'CAR': 'Carolina Panthers',
-    'NOS': 'New Orleans Saints',
-    'TBB': 'Tampa Bay Buccaneers',
-    'ATL': 'Atlanta Falcons',
-    'LAR': 'Los Angeles Rams',
-    'SEA': 'Seattle Seahawks',
-    'SFO': 'San Francisco 49ers',
-    'ARI': 'Arizona Cardinals',
-    'DAL': 'Dallas Cowboys',
-    'NYG': 'New York Giants',
-    'PHI': 'Philadelphia Eagles',
-    'WAS': 'Washington Football Team',
-    'GBP': 'Green Bay Packers',
-    'MIN': 'Minnesota Vikings',
-    'DET': 'Detroit Lions',
-    'CHI': 'Chicago Bears',
-    'KCC': 'Kansas City Chiefs',
-    'LVR': 'Las Vegas Raiders',
-    'LAC': 'Los Angeles Chargers',
-    'DEN': 'Denver Broncos',
-    'HOU': 'Houston Texans',
-    'TEN': 'Tennessee Titans',
-    'IND': 'Indianapolis Colts',
-    'JAC': 'Jacksonville Jaguars',
-    'CLE': 'Cleveland Browns',
-    'PIT': 'Pittsburgh Steelers',
-    'BAL': 'Baltimore Ravens',
-    'CIN': 'Cincinnati Bengals',
-    'BUF': 'Buffalo Bills',
-    'MIA': 'Miami Dolphins',
-    'NYJ': 'New York Jets',
-    'NEP': 'New England Patriots',
-    'FA': 'Free Agent'
-  };
 
   /** player stats year */
   playerStatsYear: string = '';
@@ -112,6 +78,7 @@ export class PlayerService {
       ]
     ).subscribe(([currentPlayers, pastPlayers]) => {
       this.prevPlayerValues = pastPlayers;
+      this.unfilteredPlayerValues = currentPlayers;
       this.playerValues = currentPlayers.filter(player => {
         if (player.position === 'PI') {
           return Number(player.first_name) >= new Date().getFullYear();
@@ -121,6 +88,7 @@ export class PlayerService {
       });
       this.$loadPlayerStatsForSeason().subscribe((playerStatsResponse) => {
         this.spinner.hide();
+        console.log('state of nfl: ', this.nflService.stateOfNFL);
         this.$currentPlayerValuesLoaded.next();
       }, sleeperError => {
         console.error(`Could Not Load Player Points from sleeper - ${sleeperError}`);
@@ -151,8 +119,7 @@ export class PlayerService {
       return of(this.playerStats);
     }
     return this.nflService.$initStateOfNfl().pipe(map((season) => {
-      this.playerStatsYear = this.nflService.stateOfNFL.seasonType === 'off'
-      || this.nflService.stateOfNFL.seasonType === 'pre' ? this.nflService.stateOfNFL.previousSeason : this.nflService.stateOfNFL.season;
+      this.playerStatsYear = this.nflService.getYearForStats();
       const observe = [];
       observe.push(this.sleeperApiService.getSleeperStatsForYear(this.playerStatsYear).pipe(map((response: any) => {
         this.playerStats = response;
@@ -170,7 +137,7 @@ export class PlayerService {
         return of(this.playerStats);
       })));
       let currentWeekInd = this.nflService.stateOfNFL.seasonType !== 'post' ? this.nflService.stateOfNFL.completedWeek : 18;
-      let currentYearInd = Number(this.nflService.stateOfNFL.season);
+      let currentYearInd = Number(this.nflService.getYearForStats());
       for (let weekNum = 1; weekNum < 19; weekNum++) {
         if (currentWeekInd === 0) {
           currentYearInd = currentYearInd - 1;
@@ -261,7 +228,7 @@ export class PlayerService {
    * @param acc
    */
   getFullTeamNameFromACC(acc: string): string {
-    return this.teamAccToFullName[acc];
+    return this.nflService.teamAccToFullName[acc];
   }
 
   /**
@@ -285,7 +252,7 @@ export class PlayerService {
     index--;
     if (this.nflService.stateOfNFL) {
       let weekNum = this.nflService.stateOfNFL.completedWeek - index;
-      let year = Number(this.nflService.stateOfNFL.season);
+      let year = Number(this.nflService.getYearForStats());
       if (weekNum < 1) {
         year--;
         weekNum = (year < 2021 ? 17 : 18) - Math.abs(weekNum);
@@ -408,7 +375,7 @@ export class PlayerService {
   getCurrentPlayerValue(player: KTCPlayer, isSuperFlex: boolean): number {
     const now = new Date();
     const lastWeekMs = now.getTime() - 1000 * 60 * 60 * 24 * 7;
-    if (new Date(player.date).setHours(0, 0, 0, 0) < new Date(lastWeekMs).setHours(0, 0, 0, 0)) {
+    if (player.position !== 'PI' && new Date(player.date).setHours(0, 0, 0, 0) < new Date(lastWeekMs).setHours(0, 0, 0, 0)) {
       return 0;
     } else {
       return isSuperFlex ? player.sf_trade_value : player.trade_value;

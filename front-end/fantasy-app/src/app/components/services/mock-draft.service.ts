@@ -17,13 +17,22 @@ export class MockDraftService {
   /** available players */
   selectablePlayers: KTCPlayer[] = [];
 
+  /** current filter for mock draft */
+  mockDraftConfig: string = 'player';
+
+  /** state of value selected players */
+  valueSelectedPlayers: KTCPlayer[] = [];
+
+  /** state of custom selected players */
+  customSelectedPlayers: KTCPlayer[] = [];
+
   constructor(private sleeperService: SleeperService) {
   }
 
   /**
    * generate draft order
    * @param players list of players
-   * @param isSuperFlex is draft superflex
+   * @param isSuperFlex is draft super flex
    * @param playerType draft type, 1 == rookies only, 2 == vets only, 3 == all players
    */
   generateDraft(players: KTCPlayer[], isSuperFlex: boolean = true, playerType: number = 3): void {
@@ -48,10 +57,7 @@ export class MockDraftService {
         return playerB.trade_value - playerA.trade_value;
       }
     });
-
-    // this.picks = players.filter(player => {
-    //   return player.position === 'PI';
-    // })
+    this.valueSelectedPlayers = this.selectablePlayers.slice();
   }
 
   /**
@@ -77,6 +83,13 @@ export class MockDraftService {
   }
 
   /**
+   * reset mock drafts to defaults
+   */
+  resetDraftList(): void {
+    this.mockDraftConfig === 'custom' ? this.customSelectedPlayers = [] : this.valueSelectedPlayers = this.selectablePlayers.slice();
+  }
+
+  /**
    * create pick string display
    * @param pick pick details
    * @private
@@ -92,6 +105,5 @@ export class MockDraftService {
   reset(): void {
     this.teamPicks = [];
     this.selectablePlayers = [];
-    // this.picks = [];
   }
 }

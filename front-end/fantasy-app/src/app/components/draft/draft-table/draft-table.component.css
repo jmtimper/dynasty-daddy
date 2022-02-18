@@ -1,7 +1,3 @@
-.actions-bar {
-  position: fixed;
-}
-
 .mat-column-pickNumber {
   max-width: 82px;
 }
@@ -9,11 +5,22 @@
 .mat-column-owner,
 .mat-column-team {
   min-width: 120px;
+  max-width:240px;
   text-align: left;
   justify-content: start;
 }
 
-.mat-column-pickValue {
+.mat-column-pickValue,
+.mat-column-projectedPlayer{
   text-align: right;
   justify-content: flex-end;
 }
+
+/*::ng-deep .mat-select-panel {*/
+/*  max-height: 80vh !important;*/
+/*}*/
+
+/*::ng-deep .mat-form-field-wrapper{*/
+/*  margin-bottom: -1em;*/
+/*  margin-top: -1em;*/
+/*}*/
