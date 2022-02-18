@@ -40,3 +40,19 @@ jobs:
           repository: jmtimper/dynasty-daddy-front-end
           dockerfile: ./front-end/fantasy-app/Dockerfile
           tags: latest
+
+  build-and-deploy-cron:
+    name: Build and Deploy cron
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: jmtimper/dynasty-daddy-cron
+          dockerfile: ./back-end/scripts/KTCScraperScript/Dockerfile
+          tags: latest

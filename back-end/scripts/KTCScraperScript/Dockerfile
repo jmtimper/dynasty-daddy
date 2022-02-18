@@ -2,11 +2,11 @@ FROM python:3.8.8
 RUN apt-get update && apt-get -y install cron vim
 
 WORKDIR /app
-COPY requirements.txt /app/requirements.txt
+COPY back-end/scripts/KTCScraperScript/requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 RUN echo "00 8 * * * /usr/local/bin/python /app/ktc-rankings-scraper.py >> /var/log/cron.log 2>&1" >> /etc/cron.d/ktc-crontab
-COPY ktc-rankings-scraper.py /app/ktc-rankings-scraper.py
+COPY back-end/scripts/KTCScraperScript/ktc-rankings-scraper.py /app/ktc-rankings-scraper.py
 # execution rights to cron
 RUN chmod 0644 /etc/cron.d/ktc-crontab
 # Apply cron job
