@@ -1,14 +1,15 @@
 # Base image
-FROM node:12.7-alpine AS build
-RUN mkdir -p /usr/src/app
-RUN mkdir -p /usr/src/app/frontend
-WORKDIR /usr/src/app/frontend
-COPY package*.json ./
+FROM node:lts-alpine
+WORKDIR /usr/src/app
+COPY front-end/fantasy-app/package*.json ./
+RUN ls -l
 RUN npm install
-COPY . .
+COPY front-end/fantasy-app ./
+RUN ls -l
 RUN npm run build --prod
-
+COPY front-end/fantasy-app/server.js dist/server.js
+RUN ls -l
 ## Expose port to access server
-EXPOSE 3000
+EXPOSE 4200
 # Command to run our app
 CMD [ "node", "server.js" ]

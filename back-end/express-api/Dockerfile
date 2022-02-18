@@ -1,16 +1,15 @@
 # Base image
-FROM node
-# Make folder to put our files in
-RUN mkdir -p /usr/src/app
-RUN mkdir -p /usr/src/app/backend
+FROM node:lts-alpine
 # Set working directory so that all subsequent command runs in this folder
-WORKDIR /usr/src/app/backend
+WORKDIR /usr/src/app
 # Copy package json and install dependencies
-COPY package*.json ./
+COPY back-end/express-api/package*.json ./
+RUN ls -l
 RUN npm install
 # Copy our app
-COPY . .
+COPY back-end/express-api .
+RUN ls -l
 # Expose port to access server
-EXPOSE 8080
+#EXPOSE 8080
 # Command to run our app
 CMD [ "npm", "start"]
