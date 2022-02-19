@@ -1,0 +1,44 @@
+version: '3'
+services:
+  app:
+    image: index.docker.io/jmtimper/dynasty-daddy-front-end:latest
+    ports:
+      - "4200:4200"
+    container_name: dynasty-daddy-app
+    restart: always
+    depends_on:
+      - api
+      - db
+    links:
+      - api
+  api:
+    image: index.docker.io/jmtimper/dynasty-daddy-back-end:latest
+    ports:
+      - "3000:3000"
+    container_name: dynasty-daddy-api
+    restart: always
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=docker
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+  scraper:
+    build: index.docker.io/jmtimper/dynasty-daddy-cron:latest
+    container_name: dynasty-daddy-cron
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $HOME/.docker/config.json:/config.json
+    command: --interval 30
