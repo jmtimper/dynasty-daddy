@@ -50,6 +50,7 @@ export class MockDraftService {
       });
     }
     // sort players by value
+    // TODO refactor
     this.selectablePlayers.sort((playerA, playerB) => {
       if (this.sleeperService.selectedLeague.isSuperflex){
         return playerB.sf_trade_value - playerA.sf_trade_value;
@@ -64,7 +65,7 @@ export class MockDraftService {
    * map draft objects to teams
    * @param teams fantasy teams
    */
-  mapDraftObjects(teams: SleeperTeam[]): void {
+  mapDraftObjects(teams: SleeperTeam[]): void  {
     if (this.teamPicks.length === 0) {
       teams.map(team => {
         for (const pick of team.draftCapital) {

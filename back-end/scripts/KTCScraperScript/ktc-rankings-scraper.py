@@ -16,26 +16,26 @@ def cleanPlayerIdString(playerId):
 players = Players()
 sleeperData = players.get_all_players()
 
-
 # creates a dict of sleeper ids mapped to name ids
 def getSleeperData():
     temp = {}
     for playerId, value in sleeperData.items():
-        sleepervalue = cleanPlayerIdString(str(value['first_name'] + value['last_name'] + str(value['position'])))
-        temp[sleepervalue] = playerId
-        # handle edge cases
-        # P.J. Walker
-        if value['first_name'] == 'Phillip':
-            sleepervalue = cleanPlayerIdString(str('pj' + value['last_name'] + str(value['position'])).lower())
+        if value['active']:
+            sleepervalue = cleanPlayerIdString(str(value['first_name'] + value['last_name'] + str(value['position'])))
             temp[sleepervalue] = playerId
-        # Chris Herdon
-        if value['first_name'] == 'Christopher':
-            sleepervalue = cleanPlayerIdString(str('chris' + value['last_name'] + str(value['position'])).lower())
-            temp[sleepervalue] = playerId
-        # Jeffery Wilson
-        if value['first_name'] == 'Jeff':
-            sleepervalue = cleanPlayerIdString(str('jeffery' + value['last_name'] + str(value['position'])).lower())
-            temp[sleepervalue] = playerId
+            # handle edge cases
+            # P.J. Walker
+            if value['first_name'] == 'Phillip':
+                sleepervalue = cleanPlayerIdString(str('pj' + value['last_name'] + str(value['position'])).lower())
+                temp[sleepervalue] = playerId
+            # Chris Herdon
+            if value['first_name'] == 'Christopher':
+                sleepervalue = cleanPlayerIdString(str('chris' + value['last_name'] + str(value['position'])).lower())
+                temp[sleepervalue] = playerId
+            # Jeffery Wilson
+            if value['first_name'] == 'Jeff':
+                sleepervalue = cleanPlayerIdString(str('jeffery' + value['last_name'] + str(value['position'])).lower())
+                temp[sleepervalue] = playerId
     return temp;
 
 
@@ -192,7 +192,7 @@ try:
         # Preparing SQL queries to INSERT a record into the database.
         for player in players:
             if player.sleeperId is None and player.position != 'PI': print(player.name + ': Error finding Sleeper Id')
-            if player.sleeperId is not None and player.position != 'PI':
+            if player.sleeperId is not None or player.position == 'PI':
                 # player info table insert
                 playerInfoStatement = '''INSERT INTO player_info (name_id, full_name, first_name, last_name, team, position, age, experience, college, injury_status, weight, height, jersey_number, active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (name_id) DO UPDATE

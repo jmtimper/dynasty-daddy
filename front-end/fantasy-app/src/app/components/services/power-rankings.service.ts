@@ -32,6 +32,7 @@ export class PowerRankingsService {
           const roster = [];
           let sfTradeValueTotal = 0;
           let tradeValueTotal = 0;
+          // TODO refactor this section both comparisons are redundant
           for (const sleeperId of team.roster?.players) {
             for (const player of players) {
               if (sleeperId === player.sleeper_id) {
@@ -62,8 +63,10 @@ export class PowerRankingsService {
           const picks: KTCPlayer[] = [];
           let sfPickTradeValue = 0;
           let pickTradeValue = 0;
-          team.draftCapital.map(pick => {
-              for (const pickValue of pickValues) {
+          // combine upcoming and future draft capital for rankings
+          const allPicks = team.draftCapital.concat(team.futureDraftCapital);
+          allPicks.map(pick => {
+            for (const pickValue of pickValues) {
                 if (pickValue.last_name.includes(pick.round.toString()) && pickValue.first_name === pick.year) {
                   if (pick.pick < 5 && pickValue.last_name.includes('Early')) {
                     sfPickTradeValue += pickValue.sf_trade_value;

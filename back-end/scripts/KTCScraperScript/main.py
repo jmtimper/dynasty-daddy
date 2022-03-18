@@ -15,21 +15,22 @@ sleeperData = players.get_all_players()
 def getSleeperData():
     temp = {}
     for playerId, value in sleeperData.items():
-        sleepervalue = cleanPlayerIdString(str(value['first_name'] + value['last_name'] + str(value['position'])))
-        temp[sleepervalue] = playerId
-        # handle edge cases
-        # P.J. Walker
-        if value['first_name'] == 'Phillip':
-            sleepervalue = cleanPlayerIdString(str('pj' + value['last_name'] + str(value['position'])).lower())
+        if value['active']:
+            sleepervalue = cleanPlayerIdString(str(value['first_name'] + value['last_name'] + str(value['position'])))
             temp[sleepervalue] = playerId
-        # Chris Herdon
-        if value['first_name'] == 'Christopher':
-            sleepervalue = cleanPlayerIdString(str('chris' + value['last_name'] + str(value['position'])).lower())
-            temp[sleepervalue] = playerId
-        # Jeffery Wilson
-        if value['first_name'] == 'Jeff':
-            sleepervalue = cleanPlayerIdString(str('jeffery' + value['last_name'] + str(value['position'])).lower())
-            temp[sleepervalue] = playerId
+            # handle edge cases
+            # P.J. Walker
+            if value['first_name'] == 'Phillip':
+                sleepervalue = cleanPlayerIdString(str('pj' + value['last_name'] + str(value['position'])).lower())
+                temp[sleepervalue] = playerId
+            # Chris Herdon
+            if value['first_name'] == 'Christopher':
+                sleepervalue = cleanPlayerIdString(str('chris' + value['last_name'] + str(value['position'])).lower())
+                temp[sleepervalue] = playerId
+            # Jeffery Wilson
+            if value['first_name'] == 'Jeff':
+                sleepervalue = cleanPlayerIdString(str('jeffery' + value['last_name'] + str(value['position'])).lower())
+                temp[sleepervalue] = playerId
     return temp;
 
 
@@ -121,11 +122,11 @@ for player in sf_rankings:
             if playerId[:-2] == nameId[:-2] and (
                     playerPosition.text.strip()[:2] == 'WR' or playerPosition.text.strip()[:2] == 'RB'):
                 if nameId[-2:] == 'wr' and playerPosition.text.strip()[:2] == 'RB':
-                    print('Double Position: ' + nameId)
+                    print('Double Position (WR -> RB): ' + nameId)
                     sleeperId = value
                     break
                 if nameId[-2:] == 'rb' and playerPosition.text.strip()[:2] == 'WR':
-                    print('Double Position: ' + nameId)
+                    print('Double Position: (RB -> WR)' + nameId)
                     sleeperId = value
                     break
             if playerId[:-2] == nameId[:-2] and (
@@ -158,6 +159,7 @@ for player in sf_rankings:
 
 # for player in players:
 #      player.toString()
+# print(str(len(players)))
 
 #################################
 #    Insert data into table     #
@@ -183,7 +185,7 @@ try:
         # Preparing SQL queries to INSERT a record into the database.
         for player in players:
             if player.sleeperId is None and player.position != 'PI': print(player.name + ': Error finding Sleeper Id')
-            if player.sleeperId is not None and player.position != 'PI':
+            if player.sleeperId is not None or player.position == 'PI':
                 # player info table insert
                 playerInfoStatement = '''INSERT INTO player_info (name_id, full_name, first_name, last_name, team, position, age, experience, college, injury_status, weight, height, jersey_number, active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (name_id) DO UPDATE

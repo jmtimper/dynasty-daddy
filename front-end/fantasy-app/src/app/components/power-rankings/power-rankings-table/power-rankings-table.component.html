@@ -1,136 +1,148 @@
 <div class="power-ranking-container">
-  <div class="margin-bot-20">
+  <div class="margin-bot-10">
+    <div [ngClass]="{'button-left': !configService.isMobile, 'margin-top-10': configService.isMobile}">
+      <mat-form-field class="button-left player-value-checkbox-margin" [ngClass]="{'mat-dropdown-wide-300': !configService.isMobile, 'mat-dropdown-wide-100': configService.isMobile}" color="accent">
+        <mat-label>Search Player</mat-label>
+        <input matInput type="text" (keyup)="searchFilterPowerRankings()" [(ngModel)]="searchVal">
+        <button mat-button *ngIf="searchVal" matSuffix mat-icon-button aria-label="Clear" (click)="searchVal=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
     <span class="container_spacer"></span>
     <button mat-raised-button color="accent" [ngClass]="{'button-right': !configService.isMobile, 'button-left': configService.isMobile}"
-            (click)="expandCollapseAll()">{{expandedElement.length == powerRankings.length ? 'Collapse' : 'Expand'}} All
+            (click)="expandCollapseAll()">{{getToggleButtonText()}}
     </button>
   </div>
-  <table mat-table
-         [dataSource]="dataSource" multiTemplateDataRows
-         class="mat-elevation-z8" matSort matSortActive="overallRank" matSortDirection="asc">
+  <div [hidden]="this.dataSource.data.length === 0">
+    <table mat-table
+           [dataSource]="dataSource" multiTemplateDataRows
+           class="mat-elevation-z8" matSort matSortActive="overallRank" matSortDirection="asc">
 
-    <ng-container matColumnDef="team">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Team</th>
-      <td mat-cell *matCellDef="let element"> {{element.team.owner?.teamName}} </td>
-    </ng-container>
+      <ng-container matColumnDef="team">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Team</th>
+        <td mat-cell *matCellDef="let element"> {{element.team.owner?.teamName}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="owner">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Owner</th>
-      <td mat-cell *matCellDef="let element"> {{element.team.owner?.ownerName}} </td>
-    </ng-container>
+      <ng-container matColumnDef="owner">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Owner</th>
+        <td mat-cell *matCellDef="let element"> {{element.team.owner?.ownerName}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="overallRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Overall Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.overallRank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="overallRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Overall Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.overallRank}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="starterRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Starter Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.starterRank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="starterRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Starter Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.starterRank}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="qbRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>QB Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.roster[0].rank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="qbRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>QB Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.roster[0].rank}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="rbRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>RB Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.roster[1]?.rank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="rbRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>RB Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.roster[1]?.rank}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="wrRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>WR Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.roster[2]?.rank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="wrRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>WR Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.roster[2]?.rank}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="teRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>TE Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.roster[3]?.rank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="teRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>TE Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.roster[3]?.rank}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="draftRank">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Draft Rank</th>
-      <td mat-cell *matCellDef="let element"> {{element.picks.rank}} </td>
-    </ng-container>
+      <ng-container matColumnDef="draftRank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Draft Rank</th>
+        <td mat-cell *matCellDef="let element"> {{element.picks.rank}} </td>
+      </ng-container>
 
-    <!--   Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-        <div [@detailExpand]="checkExpanded(element) ? 'expanded' : 'collapsed'">
-          <div *ngIf="checkExpanded(element)" class="power-ranking-element-detail">
-            <div class="grid-20">
-              <div *ngIf="!configService.isMobile"><span class="text__light">Team</span>
-                <div class="mid-bold-text link--text__no__underline" [routerLink]="['../team', element.team.owner?.ownerName]">{{element.team.owner?.teamName}}</div>
-              </div>
-              <br>
-              <div *ngIf="!configService.isMobile"><span class="small-text__light">Owner: </span>
-                <div class="mid-bold-text">{{element.team.owner?.ownerName}}</div>
-              </div>
-              <div>
-                <span class="small-text__light">Overall Value: </span>
+      <!--   Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+          <div [@detailExpand]="checkExpanded(element) ? 'expanded' : 'collapsed'">
+            <div *ngIf="checkExpanded(element)" class="power-ranking-element-detail">
+              <div class="grid-20">
+                <div *ngIf="!configService.isMobile"><span class="text__light">Team</span>
+                  <div class="mid-bold-text link--text__no__underline" [routerLink]="['../team', element.team.owner?.ownerName]" innerHTML="{{ element.team.owner?.teamName | highlight : searchVal}}">{{element.team.owner?.teamName}}</div>
+                </div>
+                <br>
+                <div *ngIf="!configService.isMobile"><span class="small-text__light">Owner: </span>
+                  <div class="mid-bold-text" innerHTML="{{ element.team.owner?.ownerName | highlight : searchVal}}">{{element.team.owner?.ownerName}}</div>
+                </div>
                 <div>
+                  <span class="small-text__light">Overall Value: </span>
+                  <div>
                 <span
                   class="mid-bold-text">{{isSuperFlex ? element.sfTradeValueOverall : element.tradeValueOverall}}</span>
-                  <span class="small-text__light"> (Rank: <span
-                    [ngClass]="{'success__alert': element.overallRank < alertThreshold, 'warning__alert': element.overallRank > alertThreshold * 2}">{{element.overallRank}}</span>)</span>
+                    <span class="small-text__light"> (Rank: <span
+                      [ngClass]="{'success__alert': element.overallRank < alertThreshold, 'warning__alert': element.overallRank > alertThreshold * 2}">{{element.overallRank}}</span>)</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="small-text__light">Starter Value: </span>
+                  <div><span
+                    class="mid-bold-text">{{isSuperFlex ? element.sfTradeValueStarter : element.tradeValueStarter}}</span>
+                    <span class="small-text__light"> (Rank: <span
+                      [ngClass]="{'success__alert': element.starterRank < alertThreshold, 'warning__alert': element.starterRank > alertThreshold * 2}">{{element.starterRank}}</span>)</span>
+                  </div>
+                </div>
+                <div class="margin-top-25">
+                  <button mat-icon-button matTooltip="Copy Starters Roster" matTooltipPosition="above" (click)="copyStartersFromTeam(element)"><mat-icon>content_copy</mat-icon></button>
                 </div>
               </div>
-              <div>
-                <span class="small-text__light">Starter Value: </span>
-                <div><span
-                  class="mid-bold-text">{{isSuperFlex ? element.sfTradeValueStarter : element.tradeValueStarter}}</span>
-                  <span class="small-text__light"> (Rank: <span
-                    [ngClass]="{'success__alert': element.starterRank < alertThreshold, 'warning__alert': element.starterRank > alertThreshold * 2}">{{element.starterRank}}</span>)</span>
-                </div>
-              </div>
-              <div class="margin-top-25">
-                <button mat-icon-button matTooltip="Copy Starters Roster" matTooltipPosition="above" (click)="copyStartersFromTeam(element)"><mat-icon>content_copy</mat-icon></button>
-              </div>
-            </div>
-            <div *ngFor="let positionGroup of element.roster" class="grid-16">
-              <div>
+              <div *ngFor="let positionGroup of element.roster" class="grid-16">
+                <div>
               <span><span class="small-text__light">{{positionGroup.position}} Value: </span> <span
                 class="mid-bold-text">{{isSuperFlex ? positionGroup.sfTradeValue : positionGroup.tradeValue}}</span></span>
-                <div class="small-text__light"> Rank: <span
-                  [ngClass]="{'success__alert': positionGroup.rank < alertThreshold, 'warning__alert': positionGroup.rank > alertThreshold * 2}">{{positionGroup.rank}}</span>
+                  <div class="small-text__light"> Rank: <span
+                    [ngClass]="{'success__alert': positionGroup.rank < alertThreshold, 'warning__alert': positionGroup.rank > alertThreshold * 2}">{{positionGroup.rank}}</span>
+                  </div>
+                </div>
+                <hr class="dark">
+                <div *ngFor="let player of positionGroup.players">
+                  <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isStarter(element, player)">grade</mat-icon></span>
+                  <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isInjured(player)">healing</mat-icon></span>
+                  <span innerHTML="{{ player.full_name | highlight : searchVal}}">{{configService.isMobile ? player.last_name : player.full_name}} </span>
+                  <span [ngClass]="{'success__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) > 6000, 'urgent__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) < 2000}">{{isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value}}</span>
                 </div>
               </div>
-              <hr class="dark">
-              <div *ngFor="let player of positionGroup.players">
-                <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isStarter(element, player)">grade</mat-icon></span>
-                <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isInjured(player)">healing</mat-icon></span>
-                <span>{{configService.isMobile ? player.last_name : player.full_name}} </span>
-                <span [ngClass]="{'success__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) > 6000, 'urgent__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) < 2000}">{{isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value}}</span>
-              </div>
-            </div>
-            <div class="grid-16">
-              <div>
+              <div class="grid-16">
+                <div>
               <span><span class="small-text__light">Upcoming Picks: </span><span
                 class="mid-bold-text">{{isSuperFlex ? element.picks.sfTradeValue : element.picks.tradeValue}}</span></span>
-                <div class="small-text__light"> Rank: <span
-                  [ngClass]="{'success__alert': element.picks.rank < alertThreshold, 'warning__alert': element.picks.rank > alertThreshold * 2}">{{element.picks.rank}}</span>
+                  <div class="small-text__light"> Rank: <span
+                    [ngClass]="{'success__alert': element.picks.rank < alertThreshold, 'warning__alert': element.picks.rank > alertThreshold * 2}">{{element.picks.rank}}</span>
+                  </div>
                 </div>
-              </div>
-              <hr class="dark">
-              <div *ngFor="let player of element.picks.players">
-                <span>{{configService.isMobile ? player.last_name : player.full_name}} </span>
-                <span [ngClass]="{'success__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) > 6000, 'urgent__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) < 2000}">{{isSuperFlex ? player.sf_trade_value : player.trade_value}}</span>
+                <hr class="dark">
+                <div *ngFor="let player of element.picks.players">
+                  <span innerHTML="{{ player.full_name | highlight : searchVal}}">{{configService.isMobile ? player.last_name : player.full_name}} </span>
+                  <span [ngClass]="{'success__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) > 6000, 'urgent__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) < 2000}">{{isSuperFlex ? player.sf_trade_value : player.trade_value}}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </td>
-    </ng-container>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
-        class="power-ranking-element-row"
-        [class.power-ranking-expanded-row]="checkExpanded(element)"
-        (click)="pushPopElement(element)"
-        [ngClass]="{'accent__color__background': sleeperService.sleeperUser?.userData.user_id === element.team.owner?.userId}">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="power-ranking-detail-row"></tr>
-  </table>
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+          class="power-ranking-element-row"
+          [class.power-ranking-expanded-row]="checkExpanded(element)"
+          (click)="pushPopElement(element)"
+          [ngClass]="{'accent__color__background': sleeperService.sleeperUser?.userData.user_id === element.team.owner?.userId}">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="power-ranking-detail-row"></tr>
+    </table>
+  </div>
+  <div class="mid-bold-text center-text warning__alert margin-top-25" [hidden]="this.dataSource.data?.length > 0">No results found. Try a different search.</div>
 
 </div>
