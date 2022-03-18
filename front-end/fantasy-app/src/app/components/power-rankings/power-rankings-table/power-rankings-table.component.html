@@ -14,7 +14,7 @@
             (click)="expandCollapseAll()">{{getToggleButtonText()}}
     </button>
   </div>
-  <div [hidden]="this.dataSource.data.length === 0">
+  <div [hidden]="this.displayedRankingsSize === 0">
     <table mat-table
            [dataSource]="dataSource" multiTemplateDataRows
            class="mat-elevation-z8" matSort matSortActive="overallRank" matSortDirection="asc">
@@ -143,6 +143,6 @@
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="power-ranking-detail-row"></tr>
     </table>
   </div>
-  <div class="mid-bold-text center-text warning__alert margin-top-25" [hidden]="this.dataSource.data?.length > 0">No results found. Try a different search.</div>
+  <div class="mid-bold-text center-text warning__alert margin-top-25" [hidden]="this.displayedRankingsSize > 0">No results found. Try a different search.</div>
 
 </div>

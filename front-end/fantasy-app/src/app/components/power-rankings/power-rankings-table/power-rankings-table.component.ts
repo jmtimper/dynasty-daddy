@@ -52,6 +52,9 @@ export class PowerRankingsTableComponent implements OnInit {
   // search name
   searchVal: string = '';
 
+  // used to keep track of the displayed teams in table
+  displayedRankingsSize: number;
+
   constructor(public sleeperService: SleeperService,
               public configService: ConfigService,
               public playerService: PlayerService,
@@ -194,6 +197,7 @@ export class PowerRankingsTableComponent implements OnInit {
    * @private
    */
   private createNewTableDataSource(powerRankings: TeamPowerRanking[]): void {
+    this.displayedRankingsSize = powerRankings.length;
     this.dataSource = new MatTableDataSource<TeamPowerRanking>(powerRankings);
 
     // sorting algorithm
