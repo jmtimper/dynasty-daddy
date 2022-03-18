@@ -158,11 +158,16 @@ export class SleeperService {
       .pipe(mergeMap((tradedPicks: SleeperRawTradePicksData[]) => {
         this.sleeperTeamDetails.map((team: SleeperTeam) => {
           let draftPicks: DraftCapital[] = [];
-          for (let year = Number(this.selectedLeague.season) + 1; year < Number(this.selectedLeague.season) + 4; year++) {
+          for (
+            let year = Number(this.selectedLeague.season) + 1;
+               year < Number(this.selectedLeague.season) + 4;
+               year++
+          ) {
             for (let i = 0; i < this.selectedLeague.draftRounds; i++) {
               draftPicks.push(new DraftCapital(true, i + 1, this.selectedLeague.totalRosters / 2, year.toString()));
             }
           }
+          // TODO repeated code here
           tradedPicks.map((tradedPick: SleeperRawTradePicksData) => {
             if (Number(tradedPick.season) > Number(this.selectedLeague.season)
               && tradedPick.ownerId === team.roster.rosterId
@@ -180,7 +185,7 @@ export class SleeperService {
               draftPicks = this.removeDraftPick(draftPicks.slice(), tradedPick);
             }
           });
-          team.draftCapital = [...team.draftCapital, ...draftPicks];
+          team.futureDraftCapital = draftPicks;
         });
         return of(this.sleeperTeamDetails);
       }));
@@ -221,9 +226,9 @@ export class SleeperService {
               });
               team.draftCapital = draftPicks;
             });
+            this.upcomingDrafts.push(draft);
             return of(this.sleeperTeamDetails);
           }));
-        this.upcomingDrafts.push(draft);
       } else if (draft.status === 'complete' && draft.draftOrder) {
         forkJoin([
           this.sleeperApiService.getSleeperCompletedDraftsByDraftId(draft.draftId),

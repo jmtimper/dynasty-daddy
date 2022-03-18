@@ -13,7 +13,7 @@ import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 import {PlayerComparisonService} from '../../services/player-comparison.service';
 import {Router} from '@angular/router';
-import {NflService} from "../../../services/utilities/nfl.service";
+import {NflService} from '../../../services/utilities/nfl.service';
 
 @Component({
   selector: 'app-completed-draft-table',
@@ -104,7 +104,8 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
     this.pieChartLegend = this.configService.isMobile ? false : true;
     this.pageLength = this.sleeperService.selectedLeague.totalRosters;
     this.isSuperFlex = this.sleeperService.selectedLeague.isSuperflex;
-    this.pickValues = this.playerService.getDraftPicksForYear(this.nflService.stateOfNFL.seasonType === 'pre' ? this.nflService.stateOfNFL.season : null);
+    this.pickValues = this.playerService.getDraftPicksForYear(this.nflService.stateOfNFL.seasonType === 'pre'
+      ? this.nflService.stateOfNFL.season : null);
     this.refreshMetrics();
     this.paginator.pageIndex = 0;
     this.dataSource.paginator = this.paginator;
@@ -255,11 +256,6 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
    * @private
    */
   private getPickValue(round: number): number {
-    if (this.selectedDraft.draft.playerType === 1) {
-      return this.isSuperFlex ? this.pickValues[(round - 1) * 3 + 1]?.sf_trade_value
-        || this.pickValues[this.pickValues.length - 1]?.sf_trade_value :
-        this.pickValues[(round - 1) * 3 + 1]?.trade_value || this.pickValues[this.pickValues.length - 1]?.trade_value;
-    }
     return this.roundPickValue[round - 1];
   }
 

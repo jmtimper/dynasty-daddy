@@ -3,13 +3,13 @@
   Team power rankings are determined by <a class="info__alert" href="https://keeptradecut.com/" target="_blank">KeepTradeCut.com</a> value calculations taken from over <span class="info__alert">2.5 million</span> data points.
 </div>
 
-<!--<div *ngIf="powerRankingService.powerRankings">-->
-<!--  <app-power-rankings-card *ngFor="let team of powerRankingService.powerRankings" [teamData]="team"></app-power-rankings-card>-->
-<!--</div>-->
-<div  *ngIf="sleeperService.leagueLoaded && powerRankingService.powerRankings.length > 0">
-  <app-power-rankings-chart></app-power-rankings-chart>
-
-  <app-power-rankings-table [powerRankings]="powerRankingService.powerRankings" [isSuperFlex]="sleeperService.selectedLeague.isSuperflex"></app-power-rankings-table>
+<div  *ngIf="sleeperService.leagueLoaded && powerRankingService.powerRankings.length > 0" class="power-ranking-container">
+  <div>
+    <app-power-rankings-chart></app-power-rankings-chart>
+  </div>
+  <div>
+    <app-power-rankings-table [powerRankings]="powerRankingService.powerRankings" [isSuperFlex]="sleeperService.selectedLeague.isSuperflex"></app-power-rankings-table>
+  </div>
 </div>
 
 <div class="center-text margin-top-50" *ngIf="!sleeperService.leagueLoaded">

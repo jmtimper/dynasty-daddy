@@ -65,6 +65,7 @@ export class SleeperTeam {
   owner: SleeperOwnerData;
   roster: SleeperRosterData;
   draftCapital: DraftCapital[] = [];
+  futureDraftCapital: DraftCapital[] = [];
 }
 
 export class SleeperRawDraftOrderData {

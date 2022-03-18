@@ -44,7 +44,7 @@
   <button mat-raised-button color="warn" routerLink="./home">Choose League</button>
 </div>
 
-<div class="center-text margin-top-50" *ngIf="mockDraftService.teamPicks.length == 0 && sleeperService.completedDrafts.length == 0 && sleeperService.leagueLoaded">
+<div class="center-text margin-top-50" *ngIf="mockDraftService.teamPicks.length == 0 && sleeperService.completedDrafts.length == 0 && sleeperService.upcomingDrafts.length == 0 && sleeperService.leagueLoaded">
   <div class="warning__alert">Cannot generate drafts. Please select a different year or league.</div>
   <br>
   <button mat-raised-button color="warn" routerLink="./home">Choose Another League</button>

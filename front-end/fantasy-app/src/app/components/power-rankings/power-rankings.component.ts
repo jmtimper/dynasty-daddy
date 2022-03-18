@@ -12,9 +12,16 @@ import {BaseComponent} from '../base-component.abstract';
 export class PowerRankingsComponent extends BaseComponent implements OnInit {
 
   constructor(public sleeperService: SleeperService,
-              public powerRankingService: PowerRankingsService) {
+              public powerRankingService: PowerRankingsService,
+              private playersService: PlayerService) {
     super();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // TODO ugly fix for race condition on adding upcoming draft picks to playoff calculator
+    if (this.sleeperService.upcomingDrafts.length !== 0) {
+      this.powerRankingService.reset();
+      this.powerRankingService.mapPowerRankings(this.sleeperService.sleeperTeamDetails, this.playersService.playerValues);
+    }
+  }
 }

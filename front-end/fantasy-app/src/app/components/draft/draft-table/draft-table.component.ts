@@ -34,8 +34,6 @@ export class DraftTableComponent implements OnInit, OnChanges {
   /** page length set to size of league */
   pageLength: number = 12;
 
-
-
   /** mat paginator */
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
