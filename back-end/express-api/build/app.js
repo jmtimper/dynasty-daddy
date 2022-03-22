@@ -13,12 +13,12 @@ var _express = _interopRequireDefault(require("express"));
 
 var _cookieParser = _interopRequireDefault(require("cookie-parser"));
 
-var _index = _interopRequireDefault(require("./routes/index"));
-
 var _cors = _interopRequireDefault(require("cors"));
 
+var _index = _interopRequireDefault(require("./routes/index"));
+
 var app = (0, _express["default"])();
-var originsWhitelist = ['http://localhost:4200'];
+var originsWhitelist = ['http://localhost:4200', 'https://dynasty-daddy.com/'];
 var corsOptions = {
   origin: function origin(_origin, callback) {
     var isWhitelisted = originsWhitelist.indexOf(_origin) !== -1;
@@ -33,7 +33,7 @@ app.use(_express["default"].urlencoded({
 }));
 app.use((0, _cookieParser["default"])());
 app.use((0, _cors["default"])(corsOptions));
-app.use('/v1', _index["default"]);
+app.use('/api/v1', _index["default"]);
 app.use(function (err, req, res, next) {
   res.status(400).json({
     error: err.stack

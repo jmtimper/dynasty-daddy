@@ -235,4 +235,12 @@ export class PowerRankingsTableComponent implements OnInit {
       return 'Expand All';
     }
   }
+
+  /**
+   * reset search filter and table
+   */
+  resetSearchFilter(): void {
+    this.searchVal = '';
+    this.createNewTableDataSource(this.powerRankings);
+  }
 }

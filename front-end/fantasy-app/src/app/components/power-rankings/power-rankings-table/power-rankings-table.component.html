@@ -4,7 +4,7 @@
       <mat-form-field class="button-left player-value-checkbox-margin" [ngClass]="{'mat-dropdown-wide-300': !configService.isMobile, 'mat-dropdown-wide-100': configService.isMobile}" color="accent">
         <mat-label>Search Player</mat-label>
         <input matInput type="text" (keyup)="searchFilterPowerRankings()" [(ngModel)]="searchVal">
-        <button mat-button *ngIf="searchVal" matSuffix mat-icon-button aria-label="Clear" (click)="searchVal=''">
+        <button mat-button *ngIf="searchVal" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearchFilter()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
@@ -110,8 +110,8 @@
                 <div *ngFor="let player of positionGroup.players">
                   <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isStarter(element, player)">grade</mat-icon></span>
                   <span class="starter-icon"><mat-icon [inline]="true" *ngIf="isInjured(player)">healing</mat-icon></span>
-                  <span innerHTML="{{ player.full_name | highlight : searchVal}}">{{configService.isMobile ? player.last_name : player.full_name}} </span>
-                  <span [ngClass]="{'success__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) > 6000, 'urgent__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) < 2000}">{{isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value}}</span>
+                  <span innerHTML="{{ player.full_name | highlight : searchVal}}">{{configService.isMobile ? player.last_name : player.full_name}}</span>
+                  <span [ngClass]="{'success__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) > 6000, 'urgent__alert': (isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value) < 2000}"> {{isSuperFlex ? playerService.playerValueAnalysis[player.name_id].sf_trade_value : playerService.playerValueAnalysis[player.name_id].trade_value}}</span>
                 </div>
               </div>
               <div class="grid-16">
@@ -125,7 +125,7 @@
                 <hr class="dark">
                 <div *ngFor="let player of element.picks.players">
                   <span innerHTML="{{ player.full_name | highlight : searchVal}}">{{configService.isMobile ? player.last_name : player.full_name}} </span>
-                  <span [ngClass]="{'success__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) > 6000, 'urgent__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) < 2000}">{{isSuperFlex ? player.sf_trade_value : player.trade_value}}</span>
+                  <span [ngClass]="{'success__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) > 6000, 'urgent__alert': (isSuperFlex ? player.sf_trade_value : player.trade_value) < 2000}"> {{isSuperFlex ? player.sf_trade_value : player.trade_value}}</span>
                 </div>
               </div>
             </div>

@@ -34,8 +34,13 @@ services:
     volumes:
       - ./data:/data
   scraper:
-    build: index.docker.io/jmtimper/dynasty-daddy-cron:latest
+    image: index.docker.io/jmtimper/dynasty-daddy-cron:latest
     container_name: dynasty-daddy-cron
+    restart: always
+    depends_on:
+      - db
+    links:
+      - db
   watchtower:
     image: containrrr/watchtower
     volumes:
