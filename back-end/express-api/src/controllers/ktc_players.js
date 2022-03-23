@@ -1,10 +1,11 @@
 import Model from '../models/model';
-import { connectionString } from '../settings';
+import {DB_DB, DB_HOST, DB_PORT, DB_PWD, DB_USER} from '../settings';
 
 const playersModel = new Model('players_info');
 
 export const getCurrentPlayerValues = async (req, res) => {
   try {
+    console.log(DB_PWD, DB_USER, DB_DB, DB_PORT, DB_HOST);
     const data = await playersModel.selectQuery('Select * From (select distinct on (player_info.name_id)\n'
       + '           player_info.name_id as name_id,\n'
       + '           pi.sleeper_id as sleeper_id,\n'
@@ -27,11 +28,10 @@ export const getCurrentPlayerValues = async (req, res) => {
       + '       order by player_info.name_id, pv.id desc\n'
       + '     ) as T\n'
       + '      order by sf_trade_value desc');
-    console.log(data.rows);
     res.status(200).json(data.rows);
   } catch (err) {
     console.log(req.params);
-    console.log(res.statusMessage);
+    console.log(err);
     res.status(405).json(err.stack);
   }
 };
