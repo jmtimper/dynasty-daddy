@@ -4,7 +4,6 @@ import { connectionString } from '../settings';
 const playersModel = new Model('players_info');
 
 export const getCurrentPlayerValues = async (req, res) => {
-  console.log(`connectionString ${connectionString}`);
   try {
     const data = await playersModel.selectQuery('Select * From (select distinct on (player_info.name_id)\n'
       + '           player_info.name_id as name_id,\n'
@@ -30,6 +29,8 @@ export const getCurrentPlayerValues = async (req, res) => {
       + '      order by sf_trade_value desc');
     res.status(200).json(data.rows);
   } catch (err) {
+    console.log(req);
+    console.log(res);
     res.status(405).json(err.stack);
   }
 };
