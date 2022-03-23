@@ -12,6 +12,8 @@ jobs:
   build-and-deploy-back:
     name: Build and Deploy Back-end
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
