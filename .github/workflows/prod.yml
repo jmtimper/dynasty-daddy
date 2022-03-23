@@ -12,8 +12,6 @@ jobs:
   build-and-deploy-back:
     name: Build and Deploy Back-end
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -46,12 +44,6 @@ jobs:
   build-and-deploy-cron:
     name: Build and Deploy Cron
     runs-on: ubuntu-latest
-    env:
-      DO_DATABASE: ${{ secrets.DO_DATABASE }}
-      DO_DB_USER: ${{ secrets.DO_DB_USER }}
-      DO_DB_PASSWORD: ${{ secrets.DO_DB_PASSWORD }}
-      DO_DB_HOST: ${{ secrets.DO_DB_HOST }}
-      DO_DB_PORT: ${{ secrets.DO_DB_PORT }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
