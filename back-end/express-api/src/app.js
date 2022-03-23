@@ -8,7 +8,7 @@ const app = express();
 
 const originsWhitelist = [
   'http://localhost:4200',
-  'https://dynasty-daddy.com/'
+  'https://dynasty-daddy.com'
 ];
 const corsOptions = {
   origin(origin, callback) {
