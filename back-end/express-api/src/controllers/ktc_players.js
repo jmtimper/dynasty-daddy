@@ -27,10 +27,11 @@ export const getCurrentPlayerValues = async (req, res) => {
       + '       order by player_info.name_id, pv.id desc\n'
       + '     ) as T\n'
       + '      order by sf_trade_value desc');
+    console.log(data.rows);
     res.status(200).json(data.rows);
   } catch (err) {
-    console.log(req);
-    console.log(res);
+    console.log(req.params);
+    console.log(res.statusMessage);
     res.status(405).json(err.stack);
   }
 };
