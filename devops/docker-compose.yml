@@ -13,6 +13,8 @@ services:
       - api
   api:
     image: index.docker.io/jmtimper/dynasty-daddy-back-end:latest
+    env_file:
+      - .env.api
     ports:
       - "3000:3000"
     container_name: dynasty-daddy-api
@@ -27,23 +29,23 @@ services:
       - "5432:5432"
     container_name: postgres
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=docker
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
     restart: unless-stopped
+    env_file:
+      - .env.db
     volumes:
-      - ./data:/data
+      - ./sql/01_create_tables.sql:/docker-entrypoint-initdb.d/01_create_tables.sql
+      - ./sql/02_fill_player_ids.sql:/docker-entrypoint-initdb.d/02_fill_player_ids.sql
+      - ./sql/03_fill_player_info.sql:/docker-entrypoint-initdb.d/03_fill_player_info.sql
+      - ./sql/04_fill_player_values.sql:/docker-entrypoint-initdb.d/04_fill_player_values.sql
+      - ./db_v0.1.2/pgsql:/var/lib/postgresql/data
   scraper:
     image: index.docker.io/jmtimper/dynasty-daddy-cron:latest
+    env_file: .env.cron
     container_name: dynasty-daddy-cron
-    restart: always
-    depends_on:
-      - db
-    links:
-      - db
   watchtower:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - $HOME/.docker/config.json:/config.json
-    command: --interval 30
+    command: --cleanup --interval 30
