@@ -18,7 +18,7 @@ var _cors = _interopRequireDefault(require("cors"));
 var _index = _interopRequireDefault(require("./routes/index"));
 
 var app = (0, _express["default"])();
-var originsWhitelist = ['http://localhost:4200', 'https://dynasty-daddy.com/'];
+var originsWhitelist = ['http://localhost:4200', 'https://dynasty-daddy.com'];
 var corsOptions = {
   origin: function origin(_origin, callback) {
     var isWhitelisted = originsWhitelist.indexOf(_origin) !== -1;

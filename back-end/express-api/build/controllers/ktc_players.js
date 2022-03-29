@@ -13,6 +13,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _model = _interopRequireDefault(require("../models/model"));
 
+var _settings = require("../settings");
+
 var playersModel = new _model["default"]('players_info');
 
 var getCurrentPlayerValues = /*#__PURE__*/function () {
@@ -23,26 +25,29 @@ var getCurrentPlayerValues = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _context.next = 3;
+            console.log(_settings.DB_PWD, _settings.DB_USER, _settings.DB_DB, _settings.DB_PORT, _settings.DB_HOST);
+            _context.next = 4;
             return playersModel.selectQuery('Select * From (select distinct on (player_info.name_id)\n' + '           player_info.name_id as name_id,\n' + '           pi.sleeper_id as sleeper_id,\n' + '           player_info.full_name as full_name,\n' + '           player_info.first_name as first_name,\n' + '           player_info.last_name as last_name,\n' + '           player_info.team as team,\n' + '           player_info.position as position,\n' + '           player_info.age as age,\n' + '           player_info.experience as experience,\n' + '           player_info.injury_status as injury_status,\n' + '           pv.trade_value as trade_value,\n' + '           pv.sf_trade_value as sf_trade_value,\n' + '           pv.sf_position_rank as sf_position_rank,\n' + '           pv.position_rank as position_rank,\n' + '           pv.created_at as date\n' + '         from player_info\n' + '            left join player_values pv on player_info.name_id = pv.name_id\n' + '            left join player_ids pi on player_info.name_id = pi.name_id\n' + '       order by player_info.name_id, pv.id desc\n' + '     ) as T\n' + '      order by sf_trade_value desc');
 
-          case 3:
+          case 4:
             data = _context.sent;
             res.status(200).json(data.rows);
-            _context.next = 10;
+            _context.next = 13;
             break;
 
-          case 7:
-            _context.prev = 7;
+          case 8:
+            _context.prev = 8;
             _context.t0 = _context["catch"](0);
+            console.log(req.params);
+            console.log(_context.t0);
             res.status(405).json(_context.t0.stack);
 
-          case 10:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 7]]);
+    }, _callee, null, [[0, 8]]);
   }));
 
   return function getCurrentPlayerValues(_x, _x2) {

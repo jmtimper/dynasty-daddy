@@ -168,13 +168,13 @@ for player in sf_rankings:
 
 try:
     # Establishing the connection
-    conn = psycopg2.connect(
-        database="docker", user='docker', password='docker', host='localhost', port='5432'
-    )
-
     # conn = psycopg2.connect(
-    #     database="player_rankings", user='postgres', password='postgres', host='localhost', port='5432'
+    #     database="docker", user='docker', password='docker', host='localhost', port='5432'
     # )
+
+    conn = psycopg2.connect(
+        database="player_rankings", user='postgres', password='postgres', host='localhost', port='5432'
+    )
 
     # Setting auto commit false
     conn.autocommit = True

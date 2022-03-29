@@ -179,10 +179,6 @@ try:
         database=os.environ['DO_DATABASE'], user=os.environ['DO_DB_USER'], password=os.environ['DO_DB_PASSWORD'], host=os.environ['DO_DB_HOST'], port=os.environ['DO_DB_PORT']
     )
 
-    # conn = psycopg2.connect(
-    #     database="docker", user='docker', password='docker', host='db', port='5432'
-    # )
-
     # Setting auto commit false
     conn.autocommit = True
 
@@ -242,4 +238,5 @@ try:
     # Closing the connection
     conn.close()
 except Exception as error:
+    print("Extra Logs, db= ", os.environ['DO_DATABASE'], ", user= ", os.environ['DO_DB_USER'], ", host= ", os.environ['DO_DB_HOST'], "port= ", os.environ['DO_DB_PORT'])
     print("ERROR IN CONNECTION", error)

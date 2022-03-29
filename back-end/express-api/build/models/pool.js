@@ -13,9 +13,14 @@ var _dotenv = _interopRequireDefault(require("dotenv"));
 
 var _settings = require("../settings");
 
+// eslint-disable-next-line import/named
 _dotenv["default"].config();
 
 var pool = new _pg.Pool({
-  connectionString: _settings.connectionString
+  host: _settings.DB_HOST,
+  port: _settings.DB_PORT,
+  user: _settings.DB_USER,
+  password: _settings.DB_PWD,
+  database: _settings.DB_DB
 });
 exports.pool = pool;
