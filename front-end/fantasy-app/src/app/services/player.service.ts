@@ -444,4 +444,15 @@ export class PlayerService {
       }
     });
   }
+
+  /**
+   * accepts a list of players and returns the total trade value of list
+   */
+  getTotalValueOfPlayersFromList(players: KTCPlayer[], isSuperFlex: boolean = true): number {
+    let totalValue = 0;
+    players.map(player => {
+      totalValue += isSuperFlex ? player.sf_trade_value : player.trade_value;
+    });
+    return totalValue;
+  }
 }

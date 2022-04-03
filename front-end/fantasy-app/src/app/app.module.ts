@@ -74,6 +74,7 @@ import { PlayerPosScatterChartComponent } from './components/player-statistics/p
 import { WeeklyMedianChartComponent } from './components/standings/weekly-median-chart/weekly-median-chart.component';
 import { TeamTransactionsChartComponent } from './components/standings/team-transactions-chart/team-transactions-chart.component';
 import { HighLightSearchPipe } from './pipes/high-light-search.pipe';
+import { TradeCenterComponent } from './components/trade-center/trade-center.component';
 
 export function initialize(startupService: StartupService): any {
   return (): Promise<any> => {
@@ -124,6 +125,7 @@ let UniversalDeviceDetectorService;
         TeamTransactionsChartComponent,
         HighLightSearchPipe,
         HighLightSearchPipe,
+        TradeCenterComponent,
     ],
     imports: [
         BrowserModule,

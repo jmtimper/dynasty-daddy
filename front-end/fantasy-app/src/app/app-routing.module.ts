@@ -11,6 +11,7 @@ import {FantasyTeamDetailsComponent} from './components/fantasy-team-details/fan
 import {PlayoffCalculatorComponent} from './components/playoff-calculator/playoff-calculator.component';
 import {AboutComponent} from "./components/about/about.component";
 import {PlayerStatisticsComponent} from "./components/player-statistics/player-statistics.component";
+import {TradeCenterComponent} from "./components/trade-center/trade-center.component";
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
   {
     path: 'players/statistics',
     component: PlayerStatisticsComponent
+  },
+  {
+    path: 'players/trade',
+    component: TradeCenterComponent
   },
   {
     path: 'players/details/:playerNameId',
