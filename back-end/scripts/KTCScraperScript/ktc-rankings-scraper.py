@@ -16,6 +16,7 @@ def cleanPlayerIdString(playerId):
 players = Players()
 sleeperData = players.get_all_players()
 
+
 # creates a dict of sleeper ids mapped to name ids
 def getSleeperData():
     temp = {}
@@ -238,5 +239,4 @@ try:
     # Closing the connection
     conn.close()
 except Exception as error:
-    print("Extra Logs, db= ", os.environ['DO_DATABASE'], ", user= ", os.environ['DO_DB_USER'], ", host= ", os.environ['DO_DB_HOST'], "port= ", os.environ['DO_DB_PORT'])
     print("ERROR IN CONNECTION", error)
