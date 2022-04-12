@@ -1,7 +1,9 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 // eslint-disable-next-line import/named
-import {DB_DB, DB_HOST, DB_PORT, DB_PWD, DB_USER} from '../settings';
+import {
+  DB_DB, DB_HOST, DB_PORT, DB_PWD, DB_USER
+} from '../settings';
 
 dotenv.config();
 
