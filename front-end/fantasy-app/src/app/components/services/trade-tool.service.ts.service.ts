@@ -41,17 +41,15 @@ export class TradeService {
     const totalTradeValue = team1TotalValue + team2TotalValue;
     // determine STUD pick
     const studPlayer = this.getStudPlayer(allAssets, isSuperFlex);
-    // difference between each side
-    const tradeValueDiff = Math.abs(team2TotalValue - team1TotalValue);
-    // logic of multiplier
-    const multiplier = 1 + ((isSuperFlex ? studPlayer.sf_trade_value : studPlayer.trade_value) / totalTradeValue);
+    const studPlayerValue = isSuperFlex ? studPlayer.sf_trade_value : studPlayer.trade_value;
     // TODO change when adding multi team support
     if (tradePackage.team2Assets.includes(studPlayer)) {
       tradePackage.valueAdjustmentSide = 2;
     } else {
       tradePackage.valueAdjustmentSide = 1;
     }
-    const valAdj = (tradePackage.valueAdjustmentSide === 1 ? team1TotalValue : team2TotalValue) - tradeValueDiff * multiplier;
+    const valAdj = Math.round(studPlayerValue / totalTradeValue *
+      (tradePackage.valueAdjustmentSide === 1 ? team2TotalValue : team1TotalValue));
     tradePackage.valueAdjustment = valAdj;
     console.log(valAdj, team1TotalValue, team2TotalValue);
     console.log(tradePackage);

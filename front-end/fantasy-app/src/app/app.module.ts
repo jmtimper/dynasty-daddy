@@ -40,9 +40,7 @@ import {CompletedDraftTableComponent} from './components/draft/completed-draft-t
 import {PlayerComparisonsComponent} from './components/player-comparisons/player-comparisons.component';
 import {ChartsModule} from 'ng2-charts';
 import {MatChipsModule} from '@angular/material/chips';
-import {
-  AddPlayerComparisonModalComponent
-} from './components/modals/add-player-comparison-modal/add-player-comparison-modal.component';
+import {AddPlayerComparisonModalComponent} from './components/modals/add-player-comparison-modal/add-player-comparison-modal.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {TradeValueLineChartComponent} from './components/player-comparisons/trade-value-line-chart/trade-value-line-chart.component';
 import 'chartjs-plugin-colorschemes';
@@ -63,18 +61,19 @@ import {PlayoffCalculatorGamesContainerComponent} from './components/playoff-cal
 import {PlayoffCalculatorGamesCardComponent} from './components/playoff-calculator/playoff-calculator-games-container/playoff-calculator-games-card/playoff-calculator-games-card.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {QueryBuilderModule} from 'angular2-query-builder';
-import { PlayoffCalculatorSelectableGameCardComponent } from './components/playoff-calculator/playoff-calculator-games-container/playoff-calculator-selectable-game-card/playoff-calculator-selectable-game-card.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { AboutComponent } from './components/about/about.component';
+import {PlayoffCalculatorSelectableGameCardComponent} from './components/playoff-calculator/playoff-calculator-games-container/playoff-calculator-selectable-game-card/playoff-calculator-selectable-game-card.component';
+import {FooterComponent} from './components/footer/footer.component';
+import {AboutComponent} from './components/about/about.component';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import { PlayerDetailsInsightsComponent } from './components/player-details/player-details-insights/player-details-insights.component';
-import { PlayerStatisticsComponent } from './components/player-statistics/player-statistics.component';
-import { PlayerPosTableComponent } from './components/player-statistics/player-pos-table/player-pos-table.component';
-import { PlayerPosScatterChartComponent } from './components/player-statistics/player-pos-scatter-chart/player-pos-scatter-chart.component';
-import { WeeklyMedianChartComponent } from './components/standings/weekly-median-chart/weekly-median-chart.component';
-import { TeamTransactionsChartComponent } from './components/standings/team-transactions-chart/team-transactions-chart.component';
-import { HighLightSearchPipe } from './pipes/high-light-search.pipe';
-import { TradeCenterComponent } from './components/trade-center/trade-center.component';
+import {PlayerDetailsInsightsComponent} from './components/player-details/player-details-insights/player-details-insights.component';
+import {PlayerStatisticsComponent} from './components/player-statistics/player-statistics.component';
+import {PlayerPosTableComponent} from './components/player-statistics/player-pos-table/player-pos-table.component';
+import {PlayerPosScatterChartComponent} from './components/player-statistics/player-pos-scatter-chart/player-pos-scatter-chart.component';
+import {WeeklyMedianChartComponent} from './components/standings/weekly-median-chart/weekly-median-chart.component';
+import {TeamTransactionsChartComponent} from './components/standings/team-transactions-chart/team-transactions-chart.component';
+import {HighLightSearchPipe} from './pipes/high-light-search.pipe';
+import {TradeCenterComponent} from './components/trade-center/trade-center.component';
+import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 export function initialize(startupService: StartupService): any {
   return (): Promise<any> => {
@@ -86,81 +85,82 @@ export function initialize(startupService: StartupService): any {
 let UniversalDeviceDetectorService;
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        PowerRankingsComponent,
-        HeaderComponent,
-        KtcTableComponent,
-        PlayerValuesComponent,
-        PowerRankingsTableComponent,
-        DraftComponent,
-        DraftTableComponent,
-        StandingsComponent,
-        ScheduleComparisonComponent,
-        WeeklyRecordVsAllComponent,
-        CompletedDraftTableComponent,
-        PlayerComparisonsComponent,
-        AddPlayerComparisonModalComponent,
-        TradeValueLineChartComponent,
-        PlayerDetailsComponent,
-        PowerRankingsChartComponent,
-        PlayerDetailsWeeklyStatsLineChartComponent,
-        PlayerDetailsWeeklyBoxScoresTableComponent,
-        FantasyTeamDetailsComponent,
-        FantasyTeamDetailsWeeklyPointsChartComponent,
-        StrengthOfScheduleChartComponent,
-        PlayoffCalculatorComponent,
-        PlayoffCalculatorSeasonTableComponent,
-        PlayoffCalculatorGamesContainerComponent,
-        PlayoffCalculatorGamesCardComponent,
-        PlayoffCalculatorSelectableGameCardComponent,
-        FooterComponent,
-        AboutComponent,
-        PlayerDetailsInsightsComponent,
-        PlayerStatisticsComponent,
-        PlayerPosTableComponent,
-        PlayerPosScatterChartComponent,
-        WeeklyMedianChartComponent,
-        TeamTransactionsChartComponent,
-        HighLightSearchPipe,
-        HighLightSearchPipe,
-        TradeCenterComponent,
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        NgxSpinnerModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatBadgeModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDividerModule,
-        MatMenuModule,
-        MatButtonToggleModule,
-        MatSlideToggleModule,
-        MatCheckboxModule,
-        MatTabsModule,
-        ChartsModule,
-        MatChipsModule,
-        MatDialogModule,
-        DragDropModule,
-        MatTooltipModule,
-        MatCardModule,
-        FlexLayoutModule,
-        MatRadioModule,
-        QueryBuilderModule,
-        ReactiveFormsModule,
-    ],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    PowerRankingsComponent,
+    HeaderComponent,
+    KtcTableComponent,
+    PlayerValuesComponent,
+    PowerRankingsTableComponent,
+    DraftComponent,
+    DraftTableComponent,
+    StandingsComponent,
+    ScheduleComparisonComponent,
+    WeeklyRecordVsAllComponent,
+    CompletedDraftTableComponent,
+    PlayerComparisonsComponent,
+    AddPlayerComparisonModalComponent,
+    TradeValueLineChartComponent,
+    PlayerDetailsComponent,
+    PowerRankingsChartComponent,
+    PlayerDetailsWeeklyStatsLineChartComponent,
+    PlayerDetailsWeeklyBoxScoresTableComponent,
+    FantasyTeamDetailsComponent,
+    FantasyTeamDetailsWeeklyPointsChartComponent,
+    StrengthOfScheduleChartComponent,
+    PlayoffCalculatorComponent,
+    PlayoffCalculatorSeasonTableComponent,
+    PlayoffCalculatorGamesContainerComponent,
+    PlayoffCalculatorGamesCardComponent,
+    PlayoffCalculatorSelectableGameCardComponent,
+    FooterComponent,
+    AboutComponent,
+    PlayerDetailsInsightsComponent,
+    PlayerStatisticsComponent,
+    PlayerPosTableComponent,
+    PlayerPosScatterChartComponent,
+    WeeklyMedianChartComponent,
+    TeamTransactionsChartComponent,
+    HighLightSearchPipe,
+    HighLightSearchPipe,
+    TradeCenterComponent,
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    NgxSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatBadgeModule,
+    NgxMatSelectSearchModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatButtonToggleModule,
+    MatSlideToggleModule,
+    MatCheckboxModule,
+    MatTabsModule,
+    ChartsModule,
+    MatChipsModule,
+    MatDialogModule,
+    DragDropModule,
+    MatTooltipModule,
+    MatCardModule,
+    FlexLayoutModule,
+    MatRadioModule,
+    QueryBuilderModule,
+    ReactiveFormsModule,
+  ],
   providers: [EndpointsService,
     ConfigService,
     StartupService,
