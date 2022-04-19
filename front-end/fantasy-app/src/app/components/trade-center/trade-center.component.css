@@ -1,0 +1,23 @@
+.trade-dropdown {
+  width: 100% !important;
+  padding-left: 12.5%;
+  padding-right: 12.5%;
+}
+
+.trade-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.trade-table {
+  border-collapse:separate;
+  border-spacing: 0 10px;
+  width:100%;
+  padding-left: 10%
+}
+
+/*tr{*/
+/*  border:1px solid blue;*/
+/*}*/

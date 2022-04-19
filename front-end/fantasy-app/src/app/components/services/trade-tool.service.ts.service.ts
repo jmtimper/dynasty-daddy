@@ -40,8 +40,10 @@ export class TradeService {
     // total value of trade
     const totalTradeValue = team1TotalValue + team2TotalValue;
     // determine STUD pick
-    const studPlayer = this.getStudPlayer(allAssets, isSuperFlex);
-    const studPlayerValue = isSuperFlex ? studPlayer.sf_trade_value : studPlayer.trade_value;
+    // const studPlayer = this.getStudPlayer(allAssets, isSuperFlex);
+    const studPlayer = this.determineValuePlayer(tradePackage.team1Assets, tradePackage.team2Assets, isSuperFlex);
+    console.log('stud ', studPlayer);
+    const studPlayerValue = isSuperFlex ? studPlayer?.sf_trade_value : studPlayer?.trade_value;
     // TODO change when adding multi team support
     if (tradePackage.team2Assets.includes(studPlayer)) {
       tradePackage.valueAdjustmentSide = 2;
@@ -50,26 +52,71 @@ export class TradeService {
     }
     const valAdj = Math.round(studPlayerValue / totalTradeValue *
       (tradePackage.valueAdjustmentSide === 1 ? team2TotalValue : team1TotalValue));
-    tradePackage.valueAdjustment = valAdj;
+    tradePackage.valueAdjustment = valAdj || 0;
     console.log(valAdj, team1TotalValue, team2TotalValue);
     console.log(tradePackage);
     return tradePackage;
   }
 
   /**
-   * get the STUD player from list of players
-   * @param players
-   * @param isSuperFlex
+   * Determines the value adjustment player. This is based on sorting by each team by value.
+   * Then we make sure a player of equivalent value (5% range) isn't on the other team.
+   * (i.e. Pat Mahomes and Josh Allen are basically equivalent in value so we don't need an adjustment)
+   *
+   * @param team1 team 1 players
+   * @param team2 team 2 players
+   * @param isSuperFlex boolean
    * @private
    */
-  private getStudPlayer(players: KTCPlayer[], isSuperFlex: boolean): KTCPlayer {
-    let stud: KTCPlayer = players[0];
-    players.slice(1).map(player => {
-        if (isSuperFlex ? player.sf_trade_value > stud.sf_trade_value : player.trade_value > stud.trade_value) {
-          stud = player;
+  private determineValuePlayer(team1: KTCPlayer[], team2: KTCPlayer[], isSuperFlex: boolean): KTCPlayer {
+    const filteredTeam1Players: KTCPlayer[] = team1.slice().sort((a, b) =>
+      isSuperFlex ? b.sf_trade_value - a.sf_trade_value : b.trade_value - a.trade_value);
+    const filteredTeam2Players: KTCPlayer[] = team2.slice().sort((a, b) =>
+      isSuperFlex ? b.sf_trade_value - a.sf_trade_value : b.trade_value - a.trade_value);
+    // loop through trade package and remove "equal" value players
+    while (filteredTeam1Players.length > 0 && filteredTeam2Players.length > 0) {
+      console.log(filteredTeam1Players, filteredTeam2Players);
+      const team1Stud = filteredTeam1Players[0];
+      const team2Stud = filteredTeam2Players[0];
+      if (this.playerService.comparePlayers(team1Stud, team2Stud, isSuperFlex)) {
+        // team 1 stud is more valuable
+        // check if team 2 stud is within 5% of stud
+        if (
+          isSuperFlex ?
+            team1Stud.sf_trade_value * .95 <= team2Stud.sf_trade_value
+            : team1Stud.trade_value * .95 <= team2Stud.trade_value
+        ) {
+          // remove two players
+          filteredTeam2Players.splice(0, 1);
+          filteredTeam1Players.splice(0, 1);
+        } else {
+          // return value stud
+          return team1Stud;
+        }
+      } else {
+        // team 2 stud is more valuable
+        // check if team 2 stud is within 5% of stud
+        if (
+          isSuperFlex ?
+            team2Stud.sf_trade_value * .95 <= team1Stud.sf_trade_value
+            : team2Stud.trade_value * .95 <= team1Stud.trade_value
+        ) {
+          // remove two players
+          filteredTeam2Players.splice(0, 1);
+          filteredTeam1Players.splice(0, 1);
+        } else {
+          // return value stud
+          return team2Stud;
         }
       }
-    );
-    return stud;
+    }
+    // if player still exists return that player
+    if (filteredTeam1Players.length > 0) {
+      return filteredTeam1Players[0];
+    }
+    if (filteredTeam2Players.length > 0) {
+      return filteredTeam2Players[0];
+    }
+    return null;
   }
 }

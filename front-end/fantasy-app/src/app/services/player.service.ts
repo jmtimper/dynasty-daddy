@@ -455,4 +455,14 @@ export class PlayerService {
     });
     return totalValue;
   }
+
+  /**
+   * return true if player1 is more valuable than player2
+   * @param player1 player
+   * @param player2 player
+   * @param isSuperflex boolean
+   */
+  comparePlayers(player1: KTCPlayer, player2: KTCPlayer, isSuperflex: boolean = true): boolean {
+    return isSuperflex ? player1.sf_trade_value > player2.sf_trade_value : player1.trade_value > player2.trade_value
+  }
 }
