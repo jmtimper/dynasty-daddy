@@ -8,6 +8,8 @@ import {PlayerService} from '../../services/player.service';
 })
 export class TradeService {
 
+  tradePackage: TradePackage = null;
+
   constructor(
     private playerService: PlayerService
   ) {
@@ -20,10 +22,7 @@ export class TradeService {
    * @param isSuperFlex
    */
   determineTrade(undeterminedTradePackage: TradePackage, isSuperFlex: boolean): TradePackage {
-
-    undeterminedTradePackage = this.determineValueAdjustment(undeterminedTradePackage, isSuperFlex);
-
-    return undeterminedTradePackage;
+    return this.determineValueAdjustment(undeterminedTradePackage, isSuperFlex);
   }
 
   /**
@@ -32,15 +31,12 @@ export class TradeService {
    * @param isSuperFlex
    */
   determineValueAdjustment(tradePackage: TradePackage, isSuperFlex: boolean): TradePackage {
-    // all players in trade
-    const allAssets = [...tradePackage.team2Assets, ...tradePackage.team1Assets];
     // trade value of team sides
     const team1TotalValue = this.playerService.getTotalValueOfPlayersFromList(tradePackage.team1Assets, isSuperFlex);
     const team2TotalValue = this.playerService.getTotalValueOfPlayersFromList(tradePackage.team2Assets, isSuperFlex);
     // total value of trade
     const totalTradeValue = team1TotalValue + team2TotalValue;
     // determine STUD pick
-    // const studPlayer = this.getStudPlayer(allAssets, isSuperFlex);
     const studPlayer = this.determineValuePlayer(tradePackage.team1Assets, tradePackage.team2Assets, isSuperFlex);
     console.log('stud ', studPlayer);
     const studPlayerValue = isSuperFlex ? studPlayer?.sf_trade_value : studPlayer?.trade_value;
@@ -50,10 +46,18 @@ export class TradeService {
     } else {
       tradePackage.valueAdjustmentSide = 1;
     }
+    // calculate value adjustment
     const valAdj = Math.round(studPlayerValue / totalTradeValue *
       (tradePackage.valueAdjustmentSide === 1 ? team2TotalValue : team1TotalValue));
+    // set all values from calculations in trade package object
     tradePackage.valueAdjustment = valAdj || 0;
-    console.log(valAdj, team1TotalValue, team2TotalValue);
+    tradePackage.team1AssetsValue = team1TotalValue;
+    tradePackage.team2AssetsValue = team2TotalValue;
+    tradePackage.isSuperFlex = isSuperFlex;
+    tradePackage.valueToEvenTrade = tradePackage.valueAdjustmentSide === 1 ?
+      Math.abs((team1TotalValue + valAdj) - team2TotalValue) || 0 :
+      Math.abs((team2TotalValue + valAdj) - team1TotalValue) || 0;
+    tradePackage.acceptanceBufferAmount = (totalTradeValue + tradePackage.valueAdjustment) * (tradePackage.acceptanceVariance / 100);
     console.log(tradePackage);
     return tradePackage;
   }
@@ -83,8 +87,8 @@ export class TradeService {
         // check if team 2 stud is within 5% of stud
         if (
           isSuperFlex ?
-            team1Stud.sf_trade_value * .95 <= team2Stud.sf_trade_value
-            : team1Stud.trade_value * .95 <= team2Stud.trade_value
+            team1Stud.sf_trade_value * 0.95 <= team2Stud.sf_trade_value
+            : team1Stud.trade_value * 0.95 <= team2Stud.trade_value
         ) {
           // remove two players
           filteredTeam2Players.splice(0, 1);
@@ -98,8 +102,8 @@ export class TradeService {
         // check if team 2 stud is within 5% of stud
         if (
           isSuperFlex ?
-            team2Stud.sf_trade_value * .95 <= team1Stud.sf_trade_value
-            : team2Stud.trade_value * .95 <= team1Stud.trade_value
+            team2Stud.sf_trade_value * 0.95 <= team1Stud.sf_trade_value
+            : team2Stud.trade_value * 0.95 <= team1Stud.trade_value
         ) {
           // remove two players
           filteredTeam2Players.splice(0, 1);

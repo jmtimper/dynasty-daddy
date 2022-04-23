@@ -15,9 +15,46 @@
   border-collapse:separate;
   border-spacing: 0 10px;
   width:100%;
-  padding-left: 10%
+  padding-left: 10%;
+  padding-right: 5%;
 }
 
-/*tr{*/
-/*  border:1px solid blue;*/
-/*}*/
+.trade-name-col {
+  width: 40%;
+}
+
+.trade-info-col {
+  width: 50%;
+}
+
+.trade-value-col {
+  text-align: right;
+  width: 10%;
+  color: lightblue;
+}
+
+.trade-rm-icon:hover {
+  transform:scale(0.9);
+}
+
+.trade-rm-icon {
+  transform:scale(0.8);
+  cursor: pointer;
+  padding-left: 2px;
+  vertical-align: middle;
+}
+
+.value-adj-text {
+  font-style: italic;
+}
+
+.trade-arrow-icon__small {
+  vertical-align: text-top;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.trade-arrow-icon {
+  vertical-align: text-top;
+  font-size: 16px;
+}
