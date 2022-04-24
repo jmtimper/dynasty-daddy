@@ -2,8 +2,10 @@ import {Injectable} from '@angular/core';
 import {CompletedDraft, DraftCapital, SleeperData, SleeperLeagueData, SleeperUserData} from '../model/SleeperUser';
 import {SleeperApiService} from './api/sleeper/sleeper-api.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {SleeperOwnerData, SleeperPlayoffMatchUp, SleeperRawDraftOrderData, SleeperRawTradePicksData,
-  SleeperRosterData, SleeperTeam, SleeperTeamMatchUpData, SleeperTeamTransactionData} from '../model/SleeperLeague';
+import {
+  SleeperOwnerData, SleeperPlayoffMatchUp, SleeperRawDraftOrderData, SleeperRawTradePicksData,
+  SleeperRosterData, SleeperTeam, SleeperTeamMatchUpData, SleeperTeamTransactionData, TeamMetrics
+} from '../model/SleeperLeague';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 
@@ -290,7 +292,22 @@ export class SleeperService {
         return team;
       }
     }
-    return null;
+    // TODO improve handling when player leaves league mid season without replacement
+    // if not found we return a dummy object
+    return new SleeperTeam(
+      new SleeperOwnerData(
+        'unable_to_find',
+        'Retired Owner',
+        'Retired Team',
+        ''
+      ),
+      new SleeperRosterData(
+        rosterId,
+        'unable_to_find',
+        [],
+        new TeamMetrics(null)
+      )
+    );
   }
 
   /**

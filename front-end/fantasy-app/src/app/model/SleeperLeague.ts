@@ -5,15 +5,15 @@ import set = Reflect.set;
 export class TeamMetrics {
 
   constructor(settings: any) {
-    this.wins = settings.wins || 0;
-    this.waiverPosition = settings.waiver_position || 0;
-    this.ppts = settings.ppts + (settings.ppts_decimal / 100) || 0;
-    this.losses = settings.losses || 0;
-    this.fpts = settings.fpts + (settings.fpts_decimal / 100) || 0;
-    this.fptsAgainst = settings.fpts_against + (settings.fpts_against_decimal / 100) || 0;
-    this.division = settings.division || 0;
-    this.ties = settings.ties || 0;
-    this.rank = settings.rank || 0;
+    this.wins = settings?.wins || 0;
+    this.waiverPosition = settings?.waiver_position || 0;
+    this.ppts = settings?.ppts + (settings?.ppts_decimal / 100) || 0;
+    this.losses = settings?.losses || 0;
+    this.fpts = settings?.fpts + (settings?.fpts_decimal / 100) || 0;
+    this.fptsAgainst = settings?.fpts_against + (settings?.fpts_against_decimal / 100) || 0;
+    this.division = settings?.division || 0;
+    this.ties = settings?.ties || 0;
+    this.rank = settings?.rank || 0;
   }
 
 

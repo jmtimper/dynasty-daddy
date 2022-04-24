@@ -1,8 +1,8 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
-  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
+  <div *ngIf="lineChartData.length > 0" fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
     <mat-card>
       <div class="mid-bold-text center-text margin-bot-10">Trade Value (Past 40 Days)</div>
-      <div *ngIf="lineChartData.length > 0">
+      <div>
         <canvas baseChart height="300" width="400"
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
