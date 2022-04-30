@@ -154,7 +154,7 @@ export class PlayerComparisonService {
    * @param players
    * @private
    */
-  private calculateGroupValue(players: PlayerComparison[]): number[] {
+  calculateGroupValue(players: PlayerComparison[]): number[] {
     const data = [];
     for (const player of players) {
       for (const dataPoint of player.data) {

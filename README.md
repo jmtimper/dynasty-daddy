@@ -1,6 +1,6 @@
 # Dynasty Daddy
 
-This project is currently in Beta and is deployed to https://dynasty-daddy.com.
+*This project is currently in Beta and is deployed to https://dynasty-daddy.com.*
 
 Dynasty Daddy is a webapp that integrates with Sleeper's api and scrapes KeepTradeCut's player evaluations to create metrics on each owners fantasy league.
 
@@ -15,8 +15,6 @@ The goal is to provide users with a frictionless way to see player value, team v
 ## Architecture
 
 Dynasty Daddy's front end is an angular 11 web application with an node express api connected to a postgres database. This database is populated using a python cron job that scrapes KeepTradeCut's player rankings once a day (since KeepTradeCut currently doesn't have a public api). For Sleeper's data, we use sleeper's public apis found in their documentation.
-
-
 
 ## How to run locally
 
@@ -66,6 +64,7 @@ First, clone repo and open up in your preferred IDE.
 - angular2-query-builder - query builder for player comparison advanced search
 - ngx-device-detector - detects if using mobile device, tablet, or desktop
 - ngx-spinner - displays spinner when waiting for api calls to return
+- ngx-mat-select-search - custom mat select search box with dropdown
 
 ## Deployment
 - CI/CD using Github Actions to build and push images to docker hub when a PR to main is created.

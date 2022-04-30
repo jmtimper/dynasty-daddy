@@ -7,7 +7,6 @@
     "start-deploy": "node server.js",
     "build": "ng build",
     "build-prod": "ng build --source-map --prod --outputHashing=all --configuration production",
-    "heroku-postbuild": "ng  build --aot --prod --output-hashing none",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -36,6 +35,7 @@
     "javascript-color-gradient": "^1.3.2",
     "ng2-charts": "^2.3.0",
     "ngx-device-detector": "^2.1.1",
+    "ngx-mat-select-search": "^3.3.3",
     "ngx-spinner": "^11.0.1",
     "path": "^0.12.7",
     "rxjs": "~6.6.0",
