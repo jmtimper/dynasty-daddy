@@ -353,4 +353,17 @@ export class PowerRankingsService {
     }
     return null;
   }
+
+  /**
+   * gets rankings by team
+   * @param rosterId selected roster id
+   */
+  findTeamFromRankingsByUserId(userId: string): TeamPowerRanking {
+    for (const team of this.powerRankings) {
+      if (team.team.roster.ownerId === userId) {
+        return team;
+      }
+    }
+    return null;
+  }
 }

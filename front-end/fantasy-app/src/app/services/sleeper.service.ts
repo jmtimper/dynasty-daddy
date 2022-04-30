@@ -162,8 +162,8 @@ export class SleeperService {
           let draftPicks: DraftCapital[] = [];
           for (
             let year = Number(this.selectedLeague.season) + 1;
-               year < Number(this.selectedLeague.season) + 4;
-               year++
+            year < Number(this.selectedLeague.season) + 4;
+            year++
           ) {
             for (let i = 0; i < this.selectedLeague.draftRounds; i++) {
               draftPicks.push(new DraftCapital(true, i + 1, this.selectedLeague.totalRosters / 2, year.toString()));
@@ -308,6 +308,62 @@ export class SleeperService {
         new TeamMetrics(null)
       )
     );
+  }
+
+  /**
+   * get team by user id
+   * returns sleeper team data
+   * @param userId
+   */
+  getTeamByUserId(userId: string): SleeperTeam {
+    for (const team of this.sleeperTeamDetails) {
+      if (team.roster.ownerId === userId) {
+        return team;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Convert draft capital objects into a list of name ids.
+   * This will be used to filter name ids from players.
+   * @param draftCapital
+   */
+  getDraftCapitalToNameId(draftCapital: DraftCapital[]): string[] {
+    const nameIds = [];
+    draftCapital.map(pick => {
+      let pickString = '';
+      if (pick.pick <= this.selectedLeague.totalRosters / 3) {
+        pickString = 'early';
+      } else if (pick.pick >= 2 * this.selectedLeague.totalRosters / 3) {
+        pickString = 'late';
+      } else {
+        pickString = 'mid';
+      }
+      let rdString = null;
+      switch (pick.round) {
+        case 1: {
+          rdString = '1stpi';
+          break;
+        }
+        case 2: {
+          rdString = '2ndpi';
+          break;
+        }
+        case 3: {
+          rdString = '3rdpi';
+          break;
+        }
+        case 4: {
+          rdString = '4thpi';
+          break;
+        }
+      }
+      if (rdString) {
+        nameIds.push(`${pick.year}${pickString}${rdString}`);
+      }
+    });
+    return nameIds;
   }
 
   /**
