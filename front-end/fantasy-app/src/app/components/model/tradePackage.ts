@@ -24,3 +24,14 @@ export class TradePackage {
     this.acceptanceVariance = acceptanceVariance;
   }
 }
+
+export class StudPlayerResponse{
+  studPlayer: KTCPlayer = null;
+  adjustmentMultiplier: number = 1;
+
+  constructor(player: KTCPlayer, value: number = 1) {
+    this.studPlayer = player;
+    this.adjustmentMultiplier = value;
+  }
+
+}

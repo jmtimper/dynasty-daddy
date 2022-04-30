@@ -12,9 +12,9 @@
 }
 
 .trade-table {
-  border-collapse:separate;
+  border-collapse: separate;
   border-spacing: 0 10px;
-  width:100%;
+  width: 100%;
   padding-left: 10%;
   padding-right: 5%;
 }
@@ -34,11 +34,11 @@
 }
 
 .trade-rm-icon:hover {
-  transform:scale(0.9);
+  transform: scale(0.9);
 }
 
 .trade-rm-icon {
-  transform:scale(0.8);
+  transform: scale(0.8);
   cursor: pointer;
   padding-left: 2px;
   vertical-align: middle;
@@ -57,4 +57,36 @@
 .trade-arrow-icon {
   vertical-align: text-top;
   font-size: 16px;
+}
+
+.trade_insights {
+  margin: 24px 24px 0 24px;
+  min-width: 300px;
+}
+
+.trade-table-item {
+  border-color: #7f7f7f;
+  border-style: solid;
+  border-width: 1px;
+  margin-top: 5px;
+}
+
+::ng-deep .langSelect div.mat-select-arrow-wrapper {
+  display: none;
+}
+
+::ng-deep .langSelect.mat-select {
+  display: inline;
+}
+
+.team-dropdown-arrow-icon {
+  margin-right: 5px !important;
+  vertical-align: text-bottom !important;
+  /*height: 16px !important;*/
+  width: 16px !important;
+  cursor: pointer;
+}
+
+.teamSelect {
+  font-size: 14px !important;
 }

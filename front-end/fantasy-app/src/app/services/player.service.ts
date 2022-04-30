@@ -462,7 +462,18 @@ export class PlayerService {
    * @param player2 player
    * @param isSuperflex boolean
    */
-  comparePlayers(player1: KTCPlayer, player2: KTCPlayer, isSuperflex: boolean = true): boolean {
-    return isSuperflex ? player1.sf_trade_value > player2.sf_trade_value : player1.trade_value > player2.trade_value
+  comparePlayersValue(player1: KTCPlayer, player2: KTCPlayer, isSuperflex: boolean = true): boolean {
+    return isSuperflex ? player1.sf_trade_value > player2.sf_trade_value : player1.trade_value > player2.trade_value;
+  }
+
+  /**
+   * returns the current index in the player values array
+   * @param player1 player
+   * @param isSuperflex boolean
+   */
+  getPlayersValueIndex(player1: KTCPlayer, isSuperflex: boolean = true): number {
+    const sortedList = isSuperflex ? this.playerValues.slice() :
+      this.playerValues.sort((a, b) => b.trade_value - a.trade_value);
+    return sortedList.findIndex(player => player.name_id === player1.name_id);
   }
 }

@@ -10,6 +10,10 @@ import {KTCPlayer} from '../../model/KTCPlayer';
 import {take, takeUntil} from 'rxjs/operators';
 import {ConfigService} from '../../services/init/config.service';
 import {SleeperService} from '../../services/sleeper.service';
+import {PowerRankingsService} from '../services/power-rankings.service';
+import {TeamPowerRanking} from '../model/powerRankings';
+import {PlayerComparisonService} from '../services/player-comparison.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-trade-center',
@@ -54,7 +58,20 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
   /** hide/show the advance trade calculator settings */
   public toggleAdvancedSettings: boolean = false;
 
+  /** acceptance variant number */
   public acceptanceVariance: number;
+
+  /** player rankings object for team 1 */
+  public team1Rankings: TeamPowerRanking;
+
+  /** player rankings object for team 2 */
+  public team2Rankings: TeamPowerRanking;
+
+  /** manually selected team 1 user id */
+  public selectedTeam1: string = null;
+
+  /** manually selected team 2 user id */
+  public selectedTeam2: string = null;
 
   @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
 
@@ -64,7 +81,10 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     public tradeTool: TradeService,
     public playerService: PlayerService,
     public configService: ConfigService,
-    public sleeperService: SleeperService
+    public sleeperService: SleeperService,
+    public powerRankingsService: PowerRankingsService,
+    public playerComparisonService: PlayerComparisonService,
+    private router: Router
   ) {
     super();
   }
@@ -100,25 +120,32 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
 
     this.players = this.playerService.playerValues.slice();
 
-    // load the initial player list
-    this.filteredTeam1Players.next(this.players.slice(0, 10));
-    let playerTeam2Filter = this.players.slice(0, 10);
-    if (this.tradeTool.tradePackage && this.tradeTool.tradePackage?.team2UserId) {
-      playerTeam2Filter = this.players.filter(it => it.owner?.userId === this.tradeTool.tradePackage?.team2UserId).slice(0, 10);
+    // if logged in set initial user id to team 2 user id
+    if (this.sleeperService.selectedLeague &&
+      this.sleeperService.sleeperUser &&
+      this.team1PlayerList.length === 0 &&
+      this.team2PlayerList.length === 0) {
+      this.selectedTeam2 = this.sleeperService.sleeperUser?.userData?.user_id;
+      this.team2Rankings = this.powerRankingsService.findTeamFromRankingsByUserId(this.selectedTeam2);
     }
-    this.filteredTeam2Players.next(playerTeam2Filter);
+
+    // generate new trade object (this is to catch if a league member logged in mid trade)
+    this.processTrade();
+    // load the initial player list
+    this.filteredTeam1Players.next(this.tradeTool.filterPlayersList(this.tradeTool.tradePackage?.team1UserId).slice(0, 10));
+    this.filteredTeam2Players.next(this.tradeTool.filterPlayersList(this.tradeTool.tradePackage?.team2UserId).slice(0, 10));
 
     // listen for search field value changes
     this.playerFilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
       .subscribe(() => {
-        this.filterTeam1Players();
+        this.filterTeamPlayers(this.playerFilterCtrl, this.tradeTool.tradePackage?.team1UserId, this.filteredTeam1Players);
       });
 
     this.player2FilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
       .subscribe(() => {
-        this.filterTeam2Players();
+        this.filterTeamPlayers(this.player2FilterCtrl, this.tradeTool.tradePackage?.team2UserId, this.filteredTeam2Players);
       });
   }
 
@@ -135,97 +162,46 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
    * Sets the initial value after the filteredPlayers are loaded initially
    */
   protected setInitialValue(): any {
-    this.filteredTeam1Players
-      .pipe(take(1), takeUntil(this._onDestroy))
-      .subscribe(() => {
-        // setting the compareWith property to a comparison function
-        // triggers initializing the selection according to the initial value of
-        // the form control (i.e. _initializeSelection())
-        // this needs to be done after the filteredPlayers are loaded initially
-        // and after the mat-option elements are available
-        this.singleSelect.compareWith = (a: KTCPlayer, b: KTCPlayer) => a && b && a.name_id === b.name_id;
-      });
-
-    this.filteredTeam2Players
-      .pipe(take(1), takeUntil(this._onDestroy))
-      .subscribe(() => {
-        // setting the compareWith property to a comparison function
-        // triggers initializing the selection according to the initial value of
-        // the form control (i.e. _initializeSelection())
-        // this needs to be done after the filteredPlayers are loaded initially
-        // and after the mat-option elements are available
-        this.singleSelect2.compareWith = (a: KTCPlayer, b: KTCPlayer) => a && b && a.name_id === b.name_id;
-      });
+    this.initializeSubscriptions(this.singleSelect, this.filteredTeam1Players);
+    this.initializeSubscriptions(this.singleSelect2, this.filteredTeam2Players);
   }
 
   /**
-   * filter players for selected dropdown
-   * @protected
-   */
-  protected filterTeam1Players(): any {
-    if (!this.players) {
-      return;
-    }
-    // get the search keyword
-    let search = this.playerFilterCtrl.value;
-    if (!search) {
-      this.filteredTeam1Players.next(this.filterPlayersList(this.tradeTool?.tradePackage?.team1UserId).slice(0, 10));
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    // filter the players
-    this.filteredTeam1Players.next(
-      this.filterPlayersList(this.tradeTool?.tradePackage?.team1UserId)
-        .filter(player => player.full_name.toLowerCase().indexOf(search) > -1).slice(0, 10));
-  }
-
-  /**
-   * filter players for selected dropdown
-   * TODO abstract this out
-   * @protected
-   */
-  protected filterTeam2Players(): any {
-    if (!this.players) {
-      return;
-    }
-    // get the search keyword
-    let search = this.player2FilterCtrl.value;
-    if (!search) {
-      this.filteredTeam2Players.next(this.filterPlayersList(this.tradeTool?.tradePackage?.team2UserId).slice(0, 10));
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    // filter the players
-    this.filteredTeam2Players.next(
-      this.filterPlayersList(this.tradeTool?.tradePackage?.team2UserId)
-        .filter(player => player.full_name.toLowerCase().indexOf(search) > -1).slice(0, 10));
-  }
-
-  /**
-   * Filters list of all players by team.
-   * Used for filtering which players show up in searches
-   * @param userId string
+   * initialize selection filter subscriptions for mat search dropdowns
+   * @param selectObject Mat select
+   * @param filterSubscription replay subject
    * @private
    */
-  private filterPlayersList(userId: string = null): KTCPlayer[] {
-    if (userId) {
-      // filter players by team
-      const playerList = this.players.filter(it => it.owner?.userId === userId);
-      // get draft capital for team in filter
-      const team = this.sleeperService.getTeamByUserId(userId);
-      const picks = this.sleeperService.getDraftCapitalToNameId([...team.futureDraftCapital, ...team.draftCapital]);
-      picks.map(pick => {
-        const pickPlayer = this.playerService.getPlayerByNameId(pick);
-        if (pickPlayer) {
-          playerList.push(pickPlayer);
-        }
+  private initializeSubscriptions(selectObject: MatSelect, filterSubscription: ReplaySubject<KTCPlayer[]>): void {
+    filterSubscription
+      .pipe(take(1), takeUntil(this._onDestroy))
+      .subscribe(() => {
+        selectObject.compareWith = (a: KTCPlayer, b: KTCPlayer) => a && b && a.name_id === b.name_id;
       });
-      return playerList.sort((a, b) => b.sf_trade_value - a.sf_trade_value);
-    } else {
-      return this.players;
+  }
+
+  /**
+   * filter players for selected dropdown
+   * @protected
+   */
+  protected filterTeamPlayers(filterCtrl: FormControl, userId: string, filterSubscription: ReplaySubject<KTCPlayer[]>): any {
+    if (!this.players) {
+      return;
     }
+    // get the search keyword
+    let search = filterCtrl.value;
+    if (!search) {
+      filterSubscription.next(this.tradeTool.filterPlayersList(userId).slice(0, 10));
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    // filter the players
+    filterSubscription.next(
+      this.tradeTool.filterPlayersList(userId)
+        .filter(player => ((player.full_name.toLowerCase().indexOf(search) > -1
+          || player.owner?.ownerName.toLowerCase().indexOf(search) > -1
+          || player.position.toLowerCase().indexOf(search) > -1))).slice(0, 10));
   }
 
   /**
@@ -240,20 +216,42 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
       this.acceptanceVariance
     );
     if (this.sleeperService.selectedLeague) {
-      if (player1.length === 1) {
+      trade.team1UserId = this.selectedTeam1 || this.tradeTool.tradePackage?.team1UserId;
+      trade.team2UserId = this.selectedTeam2 || this.tradeTool.tradePackage?.team2UserId;
+      // set player if null
+      if (!trade.team1UserId && player1.length === 1) {
         trade.team1UserId = player1[0]?.owner?.userId || null;
       }
-      if (player2.length === 1) {
+      if (!trade.team2UserId && player2.length === 1) {
         trade.team2UserId = player2[0]?.owner?.userId || null;
       }
-      if (player1.length === 0) {
+      if (player1.length === 0 && this.selectedTeam1 !== this.team1Rankings?.team?.owner.userId) {
         trade.team1UserId = null;
+        this.team1Rankings = null;
       }
-      if (player2.length === 0) {
+      if (player2.length === 0 && this.selectedTeam2 !== this.team2Rankings?.team?.owner.userId) {
         trade.team2UserId = null;
+        this.team2Rankings = null;
       }
     }
     this.tradeTool.tradePackage = this.tradeTool.determineTrade(trade, this.isSuperFlex);
+    this.refreshDisplay();
+  }
+
+  /**
+   * refreshes the power rankings and search filters when updating a trade
+   * @private
+   */
+  private refreshDisplay(): void {
+    // set team needs value
+    if (this.tradeTool.tradePackage?.team1UserId && !this.team1Rankings) {
+      this.team1Rankings = this.powerRankingsService.findTeamFromRankingsByUserId(this.tradeTool.tradePackage.team1UserId);
+    }
+    if (this.tradeTool.tradePackage?.team2UserId && !this.team2Rankings) {
+      this.team2Rankings = this.powerRankingsService.findTeamFromRankingsByUserId(this.tradeTool.tradePackage.team2UserId);
+    }
+    this.filterTeamPlayers(this.playerFilterCtrl, this.tradeTool.tradePackage?.team1UserId, this.filteredTeam1Players);
+    this.filterTeamPlayers(this.player2FilterCtrl, this.tradeTool.tradePackage?.team2UserId, this.filteredTeam2Players);
   }
 
   /**
@@ -261,8 +259,10 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
    * @param player selected player
    */
   addPlayerToTeam1(player: KTCPlayer): void {
-    this.team1PlayerList.push(player);
-    this.processTrade();
+    if (player) {
+      this.team1PlayerList.push(player);
+      this.processTrade();
+    }
   }
 
   /**
@@ -270,8 +270,10 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
    * @param player selected player
    */
   addPlayerToTeam2(player: KTCPlayer): void {
-    this.team2PlayerList.push(player);
-    this.processTrade();
+    if (player) {
+      this.team2PlayerList.push(player);
+      this.processTrade();
+    }
   }
 
   /**
@@ -293,25 +295,6 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
   }
 
   /**
-   * get total amount of trade package by side
-   * @param teamNumber 1 or 2
-   */
-  getTradeValueBySide(teamNumber: number): number {
-    if (!this.tradeTool.tradePackage) {
-      return 0;
-    }
-    if (teamNumber === 1) {
-      return this.tradeTool.tradePackage?.team1AssetsValue + (
-        this.tradeTool.tradePackage?.valueAdjustmentSide === 1
-          ? this.tradeTool.tradePackage.valueAdjustment : 0);
-    } else {
-      return this.tradeTool.tradePackage?.team2AssetsValue + (
-        this.tradeTool.tradePackage?.valueAdjustmentSide === 2
-          ? this.tradeTool.tradePackage.valueAdjustment : 0);
-    }
-  }
-
-  /**
    * get which side of trade is favored
    */
   getWhichSideIsFavored(): number {
@@ -319,8 +302,8 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     if (!this.tradeTool.tradePackage || this.tradeTool.tradePackage.valueToEvenTrade < this.tradeTool.tradePackage.acceptanceBufferAmount) {
       return 0;
     }
-    const team1 = this.getTradeValueBySide(1);
-    const team2 = this.getTradeValueBySide(2);
+    const team1 = this.tradeTool.getTradeValueBySide(1);
+    const team2 = this.tradeTool.getTradeValueBySide(2);
     if (team1 > team2) {
       return 1;
     } else {
@@ -347,6 +330,71 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
   clearTradeTable(): void {
     this.team1PlayerList = [];
     this.team2PlayerList = [];
+    this.team2Rankings = null;
+    this.team1Rankings = null;
     this.tradeTool.tradePackage = null;
+    this.filterTeamPlayers(this.playerFilterCtrl, this.tradeTool.tradePackage?.team1UserId, this.filteredTeam1Players);
+    this.filterTeamPlayers(this.player2FilterCtrl, this.tradeTool.tradePackage?.team2UserId, this.filteredTeam2Players);
   }
+
+  /**
+   * add players to trade to even out trade.
+   */
+  evenOutTrade(): void {
+    // prevent an infinite loop
+    let index = 0;
+    while (this.tradeTool.tradePackage?.valueToEvenTrade > this.tradeTool.tradePackage?.acceptanceBufferAmount || index > 10) {
+      this.getWhichSideIsFavored() === 1 ?
+        this.addPlayerToTeam2(
+          this.tradeTool.findBestPlayerForValue(
+            this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
+            this.isSuperFlex,
+            this.tradeTool.tradePackage.team2UserId,
+            1
+          )[0]
+        )
+        :
+        this.addPlayerToTeam1(
+          this.tradeTool.findBestPlayerForValue(
+            this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
+            this.isSuperFlex,
+            this.tradeTool.tradePackage.team1UserId,
+            1
+          )[0]
+        );
+      index++;
+    }
+  }
+
+  /**
+   * selection made for team 2 filter
+   */
+  selectionMadeTeam1(): void {
+    this.team1Rankings = this.powerRankingsService.findTeamFromRankingsByUserId(this.selectedTeam1);
+    this.team1PlayerList = [];
+    this.processTrade();
+  }
+
+  /**
+   * selection made for team 2 filter
+   */
+  selectionMadeTeam2(): void {
+    this.team2Rankings = this.powerRankingsService.findTeamFromRankingsByUserId(this.selectedTeam2);
+    this.team2PlayerList = [];
+    this.processTrade();
+  }
+
+  openPlayerComparisonPage(): void {
+    this.playerComparisonService.selectedPlayers = [];
+    this.playerComparisonService.selectedPlayers = [];
+    this.team1PlayerList.map(player => {
+      this.playerComparisonService.addPlayerToCharts(player, false);
+    });
+    this.team2PlayerList.map(player => {
+      this.playerComparisonService.addPlayerToCharts(player, true);
+    });
+    this.playerComparisonService.isGroupMode = true;
+    this.router.navigateByUrl('players/comparison');
+  }
+
 }

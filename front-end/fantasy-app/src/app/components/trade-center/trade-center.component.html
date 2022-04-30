@@ -10,28 +10,41 @@
     </span>
     <span *ngIf="!configService.isMobile" class="container_spacer"></span>
     <span class="button-right">
-      <button mat-raised-button (click)="clearTradeTable()"><mat-icon>refresh</mat-icon>Clear</button>
+      <button mat-raised-button (click)="clearTradeTable()"><mat-icon>refresh</mat-icon> Clear</button>
       <button mat-icon-button (click)="toggleAdvancedSettings = !toggleAdvancedSettings"><mat-icon>settings</mat-icon></button>
     </span>
   </div>
   <div *ngIf="toggleAdvancedSettings" style="padding-left: 10%; padding-right: 10%">
     <span class="button-left">
-      <span class="small-text__light" style="padding-right: 5px">Trade Acceptance: </span>
+      <span class="small-text__light" style="padding-right: 5px">Trade Acceptance %: </span>
       <mat-slider
-                  [max]="10"
-                  [min]="1"
-                  [step]=".5"
-                  [thumbLabel]="true"
-                  [tickInterval]="1"
-                  [(ngModel)]="acceptanceVariance"
-                  (change)="processTrade()"></mat-slider>
+        [max]="10"
+        [min]="1"
+        [step]=".5"
+        [thumbLabel]="true"
+        [tickInterval]="1"
+        [(ngModel)]="acceptanceVariance"
+        (change)="processTrade()"></mat-slider>
     </span>
   </div>
 
 
   <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
     <div fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%">
-      <div class="mid-bold-text center-text margin-bot-10 margin-top-25">Team 1 gets...</div>
+      <div class="mid-bold-text center-text margin-bot-10 margin-top-25">
+        <mat-icon (click)=team2Select.open()
+                  *ngIf="sleeperService.selectedLeague"
+                  class="team-dropdown-arrow-icon">arrow_drop_down
+          <mat-select
+            #team2Select
+            [(ngModel)]="selectedTeam2"
+            class="langSelect">
+            <mat-option class="teamSelect" (click)="selectionMadeTeam2()" [value]="null">None</mat-option>
+            <mat-option class="teamSelect" (click)="selectionMadeTeam2()" *ngFor="let team of sleeperService.sleeperTeamDetails" [value]="team.owner.userId">{{team.owner.ownerName}}</mat-option>
+          </mat-select>
+        </mat-icon>
+        {{team2Rankings?.team.owner.ownerName || 'Team 1'}} gets...
+      </div>
       <div>
         <mat-form-field class="trade-dropdown" color="accent">
           <mat-select [formControl]="playerCtrl" placeholder="Select Player" #singleSelect disableOptionCentering>
@@ -47,9 +60,12 @@
       <table class="trade-table">
         <tr *ngFor="let player of team1PlayerList; let i = index">
           <td class="trade-name-col">
-          <span class="link--text__no__underline" [routerLink]="['../details', player.name_id]">
-          {{player.full_name}}
-        </span>
+              <span *ngIf="player.position != 'PI'" class="link--text__no__underline" [routerLink]="['../details', player.name_id]">
+              {{player.full_name}}
+            </span>
+            <span *ngIf="player.position == 'PI'">
+              {{player.full_name}}
+            </span>
           </td>
           <td class="trade-info-col">
             <span *ngIf="player.position != 'PI'" class="small-text__light">{{player.position}}{{isSuperFlex ? player.sf_position_rank : player.position_rank}} • {{player.team}} • {{player.age}} y.o</span>
@@ -62,11 +78,28 @@
           <td class="small-text__light"></td>
           <td class="mid-bold-text trade-value-col">+{{tradeTool.tradePackage?.valueAdjustment}}</td>
         </tr>
+        <tr *ngIf="getWhichSideIsFavored() == 2 && team1PlayerList.length != 0">
+          <td></td>
+          <td (click)="evenOutTrade()" class="trade-info-col small-text__light link--text__no__underline" style="text-decoration-line: underline; font-style: italic">Even Out Trade</td>
+        <tr>
       </table>
-      <div *ngIf="configService.isMobile" class="margin-top-25 center-text large-bold-header-text">Total: {{getTradeValueBySide(1)}}</div>
+      <div *ngIf="configService.isMobile" class="margin-top-25 center-text large-bold-header-text">Total: {{tradeTool.getTradeValueBySide(1)}}</div>
     </div>
     <div fxFlex="40%" fxFlex.xs="100%" fxFlex.sm="100%">
-      <div class="mid-bold-text center-text margin-bot-10 margin-top-25">Team 2 gets...</div>
+      <div class="mid-bold-text center-text margin-bot-10 margin-top-25">
+        <mat-icon (click)=team1Select.open()
+                  *ngIf="sleeperService.selectedLeague"
+                  class="team-dropdown-arrow-icon">arrow_drop_down
+          <mat-select
+            #team1Select
+            [(ngModel)]="selectedTeam1"
+          class="langSelect">
+            <mat-option class="teamSelect" [value]="null" (click)="selectionMadeTeam1()">None</mat-option>
+            <mat-option class="teamSelect" (click)="selectionMadeTeam1()" *ngFor="let team of sleeperService.sleeperTeamDetails" [value]="team.owner.userId">{{team.owner.ownerName}}</mat-option>
+          </mat-select>
+        </mat-icon>
+        {{team1Rankings?.team.owner.ownerName || 'Team 2'}} gets...
+      </div>
       <div>
         <mat-form-field class="trade-dropdown" color="accent">
           <mat-select [formControl]="player2Ctrl" placeholder="Select Player" #singleSelect2>
@@ -82,7 +115,10 @@
       <table class="trade-table">
         <tr *ngFor="let player of team2PlayerList; let i = index">
           <td class="trade-name-col">
-              <span class="link--text__no__underline" [routerLink]="['../details', player.name_id]">
+              <span *ngIf="player.position != 'PI'" class="link--text__no__underline" [routerLink]="['../details', player.name_id]">
+              {{player.full_name}}
+            </span>
+            <span *ngIf="player.position == 'PI'">
               {{player.full_name}}
             </span>
           </td>
@@ -99,22 +135,25 @@
           <td class="small-text__light"></td>
           <td class="mid-bold-text trade-value-col">+{{tradeTool.tradePackage.valueAdjustment}}</td>
         </tr>
-        <tr *ngIf="getWhichSideIsFavored() == 1">
+        <tr *ngIf="getWhichSideIsFavored() == 1 && team2PlayerList.length != 0">
           <td></td>
-          <td class="trade-info-col small-text__light link--text__no__underline" style="text-decoration-line: underline; font-style: italic">even out trade</td>
-        </tr>
+          <td (click)="evenOutTrade()" class="trade-info-col small-text__light link--text__no__underline" style="text-decoration-line: underline; font-style: italic">Even Out Trade</td>
+        <tr>
       </table>
-      <div *ngIf="configService.isMobile" class="margin-top-25 center-text large-bold-header-text">Total: {{getTradeValueBySide(2)}}</div>
+      <div *ngIf="configService.isMobile" class="margin-top-25 center-text large-bold-header-text">Total: {{tradeTool.getTradeValueBySide(2)}}</div>
     </div>
     <div fxFlex="40%" fxFlex.xs="40%" fxFlex.sm="40%" *ngIf="!configService.isMobile">
-      <div class="margin-top-25 center-text large-bold-header-text">Team 1: {{getTradeValueBySide(1) | number}}</div>
+      <div class="margin-top-25 center-text large-bold-header-text">{{team2Rankings?.team.owner.ownerName || 'Team 2'}}: {{tradeTool.getTradeValueBySide(1) | number}}</div>
     </div>
     <div fxFlex="40%" fxFlex.xs="40%" fxFlex.sm="40%" *ngIf="!configService.isMobile">
-      <div class="margin-top-25 center-text large-bold-header-text">Team 2: {{getTradeValueBySide(2) | number}}</div>
+      <div class="margin-top-25 center-text large-bold-header-text">{{team1Rankings?.team.owner.ownerName || 'Team 1'}}: {{tradeTool.getTradeValueBySide(2) | number}}</div>
     </div>
-    <div fxFlex="80%" fxFlex.xs="80%" fxFlex.sm="80%" [ngStyle]="getTradeBackgroundColor()" class="margin-top-25">
+    <div fxFlex="80%" fxFlex.xs="80%" fxFlex.sm="80%" [ngStyle]="getTradeBackgroundColor()" class="margin-top-25 margin-bot-50">
       <div *ngIf="tradeTool.tradePackage === null || (tradeTool.tradePackage?.team1Assets.length === 0 && tradeTool.tradePackage?.team2Assets.length === 0)" class="mid-bold-text center-text margin-top-15 margin-bot-15" style="color: lightgray">Add Player to Trade</div>
-      <div *ngIf="tradeTool.tradePackage !== null && (tradeTool.tradePackage?.team1Assets.length !== 0 && tradeTool.tradePackage?.team2Assets?.length !== 0) && tradeTool.tradePackage?.valueToEvenTrade <= tradeTool.tradePackage?.acceptanceBufferAmount" class="large-bold-header-text center-text margin-top-15 margin-bot-15" style="color: lightskyblue">Fair Trade</div>
+      <div *ngIf="tradeTool.tradePackage !== null && (tradeTool.tradePackage?.team1Assets.length !== 0 && tradeTool.tradePackage?.team2Assets?.length !== 0) && tradeTool.tradePackage?.valueToEvenTrade <= tradeTool.tradePackage?.acceptanceBufferAmount" class="center-text margin-top-15 margin-bot-15" style="color: lightskyblue">
+        <div class="large-bold-header-text">Fair Trade</div>
+        <div (click)="openPlayerComparisonPage()" class="link--text__no__underline small-text__light margin-top-10" style="text-decoration-line: underline;">View in Player Comparison</div>
+      </div>
       <div *ngIf="tradeTool.tradePackage?.valueAdjustmentSide && tradeTool.tradePackage?.valueToEvenTrade > tradeTool.tradePackage?.acceptanceBufferAmount">
         <div class="mid-bold-text center-text margin-top-10">
           <mat-icon class="trade-arrow-icon" *ngIf="getWhichSideIsFavored() == 1">arrow_back</mat-icon>
@@ -125,8 +164,80 @@
           <mat-icon class="trade-arrow-icon__small" *ngIf="getWhichSideIsFavored() == 2">arrow_back</mat-icon>
           Add a player with <span style="font-weight: bolder">{{tradeTool.tradePackage?.valueToEvenTrade | number}}</span> value to even trade
           <mat-icon class="trade-arrow-icon__small" *ngIf="getWhichSideIsFavored() == 1">arrow_forward</mat-icon>
+          <div (click)="openPlayerComparisonPage()" class="link--text__no__underline" style="text-decoration-line: underline;">View in Player Comparison</div>
         </div>
       </div>
     </div>
+    <div *ngIf="tradeTool.tradePackage && (tradeTool.tradePackage.team2Assets.length != 0 || tradeTool.tradePackage.team1Assets.length != 0) && tradeTool.tradePackage?.valueToEvenTrade > tradeTool.tradePackage?.acceptanceBufferAmount" class="trade_insights" fxFlex="37.5%" fxFlex.xs="80%" fxFlex.sm="80%">
+      <mat-card>
+        <mat-card-content>
+          <div class="center-text mid-bold-text margin-bot-10">Players to Even the Trade<span *ngIf="sleeperService.selectedLeague && team1Rankings && team2Rankings">{{(getWhichSideIsFavored() == 2 ? ' from ' + team1Rankings?.team.owner.ownerName : ' from ' + team2Rankings?.team.owner.ownerName)}}</span></div>
+        </mat-card-content>
+        <table class="trade-table-item" *ngFor="let player of tradeTool.findBestPlayerForValue(tradeTool.tradePackage.valueToEvenTrade * 1.03, isSuperFlex, this.getWhichSideIsFavored() == 2 ? tradeTool.tradePackage.team1UserId : tradeTool.tradePackage.team2UserId)">
+          <tr>
+            <td *ngIf="player.position == 'PI'" style="width: 70%">{{player.full_name}}</td>
+            <td *ngIf="player.position != 'PI'" style="width: 70%" class="link--text__no__underline" [routerLink]="['../details', player.name_id]">{{player.full_name}}</td>
+            <td style="width: 30%">{{player.sf_trade_value}}</td>
+            <td style="width: 5px" (click)="getWhichSideIsFavored() == 2 ? addPlayerToTeam1(player) : addPlayerToTeam2(player)">
+              <mat-icon class="trade-rm-icon">add_circle</mat-icon>
+            </td>
+          </tr>
+        </table>
+      </mat-card>
+    </div>
+    <div *ngIf="tradeTool.tradePackage && sleeperService.selectedLeague" class="trade_insights" fxFlex="37.5%" fxFlex.xs="80%" fxFlex.sm="80%">
+      <mat-card style="min-height: 245px">
+        <div class="center-text mid-bold-text" style="margin-bottom: 5px">Team Position Ranks</div>
+        <table style="border-collapse: separate; border-spacing: 0 10px;">
+          <tr>
+            <td style="width: 50%">{{team2Rankings?.team.owner.ownerName || '--'}}</td>
+            <td style="width: 4%" class="center text__light">NAME</td>
+            <td style="width: 50%; text-align: right;">{{team1Rankings?.team.owner.ownerName || '--'}}</td>
+          </tr>
+          <tr>
+            <td style="width: 48%">{{team2Rankings?.roster[0].rank || '--'}}</td>
+            <td style="width: 4%" class="center-text text__light">QB</td>
+            <td style="width: 48%; text-align: right;">{{team1Rankings?.roster[0].rank || '--'}}</td>
+          </tr>
+          <tr>
+            <td style="width: 48%">{{team2Rankings?.roster[1].rank || '--'}}</td>
+            <td style="width: 4%" class="center-text text__light">RB</td>
+            <td style="width: 48%; text-align: right;">{{team1Rankings?.roster[1].rank || '--'}}</td>
+          </tr>
+          <tr>
+            <td style="width: 48%">{{team2Rankings?.roster[2].rank || '--'}}</td>
+            <td style="width: 4%" class="center-text text__light">WR</td>
+            <td style="width: 48%; text-align: right;">{{team1Rankings?.roster[2].rank || '--'}}</td>
+          </tr>
+          <tr>
+            <td style="width: 48%">{{team2Rankings?.roster[3].rank || '--'}}</td>
+            <td style="width: 4%" class="center-text text__light">TE</td>
+            <td style="width: 48%; text-align: right;">{{team1Rankings?.roster[3].rank || '--'}}</td>
+          </tr>
+          <tr>
+            <td style="width: 48%">{{team2Rankings?.picks.rank || '--'}}</td>
+            <td style="width: 4%" class="center-text text__light">PICKS</td>
+            <td style="width: 48%; text-align: right;">{{team1Rankings?.picks.rank || '--'}}</td>
+          </tr>
+        </table>
+      </mat-card>
+    </div>
+    <div *ngIf="!sleeperService.selectedLeague" class="trade_insights" fxFlex="37.5%" fxFlex.xs="80%" fxFlex.sm="80%">
+      <mat-card class="center-text" style="min-height: 245px">
+        <div class="mid-bold-text center-text">Log into your League</div>
+        <div class="margin-bot-10 center-text" style="margin-top: 80px">
+          <button mat-raised-button color="warn" routerLink="./home">Select League</button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<div class="margin-top-50 center-text">
+  <div class="large-bold-header-text center-text margin-bot-20">
+    What is the Value Adjustment?
+  </div>
+  <div class="center-text" style="max-width: 800px; margin: 0 auto">
+    The value adjustment is a calculated value to determine how much a player is worth in context of the trade. I wanted to make sure the fair trades weren't splitting a dollar into 100 pennies. Under the hood, the formula takes into consideration who is the key player in the trade and what proportion of the trade he accounts for.
   </div>
 </div>

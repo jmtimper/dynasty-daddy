@@ -45,7 +45,8 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
         this.resetPlayerCompPlayers();
       }
     }));
-    if (this.playerComparisonService.selectedPlayers.length === 0 && this.playerService.playerValues.length > 0) {
+    if (this.playerComparisonService.selectedPlayers.length === undefined
+      && this.playerComparisonService.selectedPlayers[0] === undefined) {
       this.resetPlayerCompPlayers();
     }
   }
@@ -116,7 +117,6 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
     this.playerComparisonService.selectedPlayers = [];
     this.playerComparisonService.group2SelectedPlayers = [];
     this.playerComparisonService.refreshTable();
-    this.resetPlayerCompPlayers();
   }
 
   /**
@@ -124,7 +124,9 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
    * @private
    */
   private resetPlayerCompPlayers(): void {
-    if (this.activePlayers.length > 0) {
+    if (
+      this.activePlayers.length > 0
+    ) {
       const playerNum = this.getRandomPlayer(true);
       this.playerComparisonService.addPlayerToCharts(this.activePlayers[playerNum]);
       this.playerComparisonService.addPlayerToCharts(this.activePlayers[playerNum + 1]);
