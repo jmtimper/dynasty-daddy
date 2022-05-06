@@ -200,6 +200,7 @@ export class PlayerComparisonService {
   /**
    * add player to chart, fetches data from db
    * @param player
+   * @param isGroup2
    */
   addPlayerToCharts(player: KTCPlayer, isGroup2: boolean = false): void {
     this.ktcApiService.getHistoricalPlayerValueById(player.name_id, this.isAllTime).subscribe((data) => {

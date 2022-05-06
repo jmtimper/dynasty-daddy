@@ -386,14 +386,14 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
 
   openPlayerComparisonPage(): void {
     this.playerComparisonService.selectedPlayers = [];
-    this.playerComparisonService.selectedPlayers = [];
+    this.playerComparisonService.group2SelectedPlayers = [];
+    this.playerComparisonService.isGroupMode = true;
     this.team1PlayerList.map(player => {
       this.playerComparisonService.addPlayerToCharts(player, false);
     });
     this.team2PlayerList.map(player => {
       this.playerComparisonService.addPlayerToCharts(player, true);
     });
-    this.playerComparisonService.isGroupMode = true;
     this.router.navigateByUrl('players/comparison');
   }
 
