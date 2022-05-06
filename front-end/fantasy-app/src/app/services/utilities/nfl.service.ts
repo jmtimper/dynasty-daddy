@@ -60,11 +60,17 @@ export class NflService {
       this.stateOfNFL = season;
       this.stateOfNFL.completedWeek = season.seasonType !== 'pre' && season.week > 0 ? season.week - 1 : 0;
       // weird api issue with sleeper fix
+      // TODO come up with a better way to manage the state of league vs state of nfl
       if ((season.seasonType === 'star' || season.seasonType === 'off')) {
         if (new Date().getFullYear() > Number(season.season)) {
           this.stateOfNFL.seasonType = 'post';
         }
-        this.stateOfNFL.completedWeek = 18;
+        // if its after april completed week = 0
+        if (new Date().getMonth() > 3) {
+          this.stateOfNFL.completedWeek = 0;
+        } else {
+          this.stateOfNFL.completedWeek = 18;
+        }
       }
       return this.stateOfNFL;
     }));
@@ -75,7 +81,7 @@ export class NflService {
    */
   getYearForStats(): string {
     switch (this.stateOfNFL.seasonType) {
-      case 'off' || 'pre':
+      case ('off' && new Date().getMonth() < 4) || 'pre':
         return this.stateOfNFL.previousSeason;
       default:
         return this.stateOfNFL.season;
