@@ -137,7 +137,7 @@ export class PlayerService {
         return of(this.playerStats);
       })));
       let currentWeekInd = this.nflService.stateOfNFL.seasonType !== 'post' ? this.nflService.stateOfNFL.completedWeek : 18;
-      let currentYearInd = Number(this.nflService.getYearForStats());
+      let currentYearInd = Number(this.nflService.stateOfNFL.season);
       for (let weekNum = 1; weekNum < 19; weekNum++) {
         if (currentWeekInd === 0) {
           currentYearInd = currentYearInd - 1;
@@ -252,7 +252,7 @@ export class PlayerService {
     index--;
     if (this.nflService.stateOfNFL) {
       let weekNum = this.nflService.stateOfNFL.completedWeek - index;
-      let year = Number(this.nflService.getYearForStats());
+      let year = Number(this.nflService.stateOfNFL.season);
       if (weekNum < 1) {
         year--;
         weekNum = (year < 2021 ? 17 : 18) - Math.abs(weekNum);
