@@ -1,5 +1,5 @@
 
-<div class="center-text">
+<div class="center-text" *ngIf="totalProj && totalProj > 0">
   This player has the tendency to <span class="warning__alert">{{totalPoints/totalProj >= 1 ? 'outperform' : 'underperform'}} their projections by {{generatePerformancePercent()}}%</span> over the past 18 weeks!
 </div>
 

@@ -286,6 +286,12 @@ html, body, app-root, .app-frame {
   text-align: center;
 }
 
+.center-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .right-align-text {
   text-align: right;
 }
@@ -631,5 +637,12 @@ tr.table-detail-row {
   margin-top: 4px;
   text-align: center;
   color: #fdca40;
+}
+
+.open-window-button {
+  font-size: 18px;
+  cursor: pointer;
+  vertical-align: sub;
+  margin-left: 5px;
 }
 

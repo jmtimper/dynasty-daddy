@@ -14,7 +14,7 @@ import {ColorService} from '../../services/color.service';
 })
 export class StrengthOfScheduleChartComponent implements OnInit {
 
-  @ViewChild(BaseChartDirective, {static: true}) chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   /**
    * ng2-chart options

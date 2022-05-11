@@ -96,6 +96,7 @@
                 </div>
                 <div class="margin-top-25">
                   <button mat-icon-button matTooltip="Copy Starters Roster" matTooltipPosition="above" (click)="copyStartersFromTeam(element)"><mat-icon>content_copy</mat-icon></button>
+                  <button mat-icon-button matTooltip="Copy Whole Roster" matTooltipPosition="above" (click)="copyWholeFromTeam(element)"><mat-icon>copy_all</mat-icon></button>
                 </div>
               </div>
               <div *ngFor="let positionGroup of element.roster" class="grid-16">
