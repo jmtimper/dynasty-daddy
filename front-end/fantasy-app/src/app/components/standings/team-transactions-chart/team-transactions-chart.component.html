@@ -1,5 +1,5 @@
 <div class="table-container margin-top-25">
-  <div style="display: block;" *ngIf="data">
+  <div style="display: block; height: 400px" *ngIf="data">
     <canvas baseChart width="600" height="400"
             [datasets]="data"
             [labels]="dataLabels"
@@ -9,5 +9,10 @@
             [chartType]="chartType"
             [plugins]="chartPlugins">
     </canvas>
+  </div>
+  <div *ngIf="!chart && data.length == 0">
+    <div style="min-height: 300px" class="center-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
   </div>
 </div>

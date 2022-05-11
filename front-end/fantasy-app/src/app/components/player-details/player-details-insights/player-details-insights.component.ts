@@ -1,17 +1,22 @@
-import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {KTCPlayer, KTCPlayerDataPoint} from '../../../model/KTCPlayer';
 import {PlayerService} from '../../../services/player.service';
 import {SleeperService} from '../../../services/sleeper.service';
 import {PlayerInsights} from '../../model/playerInsights';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import {BaseChartDirective, Label} from 'ng2-charts';
+import {Router} from "@angular/router";
+import {PlayerComparisonService} from "../../services/player-comparison.service";
 
 @Component({
   selector: 'app-player-details-insights',
   templateUrl: './player-details-insights.component.html',
   styleUrls: ['./player-details-insights.component.css']
 })
-export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
+export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterViewInit {
+
+  /** chart set up */
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   /** selected player info */
   @Input()
@@ -24,9 +29,6 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
   /** past month selected data points */
   @Input()
   selectedPlayerValues: KTCPlayerDataPoint[];
-
-  /** chart set up */
-  @ViewChild(BaseChartDirective, {static: true}) chart: BaseChartDirective;
 
   /** list of adjacent players overall */
   overallAdjPlayers: KTCPlayer[];
@@ -82,7 +84,23 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
   public lineChartPlugins = [];
   public chartColors: any[] = [];
 
-  constructor(public playerService: PlayerService, public sleeperService: SleeperService) {
+  constructor(
+    public playerService: PlayerService,
+    public sleeperService: SleeperService,
+    private playerComparisonService: PlayerComparisonService,
+    private cdr: ChangeDetectorRef,
+    private router: Router) {
+  }
+
+  ngAfterViewInit(): void {
+    this.generateChartData();
+    if (!this.selectedPlayerInsights) {
+      this.selectedPlayerInsights = this.playerService.getPlayerInsights(
+        this.selectedPlayer,
+        this.sleeperService.selectedLeague?.isSuperflex || true
+      );
+      this.cdr.detectChanges();
+    }
   }
 
   ngOnInit(): void {
@@ -141,13 +159,19 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges {
         }
       }
       this.lineChartLabels.reverse();
-      if (this.chart && this.chart.chart) {
-        this.chart.chart.data.datasets = this.lineChartData;
-        this.chart.chart.data.labels = this.lineChartLabels;
-      }
+      this.chart.chart.data.datasets = this.lineChartData;
+      this.chart.chart.data.labels = this.lineChartLabels;
     } catch (e: any) {
       console.warn('No data points found for player: ' + e);
     }
   }
 
+  /**
+   * open up player comparison with selected player
+   * @param selectedPlayer player data
+   */
+  openPlayerComparison(selectedPlayer: KTCPlayer): void {
+    this.playerComparisonService.addPlayerToCharts(selectedPlayer);
+    this.router.navigateByUrl('players/comparison');
+  }
 }

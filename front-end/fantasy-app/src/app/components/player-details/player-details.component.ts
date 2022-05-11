@@ -58,7 +58,7 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
   }
 
   /**
-   * get last 5 week average for player fantasty points
+   * get last 5 week average for player fantasy points
    */
   getLast5WeekAverage(): number | string {
     let last5Weeks = 0;
@@ -77,6 +77,7 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
    */
   isPlayerStatsGenerated(): boolean {
     return this.playerService.pastSeasonWeeklyStats[2] &&
+      this.playerService.pastSeasonWeeklyStats[1] &&
       this.playerService.pastSeasonWeeklyStats[3] &&
       this.playerService.pastSeasonWeeklyStats[4] &&
       this.playerService.pastSeasonWeeklyStats[5] &&
@@ -93,6 +94,7 @@ export class PlayerDetailsComponent extends BaseComponent implements OnInit {
       this.playerService.pastSeasonWeeklyStats[16] &&
       this.playerService.pastSeasonWeeklyStats[17] &&
       this.playerService.pastSeasonWeeklyStats[18] &&
+      this.playerService.pastSeasonWeeklyProjections[1] &&
       this.playerService.pastSeasonWeeklyProjections[2] &&
       this.playerService.pastSeasonWeeklyProjections[3] &&
       this.playerService.pastSeasonWeeklyProjections[4] &&

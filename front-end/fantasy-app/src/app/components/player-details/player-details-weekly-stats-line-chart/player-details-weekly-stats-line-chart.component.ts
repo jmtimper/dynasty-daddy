@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {KTCPlayer} from '../../../model/KTCPlayer';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
@@ -12,10 +12,10 @@ import {BaseComponent} from '../../base-component.abstract';
   templateUrl: './player-details-weekly-stats-line-chart.component.html',
   styleUrls: ['./player-details-weekly-stats-line-chart.component.css']
 })
-export class PlayerDetailsWeeklyStatsLineChartComponent extends BaseComponent implements OnInit {
+export class PlayerDetailsWeeklyStatsLineChartComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   /** chart set up */
-  @ViewChild(BaseChartDirective, {static: true}) chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   /** selected player data */
   @Input()
@@ -81,15 +81,22 @@ export class PlayerDetailsWeeklyStatsLineChartComponent extends BaseComponent im
   public lineChartType = 'line';
   public lineChartPlugins = [];
 
-  constructor(private playerService: PlayerService) {
+  constructor(private playerService: PlayerService,
+              private cdr: ChangeDetectorRef) {
     super();
   }
 
   ngOnInit(): void {
+    // do nothing
+  }
+
+  ngAfterViewInit(): void {
     this.generateDataSets();
     this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
       this.generateDataSets();
+      this.cdr.detectChanges();
     }));
+    this.cdr.detectChanges();
   }
 
   /**

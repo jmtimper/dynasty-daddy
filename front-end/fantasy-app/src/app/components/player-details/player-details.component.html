@@ -1,4 +1,4 @@
-<div *ngIf="playersLoaded && selectedPlayer" class="table-container">
+<div  *ngIf="isPlayerStatsGenerated()" class="table-container">
 
   <div class="margin-top-10">
     <span class="link--text__no__underline mid-bold-text" style="padding-right: 3px" [routerLink]="['../../values']">Players</span>
@@ -86,4 +86,13 @@
       <app-player-details-weekly-box-scores-table *ngIf="isPlayerStatsGenerated()" [selectedPlayer]="selectedPlayer"></app-player-details-weekly-box-scores-table>
     </mat-tab>
   </mat-tab-group>
+</div>
+
+<div *ngIf="!isPlayerStatsGenerated()">
+  <ngx-spinner
+    bdColor="rgba(51,51,51,0.8)"
+    size="medium"
+    color="red"
+    type="ball-scale-multiple"
+  ></ngx-spinner>
 </div>

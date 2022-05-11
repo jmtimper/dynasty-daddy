@@ -157,7 +157,7 @@
       <div *ngIf="tradeTool.tradePackage?.valueAdjustmentSide && tradeTool.tradePackage?.valueToEvenTrade > tradeTool.tradePackage?.acceptanceBufferAmount">
         <div class="mid-bold-text center-text margin-top-10">
           <mat-icon class="trade-arrow-icon" *ngIf="getWhichSideIsFavored() == 1">arrow_back</mat-icon>
-          Favors Team {{getWhichSideIsFavored()}}
+          Favors {{getWhichSideIsFavored() == 1 ? team1Rankings?.team.owner.ownerName || 'Team 1' : team2Rankings?.team.owner.ownerName || 'Team 2'}}
           <mat-icon class="trade-arrow-icon" *ngIf="getWhichSideIsFavored() == 2">arrow_forward</mat-icon>
         </div>
         <div class="small-text__light center-text margin-bot-10" style="color: lightcoral">

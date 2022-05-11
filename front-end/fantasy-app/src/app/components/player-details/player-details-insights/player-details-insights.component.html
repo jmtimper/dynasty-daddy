@@ -1,9 +1,9 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
-  <div *ngIf="lineChartData.length > 0" fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item">
+  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" style="display: block">
     <mat-card>
-      <div class="mid-bold-text center-text margin-bot-10">Trade Value (Past 40 Days)</div>
-      <div>
-        <canvas baseChart height="300" width="400"
+      <div class="margin-bot-10 center-text"><span class="mid-bold-text">Trade Value (Past 40 Days)</span> <span (click)="openPlayerComparison(selectedPlayer)"><mat-icon matTooltip="Open in Player Comparison" matTooltipPosition="above" class="open-window-button">open_in_new</mat-icon></span></div>
+      <div style="display: block; height: 300px" *ngIf="lineChartData.length > 0">
+        <canvas baseChart
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"
@@ -13,9 +13,9 @@
                 [plugins]="lineChartPlugins">
         </canvas>
       </div>
-      <div *ngIf="lineChartData.length === 0">
-        <div style="min-height: 220px">
-          <div class="text__light margin-top-90 center-text">No trade value for {{selectedPlayer.full_name}}.</div>
+      <div *ngIf="lineChartData.length == 0">
+        <div style="min-height: 300px" class="center-spinner">
+          <mat-spinner></mat-spinner>
         </div>
       </div>
     </mat-card>

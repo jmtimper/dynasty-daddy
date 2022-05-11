@@ -18,7 +18,7 @@ export class TeamTransactionsChartComponent implements OnInit {
   transactionsAggregate: {};
 
   /** chart object */
-  @ViewChild(BaseChartDirective, {static: true}) chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   /**
    * ng2-chart options

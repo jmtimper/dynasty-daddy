@@ -140,6 +140,20 @@ export class PowerRankingsTableComponent implements OnInit {
   }
 
   /**
+   * copies whole team to clipboard
+   * @param rosterId team id
+   */
+  copyWholeFromTeam(team: TeamPowerRanking): void {
+    const allPlayersRoster = 'Team\n' +
+      `QB: ${this.getListOfPlayerNames('qb', team.roster[0].players)}\n` +
+      `RB: ${this.getListOfPlayerNames('rb', team.roster[1].players)}\n` +
+      `WR: ${this.getListOfPlayerNames('wr', team.roster[2].players)}\n` +
+      `TE: ${this.getListOfPlayerNames('te', team.roster[3].players)} `;
+    this.clipboard.copy(allPlayersRoster);
+  }
+
+
+  /**
    * get list of players by position
    * @param pos string
    * @param players list of players
