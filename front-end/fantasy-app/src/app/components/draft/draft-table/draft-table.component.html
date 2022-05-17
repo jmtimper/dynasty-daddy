@@ -1,4 +1,4 @@
-<div class="margin-top-10">
+<div *ngIf="mockDraftService.teamPicks.length > 0 && mockDraftService.leagueLoaded && dataSource" class="margin-top-10">
   <mat-table [dataSource]="dataSource">
 
     <!-- Name Column -->
@@ -35,7 +35,7 @@
                       (selectionChange)="updateDraftSelections(element.pick)" placeholder="Select Player">
             <mat-option *ngFor="let player of mockDraftService.selectablePlayers" [disabled]="isPlayerAlreadySelected(player, this.selectedPlayers.slice(0, element.pick - 1))"
                         [value]="player">{{player.position}} {{player.full_name}}
-              - {{player.sf_trade_value}}</mat-option>
+              - {{!sleeperService.selectedLeague.isSuperflex ? player.trade_value : player.sf_trade_value}}</mat-option>
           </mat-select>
         </mat-form-field>
         <span *ngIf="element.pick > mockDraftService.selectablePlayers.length">

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {TeamPowerRanking} from '../../model/powerRankings';
 import {MatTableDataSource} from '@angular/material/table';
@@ -24,7 +24,7 @@ export const detailExpand = trigger('detailExpand',
   styleUrls: ['./power-rankings-table.component.css'],
   animations: [detailExpand],
 })
-export class PowerRankingsTableComponent implements OnInit {
+export class PowerRankingsTableComponent implements OnInit, OnChanges {
 
   // team power rankings generated from service
   @Input()
@@ -64,6 +64,10 @@ export class PowerRankingsTableComponent implements OnInit {
   ngOnInit(): void {
     this.alertThreshold = this.powerRankings.length / 3;
     this.createNewTableDataSource(this.powerRankings);
+  }
+
+  ngOnChanges(): void {
+    this.dataSource.data = this.powerRankings;
   }
 
   /**

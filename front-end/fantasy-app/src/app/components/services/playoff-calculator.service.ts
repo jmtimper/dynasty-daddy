@@ -70,7 +70,6 @@ export class PlayoffCalculatorService {
       const teamP = cumulativeStdNormalProbability(teamZ);
       this.teamRatingsPValues[team.team.roster.rosterId] = teamP;
     }
-
     // generate mean value score and save it to position 0 of dict
     this.generateMedianProbabilities(meanRating, stdRating);
     this.generateMatchUpsWithProb();
@@ -311,6 +310,12 @@ export class PlayoffCalculatorService {
   reset(): void {
     this.divisions = [];
     this.matchUpsWithProb = [];
+    this.teamPlayoffOdds = {};
+    this.teamsProjectedRecord = {};
+    this.teamRatingsPValues = {};
+    this.selectedGameResults = {};
+    this.medianWinProbability = {};
+    this.forceShowRecord = false;
   }
 
   /**

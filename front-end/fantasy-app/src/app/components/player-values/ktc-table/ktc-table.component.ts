@@ -8,13 +8,15 @@ import {PlayerService} from '../../../services/player.service';
 import {PlayerComparisonService} from '../../services/player-comparison.service';
 import {Router} from '@angular/router';
 import {ConfigService} from '../../../services/init/config.service';
+import {LeagueSwitchService} from '../../services/league-switch.service';
+import {BaseComponent} from '../../base-component.abstract';
 
 @Component({
   selector: 'app-ktc-table',
   templateUrl: './ktc-table.component.html',
   styleUrls: ['./ktc-table.component.css']
 })
-export class KtcTableComponent implements OnInit {
+export class KtcTableComponent extends BaseComponent implements OnInit {
 
   /** all players */
   @Input()
@@ -53,8 +55,10 @@ export class KtcTableComponent implements OnInit {
   constructor(public sleeperService: SleeperService,
               public playerService: PlayerService,
               private playerComparisonService: PlayerComparisonService,
+              private leagueSwitchService: LeagueSwitchService,
               private router: Router,
               public configService: ConfigService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -81,6 +85,9 @@ export class KtcTableComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.updateSuperFlex();
+    this.addSubscriptions(this.leagueSwitchService.leagueChanged.subscribe(() => {
+      this.updatePlayerFilters();
+    }));
   }
 
   /**

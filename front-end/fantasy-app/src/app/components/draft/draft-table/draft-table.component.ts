@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {KTCPlayer} from '../../../model/KTCPlayer';
@@ -11,7 +11,7 @@ import {SleeperService} from '../../../services/sleeper.service';
   templateUrl: './draft-table.component.html',
   styleUrls: ['./draft-table.component.css']
 })
-export class DraftTableComponent implements OnInit, OnChanges {
+export class DraftTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   /**
    * change detection when new group is toggled
@@ -35,16 +35,23 @@ export class DraftTableComponent implements OnInit, OnChanges {
   pageLength: number = 12;
 
   /** mat paginator */
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   /** mat datasource */
   dataSource: MatTableDataSource<TeamMockDraftPick> = new MatTableDataSource<TeamMockDraftPick>();
 
-  constructor(private mockDraftService: MockDraftService,
+  constructor(public mockDraftService: MockDraftService,
               public sleeperService: SleeperService) {
   }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.initializeMockDraft();
+  }
+
+  initializeMockDraft(): void {
     this.displayedColumns = ['pickNumber', 'team', 'owner', 'projectedPlayer'];
     this.pageLength = this.sleeperService.selectedLeague.totalRosters;
     this.dataSource = new MatTableDataSource(this.mockDraftService.teamPicks);
@@ -52,6 +59,7 @@ export class DraftTableComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
+    this.initializeMockDraft();
     if (this.mockDraftService.mockDraftConfig !== 'custom') {
       this.selectedPlayers = this.mockDraftService.valueSelectedPlayers.slice();
     } else {

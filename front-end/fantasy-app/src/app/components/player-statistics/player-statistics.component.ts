@@ -5,6 +5,7 @@ import {KTCPlayer} from '../../model/KTCPlayer';
 import {ConfigService} from '../../services/init/config.service';
 import {SleeperService} from '../../services/sleeper.service';
 import {MatOptionSelectionChange} from '@angular/material/core';
+import {LeagueSwitchService} from '../services/league-switch.service';
 
 @Component({
     selector: 'app-player-statistics',
@@ -104,6 +105,7 @@ export class PlayerStatisticsComponent extends BaseComponent implements OnInit {
 
     constructor(public playerService: PlayerService,
                 public configService: ConfigService,
+                private leagueSwitchService: LeagueSwitchService,
                 private sleeperService: SleeperService) {
         super();
     }
@@ -113,7 +115,7 @@ export class PlayerStatisticsComponent extends BaseComponent implements OnInit {
         this.selectedPosition = 'qb';
         this.selectedXMetric = this.selectedMetrics[0];
         this.selectedYMetric = this.selectedMetrics[1];
-        this.highlightYourTeam = this.sleeperService.sleeperUser ? true : false;
+        this.highlightYourTeam = !!this.sleeperService.sleeperUser;
         this.selectableMetrics = this.getSelectableMetrics(this.selectedPosition);
         if (this.playerService) {
             this.updatePlayerFilters();
@@ -122,7 +124,10 @@ export class PlayerStatisticsComponent extends BaseComponent implements OnInit {
         this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
             this.playersLoaded = true;
             this.updatePlayerFilters();
-        }));
+        }),
+          this.leagueSwitchService.leagueChanged.subscribe(() => {
+            this.updatePlayerFilters();
+          }));
     }
 
     /**
