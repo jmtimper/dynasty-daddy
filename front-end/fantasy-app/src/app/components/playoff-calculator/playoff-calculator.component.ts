@@ -96,6 +96,7 @@ export class PlayoffCalculatorComponent extends BaseComponent implements OnInit 
    * @private
    */
   private generateSelectableWeeks(): void {
+    this.selectableWeeks = [];
     this.selectableWeeks.push({week: this.sleeperService.selectedLeague.startWeek, value: 'Preseason'});
     const selectableWeekMax = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season
     && this.nflService.stateOfNFL.seasonType !== 'post' ?
