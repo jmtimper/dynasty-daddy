@@ -101,7 +101,7 @@ export class CompletedDraftTableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.pieChartLegend = this.configService.isMobile ? false : true;
+    this.pieChartLegend = !this.configService.isMobile;
     this.pageLength = this.sleeperService.selectedLeague.totalRosters;
     this.isSuperFlex = this.sleeperService.selectedLeague.isSuperflex;
     this.pickValues = this.playerService.getDraftPicksForYear(this.nflService.stateOfNFL.seasonType === 'pre'

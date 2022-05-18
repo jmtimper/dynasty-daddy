@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {BaseChartDirective, Label} from 'ng2-charts';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import {PowerRankingsService} from '../../services/power-rankings.service';
@@ -6,15 +6,19 @@ import {SleeperService} from '../../../services/sleeper.service';
 import {ConfigService} from '../../../services/init/config.service';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
+import {TeamPowerRanking} from '../../model/powerRankings';
 
 @Component({
   selector: 'app-power-rankings-chart',
   templateUrl: './power-rankings-chart.component.html',
   styleUrls: ['./power-rankings-chart.component.css']
 })
-export class PowerRankingsChartComponent implements OnInit {
+export class PowerRankingsChartComponent implements OnInit, OnChanges {
 
   @ViewChild(BaseChartDirective, {static: true}) chart: BaseChartDirective;
+
+  @Input()
+  powerRankings: TeamPowerRanking[];
 
   selectedFilter = 'starter';
 
@@ -83,48 +87,43 @@ export class PowerRankingsChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataLabels = [];
-    for (const team of this.powerRankingService.powerRankings) {
-      this.dataLabels.push(team.team.owner?.ownerName);
-    }
+    this.refreshChart();
+  }
+
+  ngOnChanges(): void {
     this.refreshChart();
   }
 
   /**
+   * refreshes chart labels, order and data
+   */
+  refreshChart(): void {
+    this.dataLabels = [];
+    for (const team of this.powerRankingService.powerRankings) {
+      this.dataLabels.push(team.team.owner?.ownerName);
+    }
+    this.refreshChartData();
+  }
+
+  /**
    * refreshes table with team rankings
-   * TODO reduce duplicate code
    * @private
    */
-  private refreshChart(): void {
-    let temp = [];
+  private refreshChartData(): void {
+    const positionGroups = ['QB', 'RB', 'WR', 'TE'];
+    positionGroups.map((pos, index) => {
+      const temp = [];
+      for (const team of this.powerRankingService.powerRankings) {
+        const rosterInd = this.dataLabels.indexOf(team.team.owner?.ownerName);
+        temp[rosterInd] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[index].sfTradeValue : team.roster[index].tradeValue;
+        this.data[index] = {data: temp, label: pos, hoverBackgroundColor: []};
+      }
+    });
+    const tempPicks = [];
     for (const team of this.powerRankingService.powerRankings) {
       const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
-      temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[0].sfTradeValue : team.roster[0].tradeValue;
-      this.data[0] = {data: temp, label: 'QB', hoverBackgroundColor: []};
-    }
-    temp = [];
-    for (const team of this.powerRankingService.powerRankings) {
-      const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
-      temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[1].sfTradeValue : team.roster[1].tradeValue;
-      this.data[1] = {data: temp, label: 'RB', hoverBackgroundColor: []};
-    }
-    temp = [];
-    for (const team of this.powerRankingService.powerRankings) {
-      const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
-      temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[2].sfTradeValue : team.roster[2].tradeValue;
-      this.data[2] = {data: temp, label: 'WR', hoverBackgroundColor: []};
-    }
-    temp = [];
-    for (const team of this.powerRankingService.powerRankings) {
-      const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
-      temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.roster[3].sfTradeValue : team.roster[3].tradeValue;
-      this.data[3] = {data: temp, label: 'TE', hoverBackgroundColor: []};
-    }
-    temp = [];
-    for (const team of this.powerRankingService.powerRankings) {
-      const index = this.dataLabels.indexOf(team.team.owner?.ownerName);
-      temp[index] = this.sleeperService.selectedLeague.isSuperflex ? team.picks.sfTradeValue : team.picks.tradeValue;
-      this.data[4] = {data: temp, label: 'Draft Capital', hoverBackgroundColor: []};
+      tempPicks[index] = this.sleeperService.selectedLeague.isSuperflex ? team.picks.sfTradeValue : team.picks.tradeValue;
+      this.data[4] = {data: tempPicks, label: 'Draft Capital', hoverBackgroundColor: []};
     }
   }
 }

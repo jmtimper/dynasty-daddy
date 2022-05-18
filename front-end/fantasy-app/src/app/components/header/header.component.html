@@ -16,7 +16,14 @@
       <button mat-menu-item routerLink="./players/comparison">Value Comparisons</button>
     </mat-menu>
     <span class="spacer"></span>
-    <button mat-button routerLink="./login"><mat-icon class="header-icon">group_add</mat-icon> Change League</button>
+    <button mat-button routerLink="./login" *ngIf="!sleeperService.sleeperUser"><mat-icon class="header-icon">group_add</mat-icon> Select Username</button>
+    <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
+      <mat-label>Select a league</mat-label>
+      <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
+        <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
+                    [value]="league">{{league.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </mat-toolbar>
   <mat-toolbar color="primary" *ngIf="configService.isMobile">
     <button mat-icon-button [matMenuTriggerFor]="leagueMenu">

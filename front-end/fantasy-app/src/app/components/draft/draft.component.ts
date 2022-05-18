@@ -3,7 +3,8 @@ import {SleeperService} from '../../services/sleeper.service';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
 import {MockDraftService} from '../services/mock-draft.service';
-import {CompletedDraft} from '../../model/SleeperUser';
+import {LeagueSwitchService} from '../services/league-switch.service';
+import {delay} from 'rxjs/operators';
 
 @Component({
   selector: 'app-draft',
@@ -12,14 +13,12 @@ import {CompletedDraft} from '../../model/SleeperUser';
 })
 export class DraftComponent extends BaseComponent implements OnInit {
 
-  /** currently selected draft */
-  selectedDraft: CompletedDraft | string;
-
   /** rerender table when refreshed */
   resetTrigger: boolean = true;
 
   constructor(public sleeperService: SleeperService,
               private playersService: PlayerService,
+              private leagueSwitchService: LeagueSwitchService,
               public mockDraftService: MockDraftService) {
     super();
   }
@@ -34,7 +33,11 @@ export class DraftComponent extends BaseComponent implements OnInit {
         if (this.sleeperService.sleeperTeamDetails) {
           this.initServices();
         }
-      })
+      }),
+      this.leagueSwitchService.leagueChanged.pipe(delay(1000)).subscribe(() => {
+          this.initServices();
+        }
+      )
     );
   }
 
@@ -50,8 +53,11 @@ export class DraftComponent extends BaseComponent implements OnInit {
     );
     this.mockDraftService.mapDraftObjects(this.sleeperService.sleeperTeamDetails);
     if (this.mockDraftService.teamPicks.length > 0) {
-      this.selectedDraft = 'upcoming';
+      this.mockDraftService.selectedDraft = 'upcoming';
+    } else {
+      this.mockDraftService.selectedDraft = this.sleeperService.completedDrafts[0] || null;
     }
+    this.mockDraftService.leagueLoaded = true;
   }
 
   /**
