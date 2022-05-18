@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {KTCPlayer} from '../../model/KTCPlayer';
 import {TeamMockDraftPick} from '../model/mockDraft';
 import {SleeperTeam} from '../../model/SleeperLeague';
-import {DraftCapital, SleeperLeagueData} from '../../model/SleeperUser';
-import {TeamPowerRanking} from '../model/powerRankings';
+import {CompletedDraft, DraftCapital} from '../../model/SleeperUser';
 import {SleeperService} from '../../services/sleeper.service';
 
 @Injectable({
@@ -16,6 +15,12 @@ export class MockDraftService {
 
   /** available players */
   selectablePlayers: KTCPlayer[] = [];
+
+  /** currently selected draft */
+  selectedDraft: CompletedDraft | string;
+
+  /** is league draft data loaded. */
+  leagueLoaded: boolean = false;
 
   /** current filter for mock draft */
   mockDraftConfig: string = 'player';
@@ -106,5 +111,19 @@ export class MockDraftService {
   reset(): void {
     this.teamPicks = [];
     this.selectablePlayers = [];
+  }
+
+  /**
+   * resets mock draft service varibles
+   * TODO create an abstract feature service that requires reset functions
+   */
+  resetLeague(): void {
+    this.selectedDraft = null;
+    this.selectablePlayers = [];
+    this.teamPicks = [];
+    this.leagueLoaded = false;
+    this.mockDraftConfig = 'player';
+    this.valueSelectedPlayers = [];
+    this.customSelectedPlayers = [];
   }
 }

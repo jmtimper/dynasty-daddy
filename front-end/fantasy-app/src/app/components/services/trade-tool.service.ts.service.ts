@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {StudPlayerResponse, TradePackage} from '../model/tradePackage';
 import {KTCPlayer} from '../../model/KTCPlayer';
 import {PlayerService} from '../../services/player.service';
-import {SleeperService} from "../../services/sleeper.service";
+import {SleeperService} from '../../services/sleeper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -215,5 +215,12 @@ export class TradeService {
         this.tradePackage?.valueAdjustmentSide === 2
           ? this.tradePackage.valueAdjustment : 0);
     }
+  }
+
+  /**
+   * reset the trade package
+   */
+  reset(): void {
+    this.tradePackage = null;
   }
 }

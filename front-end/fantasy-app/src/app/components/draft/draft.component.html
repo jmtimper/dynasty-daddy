@@ -2,10 +2,10 @@
 <div class="center-text margin-top-10">
   View past drafts with current day values, or create a mock draft for upcoming draft with the new rookie class.
 </div>
-<div *ngIf="sleeperService.leagueLoaded && (mockDraftService.teamPicks.length > 0 || sleeperService.completedDrafts.length > 0)" class="grid-100 button-right margin-top-10">
+<div *ngIf="mockDraftService.leagueLoaded && (mockDraftService.teamPicks.length > 0 || sleeperService.completedDrafts.length > 0)" class="grid-100 button-right margin-top-10">
   <mat-form-field appearance="outline" color="accent">
     <mat-label>Select a Draft</mat-label>
-    <mat-select [(ngModel)]="selectedDraft">
+    <mat-select [(ngModel)]="mockDraftService.selectedDraft">
       <mat-optgroup label="Upcoming" *ngIf="mockDraftService.teamPicks.length > 0">
         <mat-option value="upcoming">Mock Draft: {{mockDraftService.teamPicks.length/sleeperService.selectedLeague.totalRosters}} Rounds</mat-option>
       </mat-optgroup>
@@ -17,8 +17,8 @@
   </mat-form-field>
 </div>
 
-<div *ngIf="sleeperService.leagueLoaded">
-  <div *ngIf="selectedDraft == 'upcoming'" class="margin-top-25 mock-draft-table-container">
+<div *ngIf="mockDraftService.leagueLoaded">
+  <div *ngIf="mockDraftService.selectedDraft == 'upcoming'" class="margin-top-25 mock-draft-table-container">
     <div>
       <mat-button-toggle-group [(ngModel)]="mockDraftService.mockDraftConfig" class="button-left"
                                style="overflow: auto">
@@ -32,8 +32,8 @@
     <app-draft-table [mockDraftConfig]="mockDraftService.mockDraftConfig" [isReset]="resetTrigger"></app-draft-table>
   </div>
 
-  <div *ngIf="selectedDraft && selectedDraft !== 'upcoming'" class="margin-top-25">
-    <app-completed-draft-table [selectedDraft]="selectedDraft"></app-completed-draft-table>
+  <div *ngIf="mockDraftService.selectedDraft && mockDraftService.selectedDraft !== 'upcoming'" class="margin-top-25">
+    <app-completed-draft-table [selectedDraft]="mockDraftService.selectedDraft"></app-completed-draft-table>
   </div>
 
 </div>
@@ -44,8 +44,14 @@
   <button mat-raised-button color="warn" routerLink="./home">Choose League</button>
 </div>
 
-<div class="center-text margin-top-50" *ngIf="mockDraftService.teamPicks.length == 0 && sleeperService.completedDrafts.length == 0 && sleeperService.upcomingDrafts.length == 0 && sleeperService.leagueLoaded">
+<div class="center-text margin-top-50" *ngIf="mockDraftService.leagueLoaded && mockDraftService.teamPicks.length == 0 && sleeperService.completedDrafts.length == 0 && sleeperService.upcomingDrafts.length == 0 && sleeperService.leagueLoaded">
   <div class="warning__alert">Cannot generate drafts. Please select a different year or league.</div>
   <br>
   <button mat-raised-button color="warn" routerLink="./home">Choose Another League</button>
+</div>
+
+<div *ngIf="sleeperService.leagueLoaded && (!mockDraftService.leagueLoaded || (mockDraftService.selectedDraft == 'upcoming' && mockDraftService.teamPicks.length == 0))">
+  <div style="min-height: 300px" class="center-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
 </div>

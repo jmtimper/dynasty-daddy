@@ -12,7 +12,7 @@
     <div class="flex-item-details grid-25">
       <div class="profile--pic">
         <img #image [src]="'https://sleepercdn.com/content/nfl/players/thumb/' + selectedPlayer.sleeper_id + '.jpg'"
-             (error)="image.hidden = true" [hidden]="image.hidden" class="responsive">
+             onerror="this.src='https://www.pff.com/images/webui/player_default.png';" [hidden]="image.hidden" class="responsive">
       </div>
     </div>
     <div class="flex-item-details grid-60">

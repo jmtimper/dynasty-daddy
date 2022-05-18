@@ -13,7 +13,8 @@ import {SleeperService} from '../../services/sleeper.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {TeamPowerRanking} from '../model/powerRankings';
 import {PlayerComparisonService} from '../services/player-comparison.service';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
+import {LeagueSwitchService} from '../services/league-switch.service';
 
 @Component({
   selector: 'app-trade-center',
@@ -84,6 +85,7 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     public sleeperService: SleeperService,
     public powerRankingsService: PowerRankingsService,
     public playerComparisonService: PlayerComparisonService,
+    private leagueSwitchService: LeagueSwitchService,
     private router: Router
   ) {
     super();
@@ -96,8 +98,12 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
       this.initializeTradeCalculator();
     }
     this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
-      this.initializeTradeCalculator();
-    }));
+        this.initializeTradeCalculator();
+      }),
+      this.leagueSwitchService.leagueChanged.subscribe(() => {
+        this.switchLeagueTradePackage();
+      })
+    );
   }
 
   /**
@@ -384,6 +390,9 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     this.processTrade();
   }
 
+  /**
+   * opens trade package in player comparison service.
+   */
   openPlayerComparisonPage(): void {
     this.playerComparisonService.selectedPlayers = [];
     this.playerComparisonService.group2SelectedPlayers = [];
@@ -397,4 +406,18 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     this.router.navigateByUrl('players/comparison');
   }
 
+  /**
+   * strips out any league specific data from trade calculator when switching leagues
+   * @private
+   */
+  private switchLeagueTradePackage(): void {
+    this.team2Rankings = null;
+    this.team1Rankings = null;
+    if (this.tradeTool.tradePackage) {
+      this.tradeTool.tradePackage.team2UserId = null;
+      this.tradeTool.tradePackage.team1UserId = null;
+    }
+    this.filterTeamPlayers(this.playerFilterCtrl, this.tradeTool.tradePackage?.team1UserId, this.filteredTeam1Players);
+    this.filterTeamPlayers(this.player2FilterCtrl, this.tradeTool.tradePackage?.team2UserId, this.filteredTeam2Players);
+  }
 }

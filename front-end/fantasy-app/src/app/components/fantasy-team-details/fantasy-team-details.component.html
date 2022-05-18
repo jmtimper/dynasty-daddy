@@ -79,7 +79,7 @@
             </mat-card-header>
             <img mat-card-image #image
                  [src]="'https://sleepercdn.com/content/nfl/players/thumb/' + player?.sleeper_id + '.jpg'"
-                 onerror="style.display = 'none'" style="max-width: 300px"
+                  onerror="this.src='https://www.pff.com/images/webui/player_default.png';" style="max-width: 300px"
                  class="responsive center-img">
             <mat-card-content class="center-text">
               <div class="small-text__light">Trade Value</div>

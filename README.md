@@ -4,13 +4,10 @@
 
 Dynasty Daddy is a webapp that integrates with Sleeper's api and scrapes KeepTradeCut's player evaluations to create metrics on each owners fantasy league.
 
-### 
 
 ## Goal
 
 The goal is to provide users with a frictionless way to see player value, team value, draft breakdowns, and more. When managing my teams I would constantly have to switch between multiple websites to figure out what moves I should make. I wanted to find a way to spend less time doing research and leverage the data in more ways than before. Thus Dynasty Daddy was born to help me beat my friends in fantasy easier!
-
-
 
 ## Architecture
 
@@ -53,7 +50,7 @@ First, clone repo and open up in your preferred IDE.
 - Player value calculation based on points and trade value
 - More team analytics
 - Team Elo ranking like Chess
-- Code clean up on API and Front End
+- Refactor backend to handle translations between platforms
 
 ## Packages
 
@@ -73,4 +70,20 @@ First, clone repo and open up in your preferred IDE.
 
 ## Credits
 
-Jeremy Timperio - Creator, Full Stack Dev
+Jeremy Timperio - Creator, Full Stack Developer
+
+### Support Me Here
+<a href="https://discord.gg/SJJuQBJqda"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Community Badge"/></a>
+<a href="https://www.youtube.com/channel/UC9SOfhKyR3MQj8xB778rhnA/featured"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Subscribe"/></a>
+<a href="https://www.patreon.com/DynastyDaddy?fan_landing=true"><img src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white" alt="Support"/></a>
+<a href="https://www.linkedin.com/in/jmtimper/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+
+
+
+### Development Status
+
+<a href="https://github.com/jmtimper/dynasty-daddy/stargazers"><img src="https://img.shields.io/github/stars/jmtimper/dynasty-daddy" alt="Stars Badge"/></a>
+<a href="https://github.com/jmtimper/dynasty-daddy/network/members"><img src="https://img.shields.io/github/forks/jmtimper/dynasty-daddy" alt="Forks Badge"/></a>
+<a href="https://github.com/jmtimper/dynasty-daddy/pulls"><img src="https://img.shields.io/github/issues-pr/jmtimper/dynasty-daddy" alt="Pull Requests Badge"/></a>
+<a href="https://github.com/jmtimper/dynasty-daddy/issues"><img src="https://img.shields.io/github/issues/jmtimper/dynasty-daddy" alt="Issues Badge"/></a>
+<a href="https://github.com/jmtimper/dynasty-daddy/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/jmtimper/dynasty-daddy?color=2b9348"></a>

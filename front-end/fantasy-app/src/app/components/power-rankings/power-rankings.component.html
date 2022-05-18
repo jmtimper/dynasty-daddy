@@ -5,7 +5,7 @@
 
 <div  *ngIf="sleeperService.leagueLoaded && powerRankingService.powerRankings.length > 0" class="power-ranking-container">
   <div>
-    <app-power-rankings-chart></app-power-rankings-chart>
+    <app-power-rankings-chart [powerRankings]="powerRankingService.powerRankings"></app-power-rankings-chart>
   </div>
   <div>
     <app-power-rankings-table [powerRankings]="powerRankingService.powerRankings" [isSuperFlex]="sleeperService.selectedLeague.isSuperflex"></app-power-rankings-table>

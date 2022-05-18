@@ -6,12 +6,8 @@ import {SleeperLeagueData} from '../../model/SleeperUser';
 import {SleeperService} from '../../services/sleeper.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {PlayerService} from '../../services/player.service';
-import {MockDraftService} from '../services/mock-draft.service';
-import {MatchupService} from '../services/matchup.service';
-import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {ConfigService} from '../../services/init/config.service';
-import {forkJoin} from 'rxjs';
-import {TransactionsService} from '../services/transactions.service';
+import {LeagueSwitchService} from '../services/league-switch.service';
 
 @Component({
   selector: 'app-home',
@@ -24,8 +20,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
   leagueIdInput: string = '';
 
-  selectedLeague: SleeperLeagueData;
-
   selectedYear: string;
 
   supportedYears: string[] = [];
@@ -34,16 +28,12 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
   DEMO_ID: string = '553670046391185408';
 
-  constructor(private spinner: NgxSpinnerService,
-              private sleeperApiService: SleeperApiService,
+  constructor(private sleeperApiService: SleeperApiService,
               public sleeperService: SleeperService,
               private powerRankingService: PowerRankingsService,
               private playersService: PlayerService,
-              private mockDraftService: MockDraftService,
-              private matchupService: MatchupService,
-              private playoffCalculatorService: PlayoffCalculatorService,
               public configService: ConfigService,
-              private transactionService: TransactionsService) {
+              public leagueSwitchService: LeagueSwitchService) {
     super();
   }
 
@@ -55,7 +45,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
       this.selectedYear = this.sleeperService.selectedYear;
     }
     this.usernameInput = this.sleeperService.sleeperUser?.userData?.username || '';
-    this.selectedLeague = this.sleeperService.selectedLeague || null;
+    this.leagueSwitchService.selectedLeague = this.sleeperService.selectedLeague || null;
     this.playersService.loadPlayerValuesForToday();
   }
 
@@ -66,40 +56,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
     this.sleeperService.loadNewUser(this.usernameInput, this.selectedYear);
     this.sleeperService.selectedYear = this.selectedYear;
     this.sleeperService.resetLeague();
-  }
-
-  /**
-   * load league data
-   * TODO clean up reset and initializing service data
-   * @param value league data
-   */
-  loadLeague(value: SleeperLeagueData): void {
-    this.sleeperService.resetLeague();
-    this.selectedLeague = value;
-    this.spinner.show();
-    if (this.selectedLeague !== this.sleeperService.selectedLeague) {
-      this.powerRankingService.reset();
-      this.mockDraftService.reset();
-      this.playoffCalculatorService.reset();
-      this.matchupService.reset();
-      this.playersService.resetOwners();
-      this.transactionService.reset();
-      console.time('Fetch Sleeper League Data');
-      this.addSubscriptions(this.sleeperService.$loadNewLeague(this.selectedLeague).subscribe((x) => {
-          this.sleeperService.sleeperTeamDetails.map((team) => {
-            this.playersService.generateRoster(team);
-          });
-          this.spinner.hide();
-          forkJoin([this.powerRankingService.mapPowerRankings(this.sleeperService.sleeperTeamDetails, this.playersService.playerValues),
-            this.playoffCalculatorService.generateDivisions(this.selectedLeague, this.sleeperService.sleeperTeamDetails),
-            this.matchupService.initMatchUpCharts(this.selectedLeague)]).subscribe(() => {
-            this.sleeperService.leagueLoaded = true;
-          });
-          console.timeEnd('Fetch Sleeper League Data');
-        }
-      ));
-      console.log(this.sleeperService.selectedLeague);
-    }
   }
 
   /**
@@ -131,7 +87,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
    */
   loginWithLeagueId(demoId?: string): void {
     this.sleeperApiService.getSleeperLeagueByLeagueId(demoId || this.leagueIdInput).subscribe(leagueData => {
-      this.loadLeague(leagueData);
+      this.leagueSwitchService.loadLeague(leagueData);
     });
   }
 

@@ -7,13 +7,15 @@ import {MatchupService} from '../services/matchup.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {ConfigService} from '../../services/init/config.service';
 import {FormControl} from '@angular/forms';
+import {BaseComponent} from '../base-component.abstract';
+import {LeagueSwitchService} from '../services/league-switch.service';
 
 @Component({
   selector: 'app-playoff-calculator',
   templateUrl: './playoff-calculator.component.html',
   styleUrls: ['./playoff-calculator.component.css']
 })
-export class PlayoffCalculatorComponent implements OnInit {
+export class PlayoffCalculatorComponent extends BaseComponent implements OnInit {
 
   /** upcoming match ups prob */
   upcomingMatchUps: MatchUpProbability[][] = [];
@@ -61,11 +63,21 @@ export class PlayoffCalculatorComponent implements OnInit {
     public playoffCalculatorService: PlayoffCalculatorService,
     private nflService: NflService,
     public powerRankingsService: PowerRankingsService,
-    private matchupService: MatchupService,
-    public configService: ConfigService) {
+    public matchupService: MatchupService,
+    public configService: ConfigService,
+    private leagueSwitchService: LeagueSwitchService) {
+    super();
   }
 
   ngOnInit(): void {
+    this.initPlayoffCalc();
+    this.addSubscriptions(this.leagueSwitchService.leagueChanged.subscribe(() => {
+        this.initPlayoffCalc();
+      }
+    ));
+  }
+
+  initPlayoffCalc(): void {
     if (this.sleeperService.selectedLeague) {
       // TODO fix this
       if (this.matchupService.leagueMatchUpUI.length === 0 || this.playoffCalculatorService.matchUpsWithProb.length === 0) {
@@ -84,6 +96,7 @@ export class PlayoffCalculatorComponent implements OnInit {
    * @private
    */
   private generateSelectableWeeks(): void {
+    this.selectableWeeks = [];
     this.selectableWeeks.push({week: this.sleeperService.selectedLeague.startWeek, value: 'Preseason'});
     const selectableWeekMax = this.sleeperService.selectedLeague.season === this.nflService.stateOfNFL.season
     && this.nflService.stateOfNFL.seasonType !== 'post' ?

@@ -4,23 +4,25 @@ import {PlayoffCalculatorService} from '../services/playoff-calculator.service';
 import {SleeperTeam} from '../../model/SleeperLeague';
 import {MatchupService} from '../services/matchup.service';
 import {ConfigService} from '../../services/init/config.service';
-import {NflService} from '../../services/utilities/nfl.service';
 import {MatchUpUI} from '../model/matchup';
 import {TransactionsService} from '../services/transactions.service';
+import {BaseComponent} from '../base-component.abstract';
+import {LeagueSwitchService} from '../services/league-switch.service';
 
 @Component({
   selector: 'app-standings',
   templateUrl: './standings.component.html',
   styleUrls: ['./standings.component.css']
 })
-export class StandingsComponent implements OnInit {
+export class StandingsComponent extends BaseComponent implements OnInit {
 
   constructor(public sleeperService: SleeperService,
               public playoffCalculatorService: PlayoffCalculatorService,
               public matchupService: MatchupService,
               public configService: ConfigService,
-              private nflService: NflService,
+              private leagueSwitchService: LeagueSwitchService,
               public transactionService: TransactionsService) {
+    super();
   }
 
   divisionTableCols = ['teamName', 'record', 'pf', 'ppf', 'pot'];
@@ -32,7 +34,14 @@ export class StandingsComponent implements OnInit {
   pointsForCols = ['week', 'points', 'team1PointsFor', 'score', 'team2Name'];
 
   ngOnInit(): void {
-    // TODO fix this
+    this.setUpStandings();
+    this.addSubscriptions(this.leagueSwitchService.leagueChanged.subscribe(() => {
+        this.setUpStandings();
+      }
+    ));
+  }
+
+  setUpStandings(): void {
     if (this.sleeperService.selectedLeague) {
       if (this.matchupService.leagueMatchUpUI.length === 0 || this.playoffCalculatorService.matchUpsWithProb.length === 0) {
         console.warn('Warning: Match Data was not loaded correctly. Recalculating Data...');

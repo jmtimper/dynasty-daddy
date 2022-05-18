@@ -75,6 +75,7 @@ import {HighLightSearchPipe} from './pipes/high-light-search.pipe';
 import {TradeCenterComponent} from './components/trade-center/trade-center.component';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {MatSliderModule} from '@angular/material/slider';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 export function initialize(startupService: StartupService): any {
   return (): Promise<any> => {
@@ -161,7 +162,8 @@ let UniversalDeviceDetectorService;
     MatRadioModule,
     QueryBuilderModule,
     ReactiveFormsModule,
-    MatSliderModule
+    MatSliderModule,
+    MatProgressSpinnerModule
   ],
   providers: [EndpointsService,
     ConfigService,

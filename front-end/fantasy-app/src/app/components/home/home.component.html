@@ -38,7 +38,7 @@
           <br>
           <mat-form-field appearance="standard" color="accent" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
             <mat-label>Select a league</mat-label>
-            <mat-select [(ngModel)]="selectedLeague" (selectionChange)="loadLeague($event.value)">
+            <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
               <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
                           [value]="league">{{league.name}}</mat-option>
             </mat-select>
@@ -67,13 +67,13 @@
       </div>
       <div class="margin-top-25" *ngIf="sleeperService.sleeperTeamDetails && sleeperService.sleeperTeamDetails.length > 0">
         Congratulations<span class="warning__alert" *ngIf="sleeperService.sleeperUser"> {{sleeperService.sleeperUser?.userData.username}}</span>! The
-        <span class="warning__alert">{{selectedLeague.season}}</span> season of
-        <span class="warning__alert">{{selectedLeague.name}}</span> was loaded successfully!
+        <span class="warning__alert">{{leagueSwitchService.selectedLeague.season}}</span> season of
+        <span class="warning__alert">{{leagueSwitchService.selectedLeague.name}}</span> was loaded successfully!
       </div>
       <div *ngIf="sleeperService.selectedLeague && sleeperService.selectedLeague.prevLeagueId?.length > 5">
         <div class="mid-bold-text margin-top-25 margin-bot-25">OR</div>
         <button mat-stroked-button
-                color="accent" (click)="loginWithPrevSeason()">View {{selectedLeague.season - 1}} Season
+                color="accent" (click)="loginWithPrevSeason()">View {{leagueSwitchService.selectedLeague.season - 1}} Season
         </button>
       </div>
     </div>
