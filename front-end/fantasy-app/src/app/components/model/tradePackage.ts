@@ -12,20 +12,39 @@ export class TradePackage {
   // I left this as a number to support the option for 3 team trades in the future
   valueAdjustmentSide: number = 0;
   valueToEvenTrade: number = 0;
-  acceptanceVariance: number = .05;
+  acceptanceVariance: number = 5;
   acceptanceBufferAmount: number = 1000;
   isSuperFlex: boolean = true;
-  autoFillTeam1: boolean = false;
-  autoFillTeam2: boolean = false;
+  autoFillTrade: boolean = false;
 
-  constructor(team1Assets: KTCPlayer[], team2Assets: KTCPlayer[], acceptanceVariance: number = 0.05) {
+  constructor(team1Assets: KTCPlayer[], team2Assets: KTCPlayer[], acceptanceVariance: number = 5) {
     this.team1Assets = team1Assets;
     this.team2Assets = team2Assets;
     this.acceptanceVariance = acceptanceVariance;
   }
+
+  setTeam1(userId: string): TradePackage {
+    this.team1UserId = userId;
+    return this;
+  }
+
+  setTeam2(userId: string): TradePackage {
+    this.team2UserId = userId;
+    return this;
+  }
+
+  addTeam2Assets(player: KTCPlayer): TradePackage {
+    this.team2Assets.push(player);
+    return this;
+  }
+
+  setAutofill(): TradePackage {
+    this.autoFillTrade = true;
+    return this;
+  }
 }
 
-export class StudPlayerResponse{
+export class StudPlayerResponse {
   studPlayer: KTCPlayer = null;
   adjustmentMultiplier: number = 1;
 

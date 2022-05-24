@@ -16,7 +16,7 @@ export class PowerRankingsComponent extends BaseComponent implements OnInit {
   constructor(public sleeperService: SleeperService,
               public powerRankingService: PowerRankingsService,
               private playersService: PlayerService,
-              private leagueSwitchService: LeagueSwitchService) {
+              public leagueSwitchService: LeagueSwitchService) {
     super();
   }
 

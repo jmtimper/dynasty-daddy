@@ -7,11 +7,12 @@
     <mat-label>Select a Draft</mat-label>
     <mat-select [(ngModel)]="mockDraftService.selectedDraft">
       <mat-optgroup label="Upcoming" *ngIf="mockDraftService.teamPicks.length > 0">
-        <mat-option value="upcoming">Mock Draft: {{mockDraftService.teamPicks.length/sleeperService.selectedLeague.totalRosters}} Rounds</mat-option>
+        <mat-option value="upcoming">Mock Draft: {{mockDraftService.teamPicks.length / sleeperService.selectedLeague.totalRosters}} Rounds</mat-option>
       </mat-optgroup>
       <mat-optgroup label="Completed" *ngIf="sleeperService.completedDrafts.length > 0">
         <mat-option *ngFor="let draft of sleeperService.completedDrafts"
-                    [value]="draft">Draft: {{draft.draft.season}} - {{draft.draft.rounds}} Rounds</mat-option>
+                    [value]="draft">Draft: {{draft.draft.season}} - {{draft.draft.rounds}} Rounds
+        </mat-option>
       </mat-optgroup>
     </mat-select>
   </mat-form-field>
@@ -41,13 +42,27 @@
 <div class="center-text margin-top-50" *ngIf="!sleeperService.leagueLoaded">
   <div class="warning__alert">Cannot find drafts. Please select a league.</div>
   <br>
-  <button mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <button *ngIf="!sleeperService.sleeperUser" mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
+    <mat-label>Select a league</mat-label>
+    <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
+      <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
+                  [value]="league">{{league.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <div class="center-text margin-top-50" *ngIf="mockDraftService.leagueLoaded && mockDraftService.teamPicks.length == 0 && sleeperService.completedDrafts.length == 0 && sleeperService.upcomingDrafts.length == 0 && sleeperService.leagueLoaded">
   <div class="warning__alert">Cannot generate drafts. Please select a different year or league.</div>
   <br>
-  <button mat-raised-button color="warn" routerLink="./home">Choose Another League</button>
+  <button *ngIf="!sleeperService.sleeperUser" mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
+    <mat-label>Select a league</mat-label>
+    <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
+      <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
+                  [value]="league">{{league.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <div *ngIf="sleeperService.leagueLoaded && (!mockDraftService.leagueLoaded || (mockDraftService.selectedDraft == 'upcoming' && mockDraftService.teamPicks.length == 0))">
