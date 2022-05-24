@@ -1,0 +1,26 @@
+.post-container {
+  /*overflow: auto*/
+}
+.post-thumb {
+  float: left
+}
+.post-actions {
+  float: right
+}
+.post-thumb img {
+  display: block;
+  max-width: 200px;
+  max-height: 130px;
+}
+.post-content {
+  margin-left: 210px
+}
+.post-title {
+  font-size: 100%;
+  margin-bottom: 9px;
+}
+
+.teamName {
+  font-weight: bold;
+}
+

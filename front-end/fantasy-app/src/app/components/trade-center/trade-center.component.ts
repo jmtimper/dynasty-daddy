@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {TradeService} from '../services/trade-tool.service.ts.service';
+import {TradeService} from '../services/trade.service.ts.service';
 import {TradePackage} from '../model/tradePackage';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
@@ -301,23 +301,6 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
   }
 
   /**
-   * get which side of trade is favored
-   */
-  getWhichSideIsFavored(): number {
-    // close enough to be a fair trade
-    if (!this.tradeTool.tradePackage || this.tradeTool.tradePackage.valueToEvenTrade < this.tradeTool.tradePackage.acceptanceBufferAmount) {
-      return 0;
-    }
-    const team1 = this.tradeTool.getTradeValueBySide(1);
-    const team2 = this.tradeTool.getTradeValueBySide(2);
-    if (team1 > team2) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
-
-  /**
    * return trade background color
    */
   getTradeBackgroundColor(): object {
@@ -350,12 +333,12 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     // prevent an infinite loop
     let index = 0;
     while (this.tradeTool.tradePackage?.valueToEvenTrade > this.tradeTool.tradePackage?.acceptanceBufferAmount || index > 10) {
-      this.getWhichSideIsFavored() === 1 ?
+      this.tradeTool.getWhichSideIsFavored() === 1 ?
         this.addPlayerToTeam2(
           this.tradeTool.findBestPlayerForValue(
             this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
             this.isSuperFlex,
-            this.tradeTool.tradePackage.team2UserId,
+            this.tradeTool.tradePackage,
             1
           )[0]
         )
@@ -364,7 +347,7 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
           this.tradeTool.findBestPlayerForValue(
             this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
             this.isSuperFlex,
-            this.tradeTool.tradePackage.team1UserId,
+            this.tradeTool.tradePackage,
             1
           )[0]
         );

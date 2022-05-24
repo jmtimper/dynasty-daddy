@@ -450,7 +450,7 @@ export class PlayerService {
    */
   getTotalValueOfPlayersFromList(players: KTCPlayer[], isSuperFlex: boolean = true): number {
     let totalValue = 0;
-    players.map(player => {
+    players?.map(player => {
       totalValue += isSuperFlex ? player.sf_trade_value : player.trade_value;
     });
     return totalValue;
@@ -475,5 +475,20 @@ export class PlayerService {
     const sortedList = isSuperflex ? this.playerValues.slice() :
       this.playerValues.sort((a, b) => b.trade_value - a.trade_value);
     return sortedList.findIndex(player => player.name_id === player1.name_id);
+  }
+
+  /**
+   * returns a list of sorted players
+   * @param players unsorted players list
+   * @param isSuperFlex is league super flex
+   */
+  sortListOfPlayers(players: KTCPlayer[], isSuperFlex: boolean = true): KTCPlayer[] {
+    return players.sort((playerA, playerB) => {
+      if (isSuperFlex) {
+        return playerB.sf_trade_value - playerA.sf_trade_value;
+      } else {
+        return playerB.trade_value - playerA.trade_value;
+      }
+    });
   }
 }
