@@ -21,10 +21,38 @@ export class TradeService {
    * generate trade package based on input trade package
    * uses builder pattern
    * @param undeterminedTradePackage unfinished trade package
-   * @param isSuperFlex
+   * @param isSuperFlex is superflex league
    */
   determineTrade(undeterminedTradePackage: TradePackage, isSuperFlex: boolean): TradePackage {
-    return this.determineValueAdjustment(undeterminedTradePackage, isSuperFlex);
+    let processedTrade = this.determineValueAdjustment(undeterminedTradePackage, isSuperFlex);
+    if (processedTrade.autoFillTrade) {
+      // TODO maybe let it autoselect players in the future... idk
+      while (processedTrade.valueToEvenTrade > processedTrade.acceptanceBufferAmount && this.getWhichSideIsFavored(processedTrade) === 1) {
+        // get players to even trade
+        const playersToEven = this.findBestPlayerForValue(
+          processedTrade.valueToEvenTrade,
+          isSuperFlex,
+          processedTrade,
+          processedTrade.team2UserId ? 5 : 30
+        );
+        // pick random player from list set trade for
+        const playerToAdd = playersToEven[Math.round(Math.random() * playersToEven.length)];
+        // if player is undefined then return trade
+        if (!playerToAdd) {
+          return processedTrade;
+        }
+        // if team 2 is null set user id of trade partner
+        if (!processedTrade.team2UserId) {
+          processedTrade.setTeam2(playerToAdd.owner?.userId);
+        }
+        // update trade evaluations
+        processedTrade = this.determineValueAdjustment(
+          processedTrade.addTeam2Assets(playerToAdd),
+          isSuperFlex
+        );
+      }
+    }
+    return processedTrade;
   }
 
   /**
@@ -41,7 +69,6 @@ export class TradeService {
     // determine STUD pick
     const studPlayerResponse = this.determineValuePlayer(tradePackage.team1Assets, tradePackage.team2Assets, isSuperFlex);
     const studPlayer = studPlayerResponse?.studPlayer;
-    console.log('stud ', studPlayerResponse);
     const studPlayerValue = isSuperFlex ? studPlayer?.sf_trade_value : studPlayer?.trade_value;
     // TODO change when adding multi team support
     if (tradePackage.team2Assets.includes(studPlayer)) {
@@ -61,7 +88,6 @@ export class TradeService {
       Math.abs((team1TotalValue + tradePackage.valueAdjustment) - team2TotalValue) || 0 :
       Math.abs((team2TotalValue + tradePackage.valueAdjustment) - team1TotalValue) || 0;
     tradePackage.acceptanceBufferAmount = (totalTradeValue + tradePackage.valueAdjustment) * (tradePackage.acceptanceVariance / 100);
-    console.log(tradePackage);
     return tradePackage;
   }
 
@@ -83,7 +109,6 @@ export class TradeService {
       isSuperFlex ? b.sf_trade_value - a.sf_trade_value : b.trade_value - a.trade_value);
     // loop through trade package and remove "equal" value players
     while (filteredTeam1Players.length > 0 && filteredTeam2Players.length > 0) {
-      console.log(filteredTeam1Players, filteredTeam2Players);
       const team1Stud = filteredTeam1Players[0];
       const team2Stud = filteredTeam2Players[0];
       if (this.playerService.comparePlayersValue(team1Stud, team2Stud, isSuperFlex)) {
@@ -134,18 +159,46 @@ export class TradeService {
    * find best player based on passed in value
    * @param maxValue max value of player to return
    * @param isSuperFlex is superflex or not
-   * @param userIdFilter filter player list by user id or null
+   * @param tradePackage trade package object of trade to evaluate
    * @param listLength list of players to return
    */
-  findBestPlayerForValue(maxValue: number, isSuperFlex: boolean = true, userIdFilter: string = null, listLength: number = 5): KTCPlayer[] {
+  findBestPlayerForValue(
+    maxValue: number,
+    isSuperFlex: boolean = true,
+    tradePackage: TradePackage = this.tradePackage,
+    listLength: number = 5): KTCPlayer[] {
+    // find user id of weaker side of trade
+    const userIdFilter = this.getWhichSideIsFavored(tradePackage) === 1 ? tradePackage.team2UserId : tradePackage.team1UserId;
     // filter list by user id then filter by value last filter by if player is in current trade
-    const sortedList = this.filterPlayersList(userIdFilter)
+    let sortedList = this.filterPlayersList(userIdFilter)
       .filter(player => isSuperFlex ? player.sf_trade_value <= maxValue : player.trade_value <= maxValue)
-      .filter(player => !this.tradePackage?.team1Assets.includes(player) && !this.tradePackage?.team2Assets.includes(player));
+      .filter(player => !tradePackage?.team1Assets.includes(player) && !tradePackage?.team2Assets.includes(player));
+    if (tradePackage.autoFillTrade) {
+      sortedList = sortedList.filter(player => (player.position === 'PI'
+        || player.owner !== null && player.owner.userId !== tradePackage.team1UserId));
+    }
     // sort list by largest value
     return sortedList.sort((a, b) => isSuperFlex ?
       b.sf_trade_value - a.sf_trade_value : b.trade_value - a.trade_value).slice(0, listLength);
   }
+
+  /**
+   * get which side of trade is favored
+   */
+  getWhichSideIsFavored(tradePackage: TradePackage = this.tradePackage): number {
+    // close enough to be a fair trade
+    if (!tradePackage || tradePackage.valueToEvenTrade < tradePackage.acceptanceBufferAmount) {
+      return 0;
+    }
+    const team1 = this.getTradeValueBySide(1, tradePackage);
+    const team2 = this.getTradeValueBySide(2, tradePackage);
+    if (team1 > team2) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
 
   /**
    * Filters list of all players by team.
@@ -185,11 +238,11 @@ export class TradeService {
     let valueModifier = 1;
     const studPosition = this.playerService.getPlayersValueIndex(stud, isSuperFlex);
     otherTeam.forEach(player => {
-      if (        isSuperFlex ?
+      if (isSuperFlex ?
         stud.sf_trade_value * 0.95 > player.sf_trade_value
         : stud.trade_value * 0.95 > player.trade_value) {
         if (Math.abs(studPosition
-          - this.playerService.getPlayersValueIndex(player, isSuperFlex)) <= (studPosition < 10 ? 5 : 20) ) {
+          - this.playerService.getPlayersValueIndex(player, isSuperFlex)) <= (studPosition < 10 ? 5 : 20)) {
           valueModifier -= 0.2;
         }
       }
@@ -201,19 +254,20 @@ export class TradeService {
   /**
    * get total amount of trade package by side
    * @param teamNumber 1 or 2
+   * @param tradePackage trade package to evaluate
    */
-  getTradeValueBySide(teamNumber: number): number {
-    if (!this.tradePackage) {
+  getTradeValueBySide(teamNumber: number, tradePackage: TradePackage = this.tradePackage): number {
+    if (!tradePackage) {
       return 0;
     }
     if (teamNumber === 1) {
-      return this.tradePackage?.team1AssetsValue + (
-        this.tradePackage?.valueAdjustmentSide === 1
-          ? this.tradePackage.valueAdjustment : 0);
+      return tradePackage?.team1AssetsValue + (
+        tradePackage?.valueAdjustmentSide === 1
+          ? tradePackage.valueAdjustment : 0);
     } else {
-      return this.tradePackage?.team2AssetsValue + (
-        this.tradePackage?.valueAdjustmentSide === 2
-          ? this.tradePackage.valueAdjustment : 0);
+      return tradePackage?.team2AssetsValue + (
+        tradePackage?.valueAdjustmentSide === 2
+          ? tradePackage.valueAdjustment : 0);
     }
   }
 

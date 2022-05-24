@@ -61,11 +61,11 @@ export class PlayoffCalculatorComponent extends BaseComponent implements OnInit 
   constructor(
     public sleeperService: SleeperService,
     public playoffCalculatorService: PlayoffCalculatorService,
-    private nflService: NflService,
+    public nflService: NflService,
     public powerRankingsService: PowerRankingsService,
     public matchupService: MatchupService,
     public configService: ConfigService,
-    private leagueSwitchService: LeagueSwitchService) {
+    public leagueSwitchService: LeagueSwitchService) {
     super();
   }
 

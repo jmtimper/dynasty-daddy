@@ -78,7 +78,7 @@
           <td class="small-text__light"></td>
           <td class="mid-bold-text trade-value-col">+{{tradeTool.tradePackage?.valueAdjustment}}</td>
         </tr>
-        <tr *ngIf="getWhichSideIsFavored() == 2 && team1PlayerList.length != 0">
+        <tr *ngIf="tradeTool.getWhichSideIsFavored() == 2 && team1PlayerList.length != 0">
           <td></td>
           <td (click)="evenOutTrade()" class="trade-info-col small-text__light link--text__no__underline" style="text-decoration-line: underline; font-style: italic">Even Out Trade</td>
         <tr>
@@ -135,7 +135,7 @@
           <td class="small-text__light"></td>
           <td class="mid-bold-text trade-value-col">+{{tradeTool.tradePackage.valueAdjustment}}</td>
         </tr>
-        <tr *ngIf="getWhichSideIsFavored() == 1 && team2PlayerList.length != 0">
+        <tr *ngIf="tradeTool.getWhichSideIsFavored() == 1 && team2PlayerList.length != 0">
           <td></td>
           <td (click)="evenOutTrade()" class="trade-info-col small-text__light link--text__no__underline" style="text-decoration-line: underline; font-style: italic">Even Out Trade</td>
         <tr>
@@ -156,14 +156,14 @@
       </div>
       <div *ngIf="tradeTool.tradePackage?.valueAdjustmentSide && tradeTool.tradePackage?.valueToEvenTrade > tradeTool.tradePackage?.acceptanceBufferAmount">
         <div class="mid-bold-text center-text margin-top-10">
-          <mat-icon class="trade-arrow-icon" *ngIf="getWhichSideIsFavored() == 1">arrow_back</mat-icon>
-          Favors {{getWhichSideIsFavored() == 1 ? team1Rankings?.team.owner.ownerName || 'Team 1' : team2Rankings?.team.owner.ownerName || 'Team 2'}}
-          <mat-icon class="trade-arrow-icon" *ngIf="getWhichSideIsFavored() == 2">arrow_forward</mat-icon>
+          <mat-icon class="trade-arrow-icon" *ngIf="tradeTool.getWhichSideIsFavored() == 1">arrow_back</mat-icon>
+          Favors {{tradeTool.getWhichSideIsFavored() == 1 ? team1Rankings?.team.owner.ownerName || 'Team 1' : team2Rankings?.team.owner.ownerName || 'Team 2'}}
+          <mat-icon class="trade-arrow-icon" *ngIf="tradeTool.getWhichSideIsFavored() == 2">arrow_forward</mat-icon>
         </div>
         <div class="small-text__light center-text margin-bot-10" style="color: lightcoral">
-          <mat-icon class="trade-arrow-icon__small" *ngIf="getWhichSideIsFavored() == 2">arrow_back</mat-icon>
+          <mat-icon class="trade-arrow-icon__small" *ngIf="tradeTool.getWhichSideIsFavored() == 2">arrow_back</mat-icon>
           Add a player with <span style="font-weight: bolder">{{tradeTool.tradePackage?.valueToEvenTrade | number}}</span> value to even trade
-          <mat-icon class="trade-arrow-icon__small" *ngIf="getWhichSideIsFavored() == 1">arrow_forward</mat-icon>
+          <mat-icon class="trade-arrow-icon__small" *ngIf="tradeTool.getWhichSideIsFavored() == 1">arrow_forward</mat-icon>
           <div (click)="openPlayerComparisonPage()" class="link--text__no__underline" style="text-decoration-line: underline;">View in Player Comparison</div>
         </div>
       </div>
@@ -171,14 +171,14 @@
     <div *ngIf="tradeTool.tradePackage && (tradeTool.tradePackage.team2Assets.length != 0 || tradeTool.tradePackage.team1Assets.length != 0) && tradeTool.tradePackage?.valueToEvenTrade > tradeTool.tradePackage?.acceptanceBufferAmount" class="trade_insights" fxFlex="37.5%" fxFlex.xs="80%" fxFlex.sm="80%">
       <mat-card>
         <mat-card-content>
-          <div class="center-text mid-bold-text margin-bot-10">Players to Even the Trade<span *ngIf="sleeperService.selectedLeague && team1Rankings && team2Rankings">{{(getWhichSideIsFavored() == 2 ? ' from ' + team1Rankings?.team.owner.ownerName : ' from ' + team2Rankings?.team.owner.ownerName)}}</span></div>
+          <div class="center-text mid-bold-text margin-bot-10">Players to Even the Trade<span *ngIf="sleeperService.selectedLeague && team1Rankings && team2Rankings">{{(tradeTool.getWhichSideIsFavored() == 2 ? ' from ' + team1Rankings?.team.owner.ownerName : ' from ' + team2Rankings?.team.owner.ownerName)}}</span></div>
         </mat-card-content>
-        <table class="trade-table-item" *ngFor="let player of tradeTool.findBestPlayerForValue(tradeTool.tradePackage.valueToEvenTrade * 1.03, isSuperFlex, this.getWhichSideIsFavored() == 2 ? tradeTool.tradePackage.team1UserId : tradeTool.tradePackage.team2UserId)">
+        <table class="trade-table-item" *ngFor="let player of tradeTool.findBestPlayerForValue(tradeTool.tradePackage.valueToEvenTrade * 1.03, isSuperFlex, tradeTool.tradePackage)">
           <tr>
             <td *ngIf="player.position == 'PI'" style="width: 70%">{{player.full_name}}</td>
             <td *ngIf="player.position != 'PI'" style="width: 70%" class="link--text__no__underline" [routerLink]="['../details', player.name_id]">{{player.full_name}}</td>
             <td style="width: 30%">{{player.sf_trade_value}}</td>
-            <td style="width: 5px" (click)="getWhichSideIsFavored() == 2 ? addPlayerToTeam1(player) : addPlayerToTeam2(player)">
+            <td style="width: 5px" (click)="tradeTool.getWhichSideIsFavored() == 2 ? addPlayerToTeam1(player) : addPlayerToTeam2(player)">
               <mat-icon class="trade-rm-icon">add_circle</mat-icon>
             </td>
           </tr>

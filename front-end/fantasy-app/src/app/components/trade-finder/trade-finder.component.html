@@ -1,0 +1,52 @@
+<div class="margin-top-10 large-bold-header-text center-text">Trade Finder</div>
+<div class="center-text margin-top-10">
+  Select players to generate potential trades.
+</div>
+<div class="trade-table-container">
+  <div *ngIf="sleeperService.leagueLoaded" class="margin-top-10">
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Select a Team</mat-label>
+      <mat-select [(ngModel)]="tradeFinderService.selectedTeamUserId">
+        <mat-option *ngFor="let team of sleeperService.sleeperTeamDetails"
+                    [value]="team.owner.userId">{{team.owner.teamName}} - {{team.owner.ownerName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="sleeperService.leagueLoaded && tradeFinderService.selectedTeamUserId">
+    <div fxLayout="row wrap" fxLayoutAlign="center">
+      <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" class="item">
+        <div class="mid-bold-text center-text margin-top-10 margin-bot-10">Players</div>
+        <app-trade-finder-table [assets]="filterPlayersByTeam()"></app-trade-finder-table>
+      </div>
+
+      <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" class="item">
+        <div class="mid-bold-text center-text margin-top-10 margin-bot-10">Draft Capital</div>
+        <app-trade-finder-table [assets]="filterPicksByTeam()"></app-trade-finder-table>
+      </div>
+    </div>
+
+    <div class="margin-top-50 center-text">
+      <button mat-raised-button color="primary" class="mid-bold-text" (click)="generateTradeOffers()">Ask for Trade Proposals</button>
+    </div>
+
+    <div class="margin-top-50" fxLayout="row wrap" fxLayoutAlign="center">
+      <div style="padding: 4px" fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" *ngFor="let trade of tradeList">
+        <app-trade-finder-card [tradePackage]="trade" [owner]="this.sleeperService.getTeamByUserId(trade.team2UserId)?.owner"></app-trade-finder-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="center-text margin-top-50" *ngIf="!sleeperService.leagueLoaded">
+  <div class="warning__alert">Cannot Find Trades. Please select a league.</div>
+  <br>
+  <button *ngIf="!sleeperService.sleeperUser" mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
+    <mat-label>Select a league</mat-label>
+    <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
+      <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
+                  [value]="league">{{league.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

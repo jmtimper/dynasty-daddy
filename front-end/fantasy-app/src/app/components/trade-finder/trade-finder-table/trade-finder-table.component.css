@@ -1,0 +1,17 @@
+.trade-finder-row {
+  height: 32px !important;
+}
+
+.mat-column-value,
+.mat-column-select {
+  max-width: 82px;
+}
+
+.mat-column-playerName{
+  min-width: 120px;
+}
+
+.mat-column-value {
+  text-align: right;
+  justify-content: flex-end;
+}

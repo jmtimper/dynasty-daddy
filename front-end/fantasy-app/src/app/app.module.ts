@@ -76,6 +76,9 @@ import {TradeCenterComponent} from './components/trade-center/trade-center.compo
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { TradeFinderComponent } from './components/trade-finder/trade-finder.component';
+import { TradeFinderTableComponent } from './components/trade-finder/trade-finder-table/trade-finder-table.component';
+import { TradeFinderCardComponent } from './components/trade-finder/trade-finder-card/trade-finder-card.component';
 
 export function initialize(startupService: StartupService): any {
   return (): Promise<any> => {
@@ -127,6 +130,9 @@ let UniversalDeviceDetectorService;
     HighLightSearchPipe,
     HighLightSearchPipe,
     TradeCenterComponent,
+    TradeFinderComponent,
+    TradeFinderTableComponent,
+    TradeFinderCardComponent,
   ],
   imports: [
     BrowserModule,

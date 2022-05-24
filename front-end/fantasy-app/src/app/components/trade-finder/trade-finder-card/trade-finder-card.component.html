@@ -1,0 +1,23 @@
+<mat-card style="min-height: 200px">
+  <div class="post-container">
+    <div class="post-title">
+      Potential Trade from <span class="teamName" [ngClass]="{'link--text__no__underline': owner}" [routerLink]="owner ? ['../../team', owner.ownerName] : []">{{owner?.teamName || 'Anyone'}}</span>
+      <span style="float: right; cursor: pointer">
+        <mat-icon matTooltip="Open in Trade Calculator" matTooltipPosition="above" (click)="openTradeCalculator()">calculate</mat-icon>
+      </span>
+    </div>
+    <div class="post-thumb" *ngIf="!configService.isMobile">
+      <img #image [src]="'https://sleepercdn.com/content/nfl/players/thumb/' + tradePackage.team2Assets[0].sleeper_id + '.jpg'"
+           onerror="this.src='https://www.pff.com/images/webui/player_default.png';" [hidden]="image.hidden" class="responsive">
+    </div>
+    <div [ngClass]="{'post-content': !configService.isMobile}">
+      <table >
+        <tr *ngFor="let player of tradePackage.team2Assets">
+          <td style="width: 50%">{{player.full_name}}</td>
+          <td class="small-text__light" style="width: 35%">{{player.position}}<span *ngIf="player.position !== 'PI'">{{tradePackage.isSuperFlex ? player.sf_position_rank : player.position_rank}} {{player.team}}</span></td>
+          <td style="width: 15%">{{tradePackage.isSuperFlex ? player.sf_trade_value : player.trade_value}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</mat-card>

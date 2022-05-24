@@ -9,9 +9,10 @@ import {PlayerComparisonsComponent} from './components/player-comparisons/player
 import {PlayerDetailsComponent} from './components/player-details/player-details.component';
 import {FantasyTeamDetailsComponent} from './components/fantasy-team-details/fantasy-team-details.component';
 import {PlayoffCalculatorComponent} from './components/playoff-calculator/playoff-calculator.component';
-import {AboutComponent} from "./components/about/about.component";
-import {PlayerStatisticsComponent} from "./components/player-statistics/player-statistics.component";
-import {TradeCenterComponent} from "./components/trade-center/trade-center.component";
+import {AboutComponent} from './components/about/about.component';
+import {PlayerStatisticsComponent} from './components/player-statistics/player-statistics.component';
+import {TradeCenterComponent} from './components/trade-center/trade-center.component';
+import {TradeFinderComponent} from "./components/trade-finder/trade-finder.component";
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
     component: PowerRankingsComponent
   },
   {
+    path: 'league/trade/finder',
+    component: TradeFinderComponent
+  },
+  {
     path: 'league/probability',
     component: PlayoffCalculatorComponent
   },
@@ -56,6 +61,10 @@ const routes: Routes = [
   },
   {
     path: 'home',
+    redirectTo: ''
+  },
+  {
+    path: '',
     component: HomeComponent
   },
   {
@@ -64,11 +73,11 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: HomeComponent
+    redirectTo: ''
   },
   {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: ''
   }
 ];
 
