@@ -12,9 +12,10 @@ import {SleeperLeagueData} from '../../model/SleeperUser';
 import {forkJoin, Subject} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {BaseComponent} from '../base-component.abstract';
-import {TradeService} from './trade-tool.service.ts.service';
-import {NflService} from "../../services/utilities/nfl.service";
-import {Params} from "@angular/router";
+import {NflService} from '../../services/utilities/nfl.service';
+import {Params} from '@angular/router';
+import {TradeService} from './trade.service.ts.service';
+import {TradeFinderService} from './trade-finder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,7 @@ export class LeagueSwitchService extends BaseComponent {
               private matchupService: MatchupService,
               private nflService: NflService,
               private playoffCalculatorService: PlayoffCalculatorService,
+              private tradeFinderService: TradeFinderService,
               private configService: ConfigService,
               private transactionService: TransactionsService) {
     super();
@@ -67,6 +69,7 @@ export class LeagueSwitchService extends BaseComponent {
             this.playoffCalculatorService.generateDivisions(this.selectedLeague, this.sleeperService.sleeperTeamDetails),
             this.matchupService.initMatchUpCharts(this.selectedLeague)]).subscribe(() => {
             this.sleeperService.leagueLoaded = true;
+            this.tradeFinderService.selectedTeamUserId = this.sleeperService.sleeperUser?.userData?.user_id;
             console.timeEnd('Fetch Sleeper League Data');
             this.leagueChanged.next(this.selectedLeague);
             this.spinner.hide();

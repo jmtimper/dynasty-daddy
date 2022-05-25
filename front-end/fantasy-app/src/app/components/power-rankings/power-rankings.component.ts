@@ -19,6 +19,7 @@ export class PowerRankingsComponent extends BaseComponent implements OnInit {
               private playersService: PlayerService,
               private route: ActivatedRoute,
               private leagueSwitchService: LeagueSwitchService) {
+
     super();
   }
 

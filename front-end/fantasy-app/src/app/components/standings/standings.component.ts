@@ -20,7 +20,7 @@ export class StandingsComponent extends BaseComponent implements OnInit {
               public playoffCalculatorService: PlayoffCalculatorService,
               public matchupService: MatchupService,
               public configService: ConfigService,
-              private leagueSwitchService: LeagueSwitchService,
+              public leagueSwitchService: LeagueSwitchService,
               public transactionService: TransactionsService) {
     super();
   }

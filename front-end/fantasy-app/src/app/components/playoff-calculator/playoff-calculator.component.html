@@ -85,11 +85,25 @@
 <div class="center-text margin-top-50" *ngIf="!sleeperService.leagueLoaded && sleeperService.selectedLeague?.status !== 'pre_draft' && sleeperService.selectedLeague?.status !== 'drafting'">
   <div class="warning__alert">Cannot generate league analytics cause no league was selected. Please select a league.</div>
   <br>
-  <button mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <button *ngIf="!sleeperService.sleeperUser" mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
+    <mat-label>Select a league</mat-label>
+    <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
+      <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
+                  [value]="league">{{league.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <div class="center-text margin-top-50" *ngIf="sleeperService.selectedLeague?.status === 'pre_draft' || sleeperService.selectedLeague?.status === 'drafting'">
   <div class="warning__alert">Cannot generate league analytics because season hasn't started yet. Please select a different league or year.</div>
   <br>
-  <button mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <button *ngIf="!sleeperService.sleeperUser" mat-raised-button color="warn" routerLink="./home">Choose League</button>
+  <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">
+    <mat-label>Select a league</mat-label>
+    <mat-select [(ngModel)]="leagueSwitchService.selectedLeague" (selectionChange)="leagueSwitchService.loadLeague($event.value)">
+      <mat-option *ngFor="let league of sleeperService.sleeperUser?.leagues"
+                  [value]="league">{{league.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
