@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {KTCApiService} from './services/api/ktc-api.service';
-import {KTCPlayer} from './model/KTCPlayer';
 import {ConfigService} from './services/init/config.service';
 
 @Component({
@@ -9,7 +7,7 @@ import {ConfigService} from './services/init/config.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  title = 'fantasy-app';
+  title = 'dynasty-daddy';
 
   constructor(public configService: ConfigService) {
   }

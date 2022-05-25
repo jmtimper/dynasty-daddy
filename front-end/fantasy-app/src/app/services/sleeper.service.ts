@@ -127,8 +127,9 @@ export class SleeperService {
   /**
    * loads new user data from sleeper username
    * @param userName user name
+   * @param year
    */
-  loadNewUser(userName: string, year: string): void {
+  loadNewUser(userName: string, year: string): Observable<any> {
     this.spinner.show();
     console.time('Fetch Sleeper User Data');
     this.selectedYear = year;
@@ -143,11 +144,13 @@ export class SleeperService {
           this.sleeperUser = {leagues: response, userData};
           this.spinner.hide();
           console.timeEnd('Fetch Sleeper User Data');
+          return of();
         });
       });
     } catch (e: any) {
       this.spinner.hide();
       console.error('Failed to get data for user ', e);
+      return of();
     }
   }
 

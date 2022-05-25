@@ -53,9 +53,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
    * loads sleeper data for user
    */
   fetchSleeperInfo(): void {
-    this.sleeperService.loadNewUser(this.usernameInput, this.selectedYear);
-    this.sleeperService.selectedYear = this.selectedYear;
-    this.sleeperService.resetLeague();
+    this.leagueSwitchService.loadUser(this.usernameInput, this.selectedYear);
   }
 
   /**
@@ -86,15 +84,13 @@ export class HomeComponent extends BaseComponent implements OnInit {
    * @param demoId string of demo league id
    */
   loginWithLeagueId(demoId?: string): void {
-    this.sleeperApiService.getSleeperLeagueByLeagueId(demoId || this.leagueIdInput).subscribe(leagueData => {
-      this.leagueSwitchService.loadLeague(leagueData);
-    });
+    this.leagueSwitchService.loadLeagueWithLeagueId(demoId || this.leagueIdInput);
   }
 
   /**
    * log in with a previous year league id
    */
   loginWithPrevSeason(): void {
-    this.loginWithLeagueId(this.sleeperService.selectedLeague.prevLeagueId);
+    this.leagueSwitchService.loadLeagueWithLeagueId(this.sleeperService.selectedLeague.prevLeagueId);
   }
 }

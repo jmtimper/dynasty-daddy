@@ -3,10 +3,10 @@
     <button mat-button routerLink="./home"><mat-icon class="header-icon">home</mat-icon> Home</button>
     <button mat-button [matMenuTriggerFor]="leagueMenu"><mat-icon class="header-icon">people</mat-icon> League</button>
     <mat-menu #leagueMenu="matMenu">
-      <button mat-menu-item routerLink="./league/rankings">Power Rankings</button>
-      <button mat-menu-item routerLink="./league/standings">Standings</button>
-      <button mat-menu-item routerLink="./league/probability">Playoff Calculator</button>
-      <button mat-menu-item routerLink="./league/draft">Draft Center</button>
+      <button mat-menu-item [routerLink]="['./league/rankings']" [queryParams]="{ league: sleeperService.selectedLeague?.leagueId, user: sleeperService.sleeperUser?.userData?.username, year: sleeperService.selectedYear }">Power Rankings</button>
+      <button mat-menu-item [routerLink]="['./league/standings']">Standings</button>
+      <button mat-menu-item [routerLink]="['./league/probability']">Playoff Calculator</button>
+      <button mat-menu-item [routerLink]="['./league/draft']">Draft Center</button>
     </mat-menu>
     <button mat-button [matMenuTriggerFor]="playerMenu"><mat-icon style="font-size: 22px">insights</mat-icon> Players</button>
     <mat-menu #playerMenu="matMenu">

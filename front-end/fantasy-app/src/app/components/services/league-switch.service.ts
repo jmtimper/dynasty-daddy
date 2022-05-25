@@ -13,6 +13,8 @@ import {forkJoin, Subject} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {BaseComponent} from '../base-component.abstract';
 import {TradeService} from './trade-tool.service.ts.service';
+import {NflService} from "../../services/utilities/nfl.service";
+import {Params} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +35,7 @@ export class LeagueSwitchService extends BaseComponent {
               private tradeService: TradeService,
               private mockDraftService: MockDraftService,
               private matchupService: MatchupService,
+              private nflService: NflService,
               private playoffCalculatorService: PlayoffCalculatorService,
               private configService: ConfigService,
               private transactionService: TransactionsService) {
@@ -70,6 +73,38 @@ export class LeagueSwitchService extends BaseComponent {
           });
         }
       ));
+    }
+  }
+
+  loadUser(user: string, year: string = new Date().getFullYear().toString()): void {
+    this.sleeperService.loadNewUser(user, year);
+    this.sleeperService.selectedYear = year;
+    this.sleeperService.resetLeague();
+
+  }
+
+  /**
+   * load league with league id
+   * @param leagueId string
+   */
+  loadLeagueWithLeagueId(leagueId: string): void {
+    this.addSubscriptions(this.sleeperApiService.getSleeperLeagueByLeagueId(leagueId).subscribe(leagueData => {
+        this.loadLeague(leagueData);
+      })
+    );
+  }
+
+  loadFromQueryParams(params: Params): void {
+    const user = params['user'];
+    const year = params['year'];
+    const league = params['league'];
+    if (league && !this.sleeperService.selectedLeague) {
+      console.log(user, year, league)
+      this.playersService.loadPlayerValuesForToday();
+      this.playersService.$currentPlayerValuesLoaded.subscribe(() => {
+        this.loadUser(user, year);
+        this.loadLeagueWithLeagueId(league);
+      });
     }
   }
 }
