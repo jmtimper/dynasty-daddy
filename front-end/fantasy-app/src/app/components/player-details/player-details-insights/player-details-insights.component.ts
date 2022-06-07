@@ -132,14 +132,14 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterV
             if (new Date(new Date(dateLabel).setHours(0, 0, 0, 0)).getTime()
               === new Date(new Date(dataPoint.date).setHours(0, 0, 0, 0)).getTime()) {
               dataList.push(this.sleeperService.selectedLeague?.isSuperflex === false ? dataPoint.trade_value : dataPoint.sf_trade_value);
-              this.lineChartLabels.push(dataPoint.date?.slice(0, 10));
+              this.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(dataPoint.date?.slice(0, 10)));
               dataPointInd++;
             }
           });
           // if no point matches
           if (dataList.length < ind) {
             dataList.push(ind === 40 ? null : 0);
-            this.lineChartLabels.push(new Date(dateLabel).toISOString().slice(0, 10));
+            this.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(dateLabel.toString()));
           }
         }
         // reverse data
