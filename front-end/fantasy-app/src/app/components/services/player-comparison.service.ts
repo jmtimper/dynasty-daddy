@@ -99,8 +99,8 @@ export class PlayerComparisonService {
     if (!this.isGroupMode) {
       const data = [];
       for (const dataPoint of player) {
-        if (this.lineChartLabels.includes(dataPoint.date?.slice(0, 10))) {
-          const index = this.lineChartLabels.indexOf(dataPoint.date.slice(0, 10));
+        if (this.lineChartLabels.includes(this.formatDateForDisplay(dataPoint.date))) {
+          const index = this.lineChartLabels.indexOf(this.formatDateForDisplay(dataPoint.date));
           data[index] = this.isSuperFlex ? dataPoint.sf_trade_value : dataPoint.trade_value;
         }
       }
@@ -131,8 +131,8 @@ export class PlayerComparisonService {
       for (const player of this.selectedPlayers) {
         const data = [];
         for (const dataPoint of player.data) {
-          if (this.lineChartLabels.includes(dataPoint.date.slice(0, 10))) {
-            const index = this.lineChartLabels.indexOf(dataPoint.date.slice(0, 10));
+          if (this.lineChartLabels.includes(this.formatDateForDisplay(dataPoint.date))) {
+            const index = this.lineChartLabels.indexOf(this.formatDateForDisplay(dataPoint.date));
             data[index] = this.isSuperFlex ? dataPoint.sf_trade_value : dataPoint.trade_value;
           }
         }
@@ -145,8 +145,15 @@ export class PlayerComparisonService {
       this.lineChartData.push({data: this.calculateGroupValue(this.group2SelectedPlayers),
         label: `Group 2 (${this.group2SelectedPlayers.length} Players)`});
     }
-
     this.$updatePlayer.next();
+  }
+
+  /**
+   * formats date display for table labels
+   * @param date string of date to format
+   */
+  formatDateForDisplay(date: string): string {
+    return new Date(date).toString().slice(4, 15);
   }
 
   /**
@@ -158,8 +165,8 @@ export class PlayerComparisonService {
     const data = [];
     for (const player of players) {
       for (const dataPoint of player.data) {
-        if (this.lineChartLabels.includes(dataPoint.date.slice(0, 10))) {
-          const index = this.lineChartLabels.indexOf(dataPoint.date.slice(0, 10));
+        if (this.lineChartLabels.includes(this.formatDateForDisplay(dataPoint.date))) {
+          const index = this.lineChartLabels.indexOf(this.formatDateForDisplay(dataPoint.date));
           if (!data[index]) {
             data[index] = 0;
           }
@@ -173,6 +180,7 @@ export class PlayerComparisonService {
   /**
    * removed selected player from graph
    * @param player
+   * @param isGroup2
    */
   onRemove(player: PlayerComparison, isGroup2: boolean = false): void {
     if (this.isGroupMode) {

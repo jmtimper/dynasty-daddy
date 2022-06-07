@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BaseChartDirective} from 'ng2-charts';
+import {BaseChartDirective, Label} from 'ng2-charts';
 import {ChartOptions} from 'chart.js';
 import {PlayerComparisonService} from '../../services/player-comparison.service';
 import {BaseComponent} from '../../base-component.abstract';
@@ -127,7 +127,7 @@ export class TradeValueLineChartComponent extends BaseComponent implements OnIni
       const today = new Date();
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - (displayDays - i));
-      this.playerComparisonService.lineChartLabels.push(yesterday.toISOString().slice(0, 10));
+      this.playerComparisonService.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(yesterday.toString()));
     }
     this.playerComparisonService.refreshTable();
   }
@@ -142,7 +142,6 @@ export class TradeValueLineChartComponent extends BaseComponent implements OnIni
     const firstDate = new Date();
     const secondDate = new Date('2021-04-16T12:00:00');
 
-    const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
-    return diffDays;
+    return Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
   }
 }

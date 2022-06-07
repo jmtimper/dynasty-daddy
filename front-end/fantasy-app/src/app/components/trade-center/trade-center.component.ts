@@ -4,7 +4,7 @@ import {TradePackage} from '../model/tradePackage';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
 import {FormControl} from '@angular/forms';
-import {ReplaySubject, Subject} from 'rxjs';
+import {ReplaySubject, Subject, timer} from 'rxjs';
 import {MatSelect} from '@angular/material/select';
 import {KTCPlayer} from '../../model/KTCPlayer';
 import {take, takeUntil} from 'rxjs/operators';
@@ -15,6 +15,7 @@ import {TeamPowerRanking} from '../model/powerRankings';
 import {PlayerComparisonService} from '../services/player-comparison.service';
 import {Router} from '@angular/router';
 import {LeagueSwitchService} from '../services/league-switch.service';
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-trade-center',
@@ -86,6 +87,7 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     public powerRankingsService: PowerRankingsService,
     public playerComparisonService: PlayerComparisonService,
     private leagueSwitchService: LeagueSwitchService,
+    public spinner: NgxSpinnerService,
     private router: Router
   ) {
     super();
@@ -376,7 +378,8 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
   /**
    * opens trade package in player comparison service.
    */
-  openPlayerComparisonPage(): void {
+  async openPlayerComparisonPage(): Promise<any> {
+    this.spinner.show();
     this.playerComparisonService.selectedPlayers = [];
     this.playerComparisonService.group2SelectedPlayers = [];
     this.playerComparisonService.isGroupMode = true;
@@ -386,7 +389,9 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     this.team2PlayerList.map(player => {
       this.playerComparisonService.addPlayerToCharts(player, true);
     });
+    await timer(1000).pipe(take(1)).toPromise();
     this.router.navigateByUrl('players/comparison');
+    this.spinner.hide();
   }
 
   /**

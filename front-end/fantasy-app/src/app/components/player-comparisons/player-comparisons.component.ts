@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {KTCApiService} from '../../services/api/ktc-api.service';
 import {PlayerService} from '../../services/player.service';
 import {BaseComponent} from '../base-component.abstract';
@@ -15,7 +15,7 @@ import {KTCPlayer} from '../../model/KTCPlayer';
   templateUrl: './player-comparisons.component.html',
   styleUrls: ['./player-comparisons.component.css']
 })
-export class PlayerComparisonsComponent extends BaseComponent implements OnInit {
+export class PlayerComparisonsComponent extends BaseComponent implements AfterViewInit {
 
   constructor(private ktcApiService: KTCApiService,
               private playerService: PlayerService,
@@ -31,7 +31,7 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
    */
   activePlayers: KTCPlayer[] = [];
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     if (this.sleeperService.leagueLoaded) {
       this.playerComparisonService.isSuperFlex = this.sleeperService.selectedLeague.isSuperflex;
     }
@@ -40,12 +40,12 @@ export class PlayerComparisonsComponent extends BaseComponent implements OnInit 
     this.filterActivePlayers();
     this.addSubscriptions(this.playerService.$currentPlayerValuesLoaded.subscribe(() => {
       this.filterActivePlayers();
-      if (this.playerComparisonService.lineChartData.length === 1
+      if (this.playerComparisonService.lineChartData
         && this.playerComparisonService.selectedPlayers[0] === undefined) {
         this.resetPlayerCompPlayers();
       }
     }));
-    if (this.playerComparisonService.selectedPlayers.length === undefined
+    if (this.playerComparisonService.selectedPlayers.length === 0
       && this.playerComparisonService.selectedPlayers[0] === undefined) {
       this.resetPlayerCompPlayers();
     }
