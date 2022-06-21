@@ -20,6 +20,7 @@
 
 <div *ngIf="mockDraftService.leagueLoaded">
   <div *ngIf="mockDraftService.selectedDraft == 'upcoming'" class="margin-top-25 mock-draft-table-container">
+    <div class="mid-bold-text center-text warning__alert margin-bot-10 margin-top-10">This feature is currently in Beta. There may be inconsistencies with the draft order or long load times.</div>
     <div>
       <mat-button-toggle-group [(ngModel)]="mockDraftService.mockDraftConfig" class="button-left"
                                style="overflow: auto">
