@@ -75,6 +75,9 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
   /** manually selected team 2 user id */
   public selectedTeam2: string = null;
 
+  /** recommended players to add to trade list */
+  public recommendedPlayers: KTCPlayer[] = [];
+
   @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
 
   @ViewChild('singleSelect2', {static: true}) singleSelect2: MatSelect;
@@ -243,6 +246,11 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
       }
     }
     this.tradeTool.tradePackage = this.tradeTool.determineTrade(trade, this.isSuperFlex);
+    this.recommendedPlayers = this.tradeTool.findBestPlayerForValue(
+      this.tradeTool.tradePackage.valueToEvenTrade * 1.03,
+      this.isSuperFlex,
+      this.tradeTool.tradePackage
+    );
     this.refreshDisplay();
   }
 
@@ -335,24 +343,21 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     // prevent an infinite loop
     let index = 0;
     while (this.tradeTool.tradePackage?.valueToEvenTrade > this.tradeTool.tradePackage?.acceptanceBufferAmount || index > 10) {
-      this.tradeTool.getWhichSideIsFavored() === 1 ?
-        this.addPlayerToTeam2(
-          this.tradeTool.findBestPlayerForValue(
-            this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
-            this.isSuperFlex,
-            this.tradeTool.tradePackage,
-            1
-          )[0]
-        )
-        :
-        this.addPlayerToTeam1(
-          this.tradeTool.findBestPlayerForValue(
-            this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
-            this.isSuperFlex,
-            this.tradeTool.tradePackage,
-            1
-          )[0]
-        );
+      // get player to add to trade
+      const playerToAddList = this.tradeTool.findBestPlayerForValue(
+        this.tradeTool.tradePackage.valueToEvenTrade * 1.01,
+        this.isSuperFlex,
+        this.tradeTool.tradePackage,
+        5
+      );
+      // randomly select player to add
+      const playerToAdd = playerToAddList[Math.floor(Math.random() * playerToAddList.length)] || null;
+      // if player null stop adding players
+      if (!playerToAdd) {
+        return;
+      }
+      // add player to the team with less value
+      this.tradeTool.getWhichSideIsFavored() === 1 ? this.addPlayerToTeam2(playerToAdd) : this.addPlayerToTeam1(playerToAdd);
       index++;
     }
   }
