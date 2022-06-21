@@ -13,7 +13,7 @@ import {forkJoin, Subject} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {BaseComponent} from '../base-component.abstract';
 import {TradeService} from './trade.service.ts.service';
-import {TradeFinderService} from "./trade-finder.service";
+import {TradeFinderService} from './trade-finder.service';
 
 @Injectable({
   providedIn: 'root'

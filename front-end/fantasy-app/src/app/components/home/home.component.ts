@@ -86,6 +86,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
    * @param demoId string of demo league id
    */
   loginWithLeagueId(demoId?: string): void {
+    this.usernameInput = '';
+    this.sleeperService.sleeperUser = null;
     this.sleeperApiService.getSleeperLeagueByLeagueId(demoId || this.leagueIdInput).subscribe(leagueData => {
       this.leagueSwitchService.loadLeague(leagueData);
     });
