@@ -146,7 +146,7 @@
     <span style="padding-right: 5px">
       <mat-form-field color="accent" style="width: 80px;">
         <mat-label>Set Limit</mat-label>
-        <input matInput type="number" [(ngModel)]="playerComparisonService.limit" (keyup)="dirtyQuery = true">
+        <input matInput type="number" [max]="10" [min]="1" [(ngModel)]="playerComparisonService.limit" (keyup)="dirtyQuery = true">
       </mat-form-field>
     </span>
     <span>
