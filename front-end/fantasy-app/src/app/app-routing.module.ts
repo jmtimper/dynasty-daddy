@@ -12,7 +12,7 @@ import {PlayoffCalculatorComponent} from './components/playoff-calculator/playof
 import {AboutComponent} from './components/about/about.component';
 import {PlayerStatisticsComponent} from './components/player-statistics/player-statistics.component';
 import {TradeCenterComponent} from './components/trade-center/trade-center.component';
-import {TradeFinderComponent} from "./components/trade-finder/trade-finder.component";
+import {TradeFinderComponent} from './components/trade-finder/trade-finder.component';
 
 const routes: Routes = [
   {

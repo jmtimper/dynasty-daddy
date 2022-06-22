@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {BaseComponent} from '../base-component.abstract';
 import {SleeperApiService} from '../../services/api/sleeper/sleeper-api.service';
-import {SleeperLeagueData} from '../../model/SleeperUser';
 import {SleeperService} from '../../services/sleeper.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
 import {PlayerService} from '../../services/player.service';
-import {ConfigService} from '../../services/init/config.service';
+import {ConfigKeyDictionary, ConfigService} from '../../services/init/config.service';
 import {LeagueSwitchService} from '../services/league-switch.service';
 
 @Component({
@@ -96,7 +94,24 @@ export class HomeComponent extends BaseComponent implements OnInit {
   /**
    * log in with a previous year league id
    */
-  loginWithPrevSeason(): void {
-    this.loginWithLeagueId(this.sleeperService.selectedLeague.prevLeagueId);
-  }
+  loginWithPrevSeason = () =>
+    this.loginWithLeagueId(this.sleeperService.selectedLeague.prevLeagueId)
+
+  /**
+   * returns true if we should display home modal
+   */
+  displayHomeModal = () =>
+    this.configService.getConfigOptionByKey(ConfigKeyDictionary.SHOW_HOME_DIALOG)?.configValue === 'true'
+
+  /**
+   * returns the home modal header information
+   */
+  getHomeModalHeader = () =>
+    this.configService.getConfigOptionByKey(ConfigKeyDictionary.HOME_DIALOG_HEADER)?.configValue
+
+  /**
+   * returns home modal body information
+   */
+  getHomeModalBody = () =>
+    this.configService.getConfigOptionByKey(ConfigKeyDictionary.HOME_DIALOG_BODY)?.configValue
 }
