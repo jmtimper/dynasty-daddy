@@ -6,7 +6,7 @@
   <div *ngIf="sleeperService.leagueLoaded" class="margin-top-10">
     <mat-form-field appearance="outline" color="accent">
       <mat-label>Select a Team</mat-label>
-      <mat-select [(ngModel)]="tradeFinderService.selectedTeamUserId">
+      <mat-select [(ngModel)]="tradeFinderService.selectedTeamUserId" (selectionChange)="setUpTradeFinder()">
         <mat-option *ngFor="let team of sleeperService.sleeperTeamDetails"
                     [value]="team.owner.userId">{{team.owner.teamName}} - {{team.owner.ownerName}}</mat-option>
       </mat-select>
