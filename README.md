@@ -75,7 +75,7 @@ Jeremy Timperio - Creator, Full Stack Developer
 ### Support Me Here
 <a href="https://discord.gg/SJJuQBJqda"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Community Badge"/></a>
 <a href="https://www.youtube.com/channel/UC9SOfhKyR3MQj8xB778rhnA/featured"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Subscribe"/></a>
-<a href="https://www.patreon.com/DynastyDaddy?fan_landing=true"><img src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white" alt="Support"/></a>
+<a href="https://www.buymeacoffee.com/jertimperio"><img src="https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Support"/></a>
 <a href="https://www.linkedin.com/in/jmtimper/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
 
 

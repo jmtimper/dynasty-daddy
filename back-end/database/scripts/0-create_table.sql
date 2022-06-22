@@ -2,6 +2,7 @@ CREATE USER docker;
 CREATE DATABASE docker;
 GRANT ALL PRIVILEGES ON DATABASE docker TO docker;
 
+-- create player values table
 create table player_values
 (
     id serial not null,
@@ -46,6 +47,7 @@ create table player_info
 create unique index player_info_id_uindex
     on player_info (name_id);
 
+-- create player ids table
 create table player_ids
 (
     id serial primary key not null,
@@ -57,3 +59,14 @@ create table player_ids
 
 create unique index player_ids_id_uindex
     on player_ids (id);
+
+-- create config table
+create table config
+(
+    config_key   text not null
+        primary key,
+    config_value text not null,
+    description  text,
+    created_at   timestamp with time zone default now(),
+    updated_at   timestamp with time zone default now()
+);

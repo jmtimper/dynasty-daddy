@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {KTCApiConfigService} from './api/ktc-api-config.service';
 import {SleeperApiConfigService} from './api/sleeper/sleeper-api-config.service';
+import {ConfigApiConfigService} from './api/config/config-api-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,15 @@ export class EndpointsService {
   // uncomment for dev environment
   // private baseUrl = 'http://localhost:3000/api';
 
-  constructor( private ktcApiConfigService: KTCApiConfigService, private sleeperApiConfigService: SleeperApiConfigService) {
+  constructor(private ktcApiConfigService: KTCApiConfigService,
+              private sleeperApiConfigService: SleeperApiConfigService,
+              private configApiConfigService: ConfigApiConfigService) {
   }
 
   public assignEndpoints(): void {
+
+    // config option endpoint
+    this.configApiConfigService.getConfigOptionsEndpoint = this.baseUrl + '/v1/config/all';
 
     // KTC Database Endpoints
     this.ktcApiConfigService.getPlayerValuesForTodayEndpoint = this.baseUrl + '/v1/player/all/today';
