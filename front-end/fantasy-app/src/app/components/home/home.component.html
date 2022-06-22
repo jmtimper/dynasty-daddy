@@ -1,7 +1,12 @@
 <div class="center-text margin-top-10 large-bold-header-text">Welcome to Dynasty Daddy!</div>
+<div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-15">
+  <div class="flex-item-home center-text" fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="80%">
+    Dynasty Daddy is a free dynasty fantasy football tool that ties together KeepTradeCut data with Sleeper League data to leverage that data to help users make quicker more well informed fantasy football decisions.
+  </div>
+</div>
 
 <div class="center-text margin-top-25 margin-bot-25" style="padding-left: 25%; padding-right: 25%" *ngIf="displayHomeModal()">
-  <mat-card style="background-color: #fdca40">
+  <mat-card style="background-color: {{getHomeModalBGColor()}}">
     <mat-card-title>{{getHomeModalHeader()}}</mat-card-title>
     <mat-card-content>{{getHomeModalBody()}}</mat-card-content>
   </mat-card>
@@ -87,7 +92,7 @@
     </div>
     <div [ngClass]="{'flex-item-home': !configService.isMobile, 'margin-top-25': configService.isMobile}">
       <div class="center-text">
-        <div class="mid-bold-text margin-top-10">Join Our Community</div>
+        <div class="mid-bold-text">Join Our Community</div>
         <br>
         <iframe src="https://discord.com/widget?id=837372928005767220&theme=dark" width="350" height="500"
                 allowtransparency="true" frameborder="0"
@@ -96,12 +101,7 @@
     </div>
   </div>
   <div class="large-bold-header-text center-text margin-top-25">
-    What is Dynasty Daddy?
-  </div>
-  <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
-    <div class="flex-item-home" fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="80%">
-      Dynasty Daddy is a fee dynasty fantasy football tool that ties together KeepTradeCut data with Sleeper League data to speed up research times and display the most accurate & relevant data for leagues.
-    </div>
+    Features Dynasty Daddy has to offer
   </div>
 
   <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">

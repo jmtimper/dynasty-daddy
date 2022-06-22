@@ -11,7 +11,8 @@ import {BaseComponent} from '../../components/base-component.abstract';
 export const ConfigKeyDictionary = {
   SHOW_HOME_DIALOG: 'show_home_dialog',
   HOME_DIALOG_HEADER: 'home_dialog_header',
-  HOME_DIALOG_BODY: 'home_dialog_body'
+  HOME_DIALOG_BODY: 'home_dialog_body',
+  HOME_DIALOG_BG_COLOR: 'home_dialog_bg_color'
 } as const;
 
 @Injectable({

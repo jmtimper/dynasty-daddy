@@ -114,4 +114,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
    */
   getHomeModalBody = () =>
     this.configService.getConfigOptionByKey(ConfigKeyDictionary.HOME_DIALOG_BODY)?.configValue
+
+  /**
+   * returns home modal background color from config option
+   */
+  getHomeModalBGColor = () =>
+    this.configService.getConfigOptionByKey(ConfigKeyDictionary.HOME_DIALOG_BG_COLOR)?.configValue
 }
