@@ -2,8 +2,8 @@
 <div class="center-text margin-top-10">
   Select players to generate potential trades.
 </div>
-<div class="trade-table-container">
-  <div *ngIf="sleeperService.leagueLoaded" class="margin-top-10">
+<div class="trade-table-container" *ngIf="sleeperService.leagueLoaded">
+  <div class="margin-top-10">
     <mat-form-field appearance="outline" color="accent">
       <mat-label>Select a Team</mat-label>
       <mat-select [(ngModel)]="tradeFinderService.selectedTeamUserId" (selectionChange)="setUpTradeFinder()">
@@ -13,21 +13,21 @@
     </mat-form-field>
   </div>
 
-  <div *ngIf="sleeperService.leagueLoaded && tradeFinderService.selectedTeamUserId">
+  <div *ngIf="tradeFinderService.selectedTeamUserId && teamPlayers.length > 0">
     <div fxLayout="row wrap" fxLayoutAlign="center">
       <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" class="item">
         <div class="mid-bold-text center-text margin-top-10 margin-bot-10">Players</div>
-        <app-trade-finder-table [assets]="filterPlayersByTeam()"></app-trade-finder-table>
+        <app-trade-finder-table [assets]="teamPlayers"></app-trade-finder-table>
       </div>
 
       <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" class="item">
         <div class="mid-bold-text center-text margin-top-10 margin-bot-10">Draft Capital</div>
-        <app-trade-finder-table [assets]="filterPicksByTeam()"></app-trade-finder-table>
+        <app-trade-finder-table [assets]="teamPicks"></app-trade-finder-table>
       </div>
     </div>
 
     <div class="margin-top-50 center-text">
-      <button mat-raised-button color="primary" class="mid-bold-text" (click)="generateTradeOffers()">Ask for Trade Proposals</button>
+      <button mat-raised-button color="primary" class="mid-bold-text" [disabled]="tradeFinderService.selectedPlayers.length == 0" (click)="generateTradeOffers()">Ask for Trade Proposals</button>
     </div>
 
     <div class="margin-top-50" fxLayout="row wrap" fxLayoutAlign="center">
@@ -38,8 +38,8 @@
   </div>
 </div>
 
-<div class="center-text margin-top-50" *ngIf="!sleeperService.leagueLoaded">
-  <div class="warning__alert">Cannot Find Trades. Please select a league.</div>
+<div class="center-text margin-top-50" *ngIf="!sleeperService.leagueLoaded || teamPlayers.length == 0">
+  <div class="warning__alert">Cannot find any trades. Please select a league.</div>
   <br>
   <button *ngIf="!sleeperService.sleeperUser" mat-raised-button color="warn" routerLink="./home">Choose League</button>
   <mat-form-field appearance="standard" color="accent" style="font-size: 14px;" *ngIf="sleeperService.sleeperUser?.leagues.length > 0">

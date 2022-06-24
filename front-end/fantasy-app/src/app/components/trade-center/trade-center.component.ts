@@ -11,11 +11,12 @@ import {take, takeUntil} from 'rxjs/operators';
 import {ConfigService} from '../../services/init/config.service';
 import {SleeperService} from '../../services/sleeper.service';
 import {PowerRankingsService} from '../services/power-rankings.service';
-import {TeamPowerRanking} from '../model/powerRankings';
+import {TeamPowerRanking, TeamRankingTier} from '../model/powerRankings';
 import {PlayerComparisonService} from '../services/player-comparison.service';
 import {Router} from '@angular/router';
 import {LeagueSwitchService} from '../services/league-switch.service';
-import {NgxSpinnerService} from "ngx-spinner";
+import {NgxSpinnerService} from 'ngx-spinner';
+import {DisplayService} from '../../services/utilities/display.service';
 
 @Component({
   selector: 'app-trade-center',
@@ -91,6 +92,7 @@ export class TradeCenterComponent extends BaseComponent implements OnInit, After
     public playerComparisonService: PlayerComparisonService,
     private leagueSwitchService: LeagueSwitchService,
     public spinner: NgxSpinnerService,
+    public displayService: DisplayService,
     private router: Router
   ) {
     super();

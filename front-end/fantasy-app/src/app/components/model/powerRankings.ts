@@ -12,7 +12,7 @@ export class TeamPowerRanking {
   }
 
   team: SleeperTeam;
-  roster: PositionPowerRanking[]
+  roster: PositionPowerRanking[];
   picks: PositionPowerRanking;
   starters: KTCPlayer[] = [];
   sfTradeValueOverall: number = 0;
@@ -21,6 +21,7 @@ export class TeamPowerRanking {
   starterRank: number;
   sfTradeValueStarter: number = 0;
   tradeValueStarter: number = 0;
+  tier: number;
 }
 
 export class PositionPowerRanking {
@@ -36,4 +37,13 @@ export class PositionPowerRanking {
   sfTradeValue: number;
   tradeValue: number;
   players: KTCPlayer[];
+}
+
+export enum TeamRankingTier {
+  Super_Team,
+  Contender,
+  Frisky,
+  Fraud,
+  Rebuilding,
+  Trust_the_Process
 }

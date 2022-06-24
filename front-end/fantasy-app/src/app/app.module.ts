@@ -79,6 +79,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { TradeFinderComponent } from './components/trade-finder/trade-finder.component';
 import { TradeFinderTableComponent } from './components/trade-finder/trade-finder-table/trade-finder-table.component';
 import { TradeFinderCardComponent } from './components/trade-finder/trade-finder-card/trade-finder-card.component';
+import { TeamTiersChartComponent } from './components/standings/team-tiers-chart/team-tiers-chart.component';
 
 export function initialize(startupService: StartupService): any {
   return (): Promise<any> => {
@@ -133,6 +134,7 @@ let UniversalDeviceDetectorService;
     TradeFinderComponent,
     TradeFinderTableComponent,
     TradeFinderCardComponent,
+    TeamTiersChartComponent,
   ],
   imports: [
     BrowserModule,

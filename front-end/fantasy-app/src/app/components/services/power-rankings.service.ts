@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {SleeperTeam} from '../../model/SleeperLeague';
 import {KTCPlayer} from '../../model/KTCPlayer';
-import {PositionPowerRanking, TeamPowerRanking} from '../model/powerRankings';
+import {PositionPowerRanking, TeamPowerRanking, TeamRankingTier} from '../model/powerRankings';
 import {SleeperService} from '../../services/sleeper.service';
 import {PlayerService} from '../../services/player.service';
 import {Observable, of} from 'rxjs';
+import {max, min} from 'simple-statistics';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class PowerRankingsService {
   mapPowerRankings(teams: SleeperTeam[], players: KTCPlayer[]): Observable<any> {
     try {
       if (this.powerRankings.length === 0) {
-        teams.map((team) => {
+        teams?.map((team) => {
           const roster = [];
           let sfTradeValueTotal = 0;
           let tradeValueTotal = 0;
@@ -66,7 +67,7 @@ export class PowerRankingsService {
           // combine upcoming and future draft capital for rankings
           const allPicks = team.draftCapital.concat(team.futureDraftCapital);
           allPicks.map(pick => {
-            for (const pickValue of pickValues) {
+              for (const pickValue of pickValues) {
                 if (pickValue.last_name.includes(pick.round.toString()) && pickValue.first_name === pick.year) {
                   if (pick.pick < 5 && pickValue.last_name.includes('Early')) {
                     sfPickTradeValue += pickValue.sf_trade_value;
@@ -166,13 +167,7 @@ export class PowerRankingsService {
     // calculate best starting lineup
     this.calculateStarterValue();
     // Rank starting lineups
-    this.powerRankings.sort((teamA, teamB) => {
-      if (isSuperflex) {
-        return teamB.sfTradeValueStarter - teamA.sfTradeValueStarter;
-      } else {
-        return teamB.tradeValueStarter - teamA.tradeValueStarter;
-      }
-    });
+    this.powerRankings = this.sortOnStarterValue(this.powerRankings, isSuperflex);
     this.powerRankings.forEach((team, index) => {
       team.starterRank = index + 1;
     });
@@ -186,6 +181,23 @@ export class PowerRankingsService {
     });
     this.powerRankings.forEach((team, index) => {
       team.overallRank = index + 1;
+    });
+    this.setTeamTiers(isSuperflex);
+  }
+
+  /**
+   * Sorts team power rankings array by starter value
+   * @param teams power ranked teams
+   * @param isSuperflex is super flex or not
+   * @private
+   */
+  private sortOnStarterValue(teams: TeamPowerRanking[], isSuperflex: boolean): TeamPowerRanking[] {
+    return teams.sort((teamA, teamB) => {
+      if (isSuperflex) {
+        return teamB.sfTradeValueStarter - teamA.sfTradeValueStarter;
+      } else {
+        return teamB.tradeValueStarter - teamA.tradeValueStarter;
+      }
     });
   }
 
@@ -239,6 +251,60 @@ export class PowerRankingsService {
   }
 
   /**
+   * Determine what the tier bins are and assign teams a tier
+   * @param isSuperflex is league superflex
+   * @private
+   */
+  private setTeamTiers(isSuperflex: boolean): void {
+    const groups = [];
+    // create a map of all starter rankings for teams
+    const ratings = this.powerRankings.map(team => {
+      return isSuperflex ? team.sfTradeValueStarter : team.tradeValueStarter;
+    });
+    // get min rating
+    const minRating = min(ratings);
+    // get max rating
+    const maxRating = max(ratings);
+    // determine number of bins
+    const binCount = Math.ceil(Math.sqrt(ratings.length));
+    // calculate the bin width
+    const binWidth = (maxRating - minRating) / binCount;
+    // set up loop with floor & ceiling
+    let binFloor = minRating;
+    let binCeiling = minRating + binWidth;
+    // loop through teams and determine each group
+    for (let groupInd = 0; groupInd < binCount; groupInd++) {
+      const newGroup = [];
+      this.powerRankings.forEach((team) => {
+        if (isSuperflex ? team?.sfTradeValueStarter >= binFloor && team?.sfTradeValueStarter < binCeiling
+          : team?.tradeValueStarter >= binFloor &&  team?.tradeValueStarter < binCeiling) {
+          newGroup?.push(team);
+        }
+      });
+      // after checking each team push group and set up next group
+      groups.push(newGroup);
+      binFloor = binCeiling;
+      binCeiling += binWidth + 1;
+    }
+
+    // assign tier based on grouping
+    groups.reverse().map((group, ind) => {
+        // set super team if criteria is met
+        if (group.length === 1 && ind === 0) {
+          group[0].tier = ind;
+          // set trust the process if criteria is met
+        } else if (group.length === 1 && ind === groups.length - 1) {
+          group[0].tier = 5;
+        } else {
+          group.map((team) => {
+            team.tier = ind + 1;
+          });
+        }
+      }
+    );
+  }
+
+  /**
    * return list of healthy players from list
    * @param players list of players to choose from
    * @param numberOfPlayer number of players to choose
@@ -253,7 +319,7 @@ export class PowerRankingsService {
     excludedStatus: string[] = ['PUP', 'IR', 'Sus', 'COV']
   ): KTCPlayer[] {
     const activePlayers = [];
-    players.map( player => {
+    players.map(player => {
       if (!excludedStatus.includes(player.injury_status) && activePlayers.length < numberOfPlayer && !excludedPlayers.includes(player)) {
         activePlayers.push(player);
       }

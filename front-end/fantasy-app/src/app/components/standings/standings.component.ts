@@ -8,6 +8,7 @@ import {MatchUpUI} from '../model/matchup';
 import {TransactionsService} from '../services/transactions.service';
 import {BaseComponent} from '../base-component.abstract';
 import {LeagueSwitchService} from '../services/league-switch.service';
+import {PowerRankingsService} from "../services/power-rankings.service";
 
 @Component({
   selector: 'app-standings',
@@ -20,6 +21,7 @@ export class StandingsComponent extends BaseComponent implements OnInit {
               public playoffCalculatorService: PlayoffCalculatorService,
               public matchupService: MatchupService,
               public configService: ConfigService,
+              public powerRankingsService: PowerRankingsService,
               public leagueSwitchService: LeagueSwitchService,
               public transactionService: TransactionsService) {
     super();
