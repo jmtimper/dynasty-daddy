@@ -29,6 +29,11 @@
         <td mat-cell *matCellDef="let element"> {{element.team.owner?.ownerName}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="tier">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tier</th>
+        <td mat-cell *matCellDef="let element"> {{element.tier}} </td>
+      </ng-container>
+
       <ng-container matColumnDef="overallRank">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Overall Rank</th>
         <td mat-cell *matCellDef="let element"> {{element.overallRank}} </td>
@@ -92,6 +97,12 @@
                     class="mid-bold-text">{{isSuperFlex ? element.sfTradeValueStarter : element.tradeValueStarter}}</span>
                     <span class="small-text__light"> (Rank: <span
                       [ngClass]="{'success__alert': element.starterRank < alertThreshold, 'warning__alert': element.starterRank > alertThreshold * 2}">{{element.starterRank}}</span>)</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="small-text__light">Tier: </span>
+                  <div><span
+                    class="mid-bold-text">{{element.tier}}</span>
                   </div>
                 </div>
                 <div class="margin-top-25">

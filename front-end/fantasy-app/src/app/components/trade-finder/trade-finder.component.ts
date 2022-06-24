@@ -20,8 +20,14 @@ export class TradeFinderComponent extends BaseComponent implements OnInit {
    */
   tradeList: TradePackage[] = [];
 
+  /** list of team players */
+  teamPlayers: KTCPlayer[] = [];
+
+  /** list of team picks */
+  teamPicks: KTCPlayer[] = [];
+
   constructor(
-    private leagueSwitchService: LeagueSwitchService,
+    public leagueSwitchService: LeagueSwitchService,
     public playerService: PlayerService,
     public sleeperService: SleeperService,
     private powerRankingsService: PowerRankingsService,
@@ -51,6 +57,8 @@ export class TradeFinderComponent extends BaseComponent implements OnInit {
   setUpTradeFinder(): void {
     this.tradeFinderService.selectedPlayers = [];
     this.tradeList = [];
+    this.teamPlayers = this.filterPlayersByTeam();
+    this.teamPicks = this.filterPicksByTeam();
   }
 
   /**
@@ -68,7 +76,7 @@ export class TradeFinderComponent extends BaseComponent implements OnInit {
     this.tradeList = trades.filter(trade => trade.team2Assets.length > 0)
       .filter((value, index, self) =>
           index === self.findIndex((t) => (
-          JSON.stringify(t.team2Assets) === JSON.stringify(value.team2Assets)
+            JSON.stringify(t.team2Assets) === JSON.stringify(value.team2Assets)
           ))
       );
   }
@@ -86,6 +94,6 @@ export class TradeFinderComponent extends BaseComponent implements OnInit {
    * filters draft capital by selected team
    */
   filterPicksByTeam(): KTCPlayer[] {
-    return this.powerRankingsService.findTeamFromRankingsByUserId(this.tradeFinderService.selectedTeamUserId).picks.players || [];
+    return this.powerRankingsService.findTeamFromRankingsByUserId(this.tradeFinderService.selectedTeamUserId)?.picks?.players || [];
   }
 }

@@ -191,8 +191,13 @@
         <table style="border-collapse: separate; border-spacing: 0 10px;">
           <tr>
             <td style="width: 50%">{{team2Rankings?.team.owner.ownerName || '--'}}</td>
-            <td style="width: 4%" class="center text__light">NAME</td>
+            <td style="width: 4%" class="center-text text__light">NAME</td>
             <td style="width: 50%; text-align: right;">{{team1Rankings?.team.owner.ownerName || '--'}}</td>
+          </tr>
+          <tr>
+            <td style="width: 50%">{{team2Rankings?.tier|| '--'}}</td>
+            <td style="width: 4%" class="center-text text__light">TIER</td>
+            <td style="width: 50%; text-align: right;">{{team1Rankings?.tier || '--'}}</td>
           </tr>
           <tr>
             <td style="width: 48%">{{team2Rankings?.roster[0].rank || '--'}}</td>
