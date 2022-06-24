@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {TeamPowerRanking} from '../../model/powerRankings';
+import {TeamPowerRanking, TeamRankingTier} from '../../model/powerRankings';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {KTCPlayer} from '../../../model/KTCPlayer';
@@ -8,6 +8,7 @@ import {SleeperService} from '../../../services/sleeper.service';
 import {ConfigService} from '../../../services/init/config.service';
 import {PlayerService} from '../../../services/player.service';
 import {Clipboard} from '@angular/cdk/clipboard';
+import {DisplayService} from '../../../services/utilities/display.service';
 
 // details animation
 export const detailExpand = trigger('detailExpand',
@@ -58,6 +59,7 @@ export class PowerRankingsTableComponent implements OnInit, OnChanges {
   constructor(public sleeperService: SleeperService,
               public configService: ConfigService,
               public playerService: PlayerService,
+              public displayService: DisplayService,
               private clipboard: Clipboard) {
   }
 

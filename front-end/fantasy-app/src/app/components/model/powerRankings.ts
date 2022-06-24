@@ -21,7 +21,7 @@ export class TeamPowerRanking {
   starterRank: number;
   sfTradeValueStarter: number = 0;
   tradeValueStarter: number = 0;
-  tier: TeamRankingTier;
+  tier: number;
 }
 
 export class PositionPowerRanking {
@@ -40,10 +40,10 @@ export class PositionPowerRanking {
 }
 
 export enum TeamRankingTier {
+  Super_Team,
   Contender,
   Frisky,
   Fraud,
   Rebuilding,
-  WhatHappened,
-  SuperTeam
+  Trust_the_Process
 }

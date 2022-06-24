@@ -2,7 +2,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {BaseChartDirective, Label} from 'ng2-charts';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import {Color} from 'chartjs-plugin-datalabels/types/options';
-import {TeamPowerRanking} from '../../model/powerRankings';
+import {TeamPowerRanking, TeamRankingTier} from '../../model/powerRankings';
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 
@@ -93,8 +93,8 @@ export class TeamTiersChartComponent implements OnInit {
       if (!tiers[team.tier.valueOf()]) {tiers[team.tier.valueOf()] = 0;}
       tiers[team.tier.valueOf()] += 1;
     });
-    this.data.push({label: 'Tiers', data: Object.entries(tiers).map(k => k[1]), hoverBackgroundColor: []});
-    this.dataLabels = Object.entries(tiers).map(k => k[0]);
+    this.data.push({label: 'Teams', data: Object.entries(tiers).map(k => k[1]), hoverBackgroundColor: []});
+    this.dataLabels = Object.entries(tiers).map(k => TeamRankingTier[k[0]].valueOf().replace(/_/g, ' '));
     if (this.chart && this.chart.chart) {
       this.chart.chart.data.datasets = this.data;
       this.chart.chart.data.labels = this.dataLabels;

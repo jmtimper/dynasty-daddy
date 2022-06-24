@@ -289,15 +289,15 @@ export class PowerRankingsService {
 
     // assign tier based on grouping
     groups.reverse().map((group, ind) => {
-        // set golden god if criteria is met
+        // set super team if criteria is met
         if (group.length === 1 && ind === 0) {
-          group[0].tier = TeamRankingTier.SuperTeam;
-          // set what happened if criteria is met
-        } else if (group.length === 1 && ind === group.length - 1) {
-          group[ind].tier = TeamRankingTier.WhatHappened;
+          group[0].tier = ind;
+          // set trust the process if criteria is met
+        } else if (group.length === 1 && ind === groups.length - 1) {
+          group[0].tier = 5;
         } else {
           group.map((team) => {
-            team.tier = TeamRankingTier[ind];
+            team.tier = ind + 1;
           });
         }
       }
