@@ -38,7 +38,7 @@ export class PowerRankingsTableComponent implements OnInit, OnChanges {
   dataSource: MatTableDataSource<TeamPowerRanking> = new MatTableDataSource<TeamPowerRanking>();
 
   // columns to display in table
-  columnsToDisplay = ['team', 'owner', 'overallRank', 'starterRank', 'qbRank', 'rbRank', 'wrRank', 'teRank', 'draftRank'];
+  columnsToDisplay = ['team', 'owner', 'tier', 'overallRank', 'starterRank', 'qbRank', 'rbRank', 'wrRank', 'teRank', 'draftRank'];
 
   // list of expanded details for teams.
   expandedElement: any[] = [];

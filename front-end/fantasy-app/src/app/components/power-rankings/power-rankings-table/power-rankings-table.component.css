@@ -31,3 +31,15 @@ tr.power-ranking-element-row:not(.power-ranking-expanded-row):active {
   min-width: 300px;
   overflow-x: auto;
 }
+
+.mat-column-overallRank,
+.mat-column-starterRank,
+.mat-column-qbRank,
+.mat-column-rbRank,
+.mat-column-wrRank,
+.mat-column-teRank,
+.mat-column-draftRank {
+  max-width: 50px;
+  text-align: center;
+  justify-content: center;
+}
