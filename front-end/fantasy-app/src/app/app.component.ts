@@ -1,6 +1,6 @@
+// @ts-ignore
+import LogRocket from 'logrocket';
 import {Component, OnInit} from '@angular/core';
-import {KTCApiService} from './services/api/ktc-api.service';
-import {KTCPlayer} from './model/KTCPlayer';
 import {ConfigService} from './services/init/config.service';
 
 @Component({
@@ -15,6 +15,17 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
+
+    if (!window.location.origin.includes('localhost')) {
+      console.log('initialize LogRocket');
+      LogRocket.init('m8wwpp/dynasty-daddy', {
+        console: {
+          shouldAggregateConsoleErrors: true
+        },
+        release: 'production'
+      });
+    }
+
     this.configService.checkIfMobile();
     console.log('isMobile ' + this.configService.isMobile);
   }
