@@ -17,6 +17,7 @@ tr.power-ranking-element-row:not(.power-ranking-expanded-row):active {
 
 .power-ranking-element-row td {
   border-bottom-width: 0;
+  cursor: pointer;
 }
 
 .power-ranking-element-detail {
