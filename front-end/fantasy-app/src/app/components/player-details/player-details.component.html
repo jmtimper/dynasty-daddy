@@ -38,7 +38,7 @@
         <div class="standings-col vertical-break__right__dark">
           <div class="small-text__light text__light disabled__color">Position Rank</div>
           <div *ngIf="sleeperService.selectedLeague" class="mid-bold-text">{{sleeperService.selectedLeague.isSuperflex ? selectedPlayer.sf_position_rank || '--' : selectedPlayer.position_rank || '--'}}</div>
-          <div *ngIf="!sleeperService.selectedLeague" class="mid-bold-text">{{selectedPlayer.sf_position_rank}}</div>
+          <div *ngIf="!sleeperService.selectedLeague" class="mid-bold-text">{{selectedPlayer.sf_position_rank || '--'}}</div>
         </div>
         <div class="standings-col vertical-break__right__dark">
           <div class="small-text__light text__light disabled__color">Experience</div>
@@ -74,13 +74,13 @@
       <div class="mid-bold-text margin-top-10 center-text">Past 18 Week Summary</div>
       <div class="margin-top-10 center-text">Below is the past 18 weeks of points and projections based on Sleeper's <span class="info__alert">0.5 PPR scoring</span>.
       </div>
-      <app-player-details-weekly-stats-line-chart [selectedPlayer]="selectedPlayer"></app-player-details-weekly-stats-line-chart>
+      <app-player-details-weekly-stats-line-chart  [selectedPlayerInsights]="selectedPlayerInsights" [selectedPlayer]="selectedPlayer"></app-player-details-weekly-stats-line-chart>
     </mat-tab>
     <mat-tab label="Insights">
       <div class="mid-bold-text margin-top-10 center-text">Player Insights</div>
       <div class="margin-top-10 center-text">A collection of metrics and insights on {{selectedPlayer.full_name}}.
       </div>
-      <app-player-details-insights [selectedPlayer]="selectedPlayer" [selectedPlayerInsights]="selectedPlayerInsights" [selectedPlayerValues]="historicalTradeValue"></app-player-details-insights>
+      <app-player-details-insights [selectedPlayer]="selectedPlayer" [selectedPlayerValues]="historicalTradeValue"></app-player-details-insights>
     </mat-tab>
     <mat-tab label="Past Box Scores">
       <app-player-details-weekly-box-scores-table *ngIf="isPlayerStatsGenerated()" [selectedPlayer]="selectedPlayer"></app-player-details-weekly-box-scores-table>

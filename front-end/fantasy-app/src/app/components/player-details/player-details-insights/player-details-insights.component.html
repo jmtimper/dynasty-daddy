@@ -28,12 +28,12 @@
         <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.sf_change || 0 : selectedPlayer?.standard_change || 0}}%</div>
       </div>
       <div class="insight__row">
-        <div class="text__light">90 Day High</div>
+        <div class="text__light">90-Day High</div>
         <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.three_month_high_sf || '--' : selectedPlayer?.three_month_high || '--'}}</div>
       </div>
       <div class="insight__row">
-        <div class="text__light">90 Day Low</div>
-        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.three_month_low_sf || '--' : selectedPlayer?.three_month_low || '--'}}</div>
+        <div class="text__light">90-Day Low</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.three_month_low_sf || 0 : selectedPlayer?.three_month_low || 0}}</div>
       </div>
       <div class="insight__row">
         <div class="text__light">All-Time High</div>
@@ -41,7 +41,7 @@
       </div>
       <div class="insight__row">
         <div class="text__light">All-Time Low</div>
-        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.all_time_low_sf || '--' : selectedPlayer?.all_time_low || '--'}}</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.all_time_low_sf || 0 : selectedPlayer?.all_time_low || 0}}</div>
       </div>
     </mat-card>
 
