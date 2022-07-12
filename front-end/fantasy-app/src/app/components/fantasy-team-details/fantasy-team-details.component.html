@@ -83,7 +83,7 @@
                  class="responsive center-img">
             <mat-card-content class="center-text">
               <div class="small-text__light">Trade Value</div>
-              <div class="mid-bold-text">{{playerService.playerValueAnalysis[player.name_id]?.sf_trade_value}}</div>
+              <div class="mid-bold-text">{{player.sf_trade_value}}</div>
             </mat-card-content>
             <mat-card-actions class="center-text">
               <button mat-button [routerLink]="['../../../players/details', player.name_id]">Player Details</button>

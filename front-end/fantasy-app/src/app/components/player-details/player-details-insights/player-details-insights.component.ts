@@ -2,11 +2,10 @@ import {AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, OnInit, V
 import {KTCPlayer, KTCPlayerDataPoint} from '../../../model/KTCPlayer';
 import {PlayerService} from '../../../services/player.service';
 import {SleeperService} from '../../../services/sleeper.service';
-import {PlayerInsights} from '../../model/playerInsights';
 import {ChartDataSets, ChartOptions} from 'chart.js';
 import {BaseChartDirective, Label} from 'ng2-charts';
-import {Router} from "@angular/router";
-import {PlayerComparisonService} from "../../services/player-comparison.service";
+import {Router} from '@angular/router';
+import {PlayerComparisonService} from '../../services/player-comparison.service';
 
 @Component({
   selector: 'app-player-details-insights',
@@ -21,10 +20,6 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterV
   /** selected player info */
   @Input()
   selectedPlayer: KTCPlayer;
-
-  /** selected player insights */
-  @Input()
-  selectedPlayerInsights: PlayerInsights;
 
   /** past month selected data points */
   @Input()
@@ -44,6 +39,9 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterV
 
   /** line chart labels */
   public lineChartLabels: Label[] = [];
+
+  /** what display to filter values on */
+  public isSuperflex: boolean = true;
 
   /** line chart options */
   public lineChartOptions: (ChartOptions & { annotation?: any }) = {
@@ -94,20 +92,15 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterV
 
   ngAfterViewInit(): void {
     this.generateChartData();
-    if (!this.selectedPlayerInsights) {
-      this.selectedPlayerInsights = this.playerService.getPlayerInsights(
-        this.selectedPlayer,
-        this.sleeperService.selectedLeague?.isSuperflex || true
-      );
-      this.cdr.detectChanges();
-    }
   }
 
   ngOnInit(): void {
+    console.log(this.selectedPlayer);
+    this.isSuperflex = this.sleeperService.selectedLeague ? this.sleeperService.selectedLeague.isSuperflex : true;
     this.overallAdjPlayers = this.playerService.getAdjacentPlayersByNameId(
-      this.selectedPlayer.name_id, '', this.sleeperService.selectedLeague?.isSuperflex);
+      this.selectedPlayer?.name_id, '', this.sleeperService.selectedLeague?.isSuperflex);
     this.positionAdjPlayers = this.playerService.getAdjacentPlayersByNameId(
-      this.selectedPlayer.name_id, this.selectedPlayer.position, this.sleeperService.selectedLeague?.isSuperflex);
+      this.selectedPlayer?.name_id, this.selectedPlayer?.position, this.sleeperService.selectedLeague?.isSuperflex);
   }
 
   ngOnChanges(): void {

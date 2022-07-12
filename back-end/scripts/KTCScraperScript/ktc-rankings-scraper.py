@@ -236,6 +236,9 @@ try:
             VALUES (%s, %s, %s, %s, %s)''', (
                 player.id, player.sfPositionRank, player.positionRank, player.sf_value, player.value))
 
+        # update mat view for players
+        cursor.execute('''REFRESH MATERIALIZED VIEW CONCURRENTLY mat_vw_players;''')
+
         # Commit your changes in the database
         conn.commit()
         print(str(len(players)) + " Records inserted........")

@@ -4,28 +4,7 @@ const playersModel = new Model('players_info');
 
 export const getCurrentPlayerValues = async (req, res) => {
   try {
-    const data = await playersModel.selectQuery('Select * From (select distinct on (player_info.name_id)\n'
-      + '           player_info.name_id as name_id,\n'
-      + '           pi.sleeper_id as sleeper_id,\n'
-      + '           player_info.full_name as full_name,\n'
-      + '           player_info.first_name as first_name,\n'
-      + '           player_info.last_name as last_name,\n'
-      + '           player_info.team as team,\n'
-      + '           player_info.position as position,\n'
-      + '           player_info.age as age,\n'
-      + '           player_info.experience as experience,\n'
-      + '           player_info.injury_status as injury_status,\n'
-      + '           pv.trade_value as trade_value,\n'
-      + '           pv.sf_trade_value as sf_trade_value,\n'
-      + '           pv.sf_position_rank as sf_position_rank,\n'
-      + '           pv.position_rank as position_rank,\n'
-      + '           pv.created_at as date\n'
-      + '         from player_info\n'
-      + '            left join player_values pv on player_info.name_id = pv.name_id\n'
-      + '            left join player_ids pi on player_info.name_id = pi.name_id\n'
-      + '       order by player_info.name_id, pv.id desc\n'
-      + '     ) as T\n'
-      + '      order by sf_trade_value desc');
+    const data = await playersModel.selectQuery('Select * from mat_vw_players order by sf_trade_value desc');
     res.status(200).json(data.rows);
   } catch (err) {
     res.status(405).json(err.stack);

@@ -3,13 +3,54 @@
   This player has the tendency to <span class="warning__alert">{{totalPoints/totalProj >= 1 ? 'outperform' : 'underperform'}} their projections by {{generatePerformancePercent()}}%</span> over the past 18 weeks!
 </div>
 
-<div class="margin-top-50" style="display: block;">
-  <canvas baseChart width="600" height="400"
-          [datasets]="lineChartData"
-          [labels]="lineChartLabels"
-          [options]="lineChartOptions"
-          [legend]="lineChartLegend"
-          [chartType]="lineChartType"
-          [plugins]="lineChartPlugins">
-  </canvas>
+<div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
+  <div fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" style="display: block">
+    <mat-card>
+      <div class="margin-bot-10 center-text"><span class="mid-bold-text">Past 18 Weeks Points Vs. Projections</span></div>
+      <div style="display: block; height: 300px;">
+        <canvas baseChart
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"
+                [plugins]="lineChartPlugins">
+        </canvas>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex="20%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">
+    <mat-card style="min-height: 360px">
+      <div class="mid-bold-text center-text margin-bot-10">Past 18 Weeks Stats</div>
+      <div class="insight__row">
+        <div class="text__light">Games Played</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.gamesPlayed || '--'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">18 Week High</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.high || '--'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">18 Week Low</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.low || '--'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Average Points Per Week</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.mean || '--'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Variance</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.variance || '--'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Standard Deviation</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.stdDev || '--'}}</div>
+      </div>
+      <div class="insight__row">
+        <div class="text__light">Value Per Point Ratio</div>
+        <div class="mid-bold-text">{{selectedPlayerInsights?.valuePerPointRatio || '--'}}</div>
+      </div>
+    </mat-card>
+
+  </div>
 </div>

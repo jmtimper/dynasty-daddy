@@ -80,9 +80,9 @@ export class PlayerPosTableComponent implements OnInit, OnChanges {
         case 'points':
           return this.playerService.playerStats[item.sleeper_id]?.pts_half_ppr;
         case 'sf_trade_value':
-          return this.playerService.playerValueAnalysis[item.name_id].sf_trade_value;
+          return item.sf_trade_value;
         case 'trade_value':
-          return this.playerService.playerValueAnalysis[item.name_id].trade_value;
+          return item.trade_value;
         case 'full_name':
           return item.full_name;
         case 'cmp_pct':

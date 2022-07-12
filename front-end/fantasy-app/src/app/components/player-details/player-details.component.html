@@ -37,7 +37,7 @@
       <div class="standings-row">
         <div class="standings-col vertical-break__right__dark">
           <div class="small-text__light text__light disabled__color">Position Rank</div>
-          <div *ngIf="sleeperService.selectedLeague" class="mid-bold-text">{{sleeperService.selectedLeague.isSuperflex ? selectedPlayer.sf_position_rank : selectedPlayer.position_rank}}</div>
+          <div *ngIf="sleeperService.selectedLeague" class="mid-bold-text">{{sleeperService.selectedLeague.isSuperflex ? selectedPlayer.sf_position_rank || '--' : selectedPlayer.position_rank || '--'}}</div>
           <div *ngIf="!sleeperService.selectedLeague" class="mid-bold-text">{{selectedPlayer.sf_position_rank}}</div>
         </div>
         <div class="standings-col vertical-break__right__dark">
@@ -59,10 +59,10 @@
       <div class="button-right center-text">
         <mat-card>
           <div class="text__light">{{configService.isMobile ? 'Value' : 'Trade Value'}}</div>
-          <div *ngIf="sleeperService.selectedLeague" class="large-bold-header-text">{{sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[selectedPlayer.name_id].sf_trade_value : playerService.playerValueAnalysis[selectedPlayer.name_id].trade_value}}
-          <div class="small-text__light margin-top-10">{{sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[selectedPlayer.name_id].sf_change : playerService.playerValueAnalysis[selectedPlayer.name_id].standard_change}}% change in 30 days</div></div>
-          <div *ngIf="!sleeperService.selectedLeague" [ngClass]="{'large-bold-header-text': !configService.isMobile}"><span class="small-text__light">Superflex: </span>  {{playerService.playerValueAnalysis[selectedPlayer.name_id].sf_trade_value}}
-            <div *ngIf="!configService.isMobile"><span class="small-text__light">Standard: </span> {{playerService.playerValueAnalysis[selectedPlayer.name_id].trade_value}}</div>
+          <div *ngIf="sleeperService.selectedLeague" class="large-bold-header-text">{{sleeperService.selectedLeague.isSuperflex ? selectedPlayer.sf_trade_value : selectedPlayer.trade_value}}
+          <div class="small-text__light margin-top-10">{{sleeperService.selectedLeague.isSuperflex ? selectedPlayer.sf_change : selectedPlayer.standard_change}}% change in 30 days</div></div>
+          <div *ngIf="!sleeperService.selectedLeague" [ngClass]="{'large-bold-header-text': !configService.isMobile}"><span class="small-text__light">Superflex: </span>  {{selectedPlayer.sf_trade_value}}
+            <div *ngIf="!configService.isMobile"><span class="small-text__light">Standard: </span> {{selectedPlayer.trade_value}}</div>
           </div>
         </mat-card>
       </div>
@@ -71,7 +71,7 @@
 
   <mat-tab-group mat-align-tabs="center" class="margin-top-25">
     <mat-tab label="Past Week Summary">
-      <div class="mid-bold-text margin-top-10 center-text">Past 18 Weeks Points Vs. Projections</div>
+      <div class="mid-bold-text margin-top-10 center-text">Past 18 Week Summary</div>
       <div class="margin-top-10 center-text">Below is the past 18 weeks of points and projections based on Sleeper's <span class="info__alert">0.5 PPR scoring</span>.
       </div>
       <app-player-details-weekly-stats-line-chart [selectedPlayer]="selectedPlayer"></app-player-details-weekly-stats-line-chart>
