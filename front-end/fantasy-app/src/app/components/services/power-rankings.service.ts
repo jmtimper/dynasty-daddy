@@ -38,8 +38,8 @@ export class PowerRankingsService {
             for (const player of players) {
               if (sleeperId === player.sleeper_id) {
                 roster.push(player);
-                sfTradeValueTotal += this.playerService.playerValueAnalysis[player.name_id].sf_trade_value;
-                tradeValueTotal += this.playerService.playerValueAnalysis[player.name_id].trade_value;
+                sfTradeValueTotal += player.sf_trade_value;
+                tradeValueTotal += player.trade_value;
                 break;
               }
             }
@@ -51,8 +51,8 @@ export class PowerRankingsService {
             let groupList: KTCPlayer[] = [];
             groupList = roster.filter(player => {
               if (player.position === group) {
-                sfTradeValue += this.playerService.playerValueAnalysis[player.name_id].sf_trade_value;
-                tradeValue += this.playerService.playerValueAnalysis[player.name_id].trade_value;
+                sfTradeValue += player.sf_trade_value;
+                tradeValue += player.trade_value;
                 return player;
               }
             });
@@ -115,11 +115,9 @@ export class PowerRankingsService {
       for (const group of team.roster) {
         group.players.sort((a, b) => {
           if (isSuperflex) {
-            return this.playerService.playerValueAnalysis[b.name_id].sf_trade_value
-              - this.playerService.playerValueAnalysis[a.name_id].sf_trade_value;
+            return b.sf_trade_value - a.sf_trade_value;
           } else {
-            return this.playerService.playerValueAnalysis[b.name_id].trade_value
-              - this.playerService.playerValueAnalysis[a.name_id].trade_value;
+            return b.trade_value - a.trade_value;
           }
         });
       }
@@ -244,8 +242,8 @@ export class PowerRankingsService {
         }
       }
       for (const starter of team.starters) {
-        team.sfTradeValueStarter += this.playerService.playerValueAnalysis[starter.name_id].sf_trade_value;
-        team.tradeValueStarter += this.playerService.playerValueAnalysis[starter.name_id].trade_value;
+        team.sfTradeValueStarter += starter.sf_trade_value;
+        team.tradeValueStarter += starter.trade_value;
       }
     });
   }

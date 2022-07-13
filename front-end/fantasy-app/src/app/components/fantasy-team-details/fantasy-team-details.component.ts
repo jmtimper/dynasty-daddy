@@ -63,11 +63,9 @@ export class FantasyTeamDetailsComponent implements OnInit {
       }
       this.roster.sort((a, b) => {
         if (this.sleeperService.selectedLeague.isSuperflex) {
-          return this.playerService.playerValueAnalysis[b.name_id].sf_trade_value
-            - this.playerService.playerValueAnalysis[a.name_id].sf_trade_value;
+          return b.sf_trade_value - a.sf_trade_value;
         } else {
-          return this.playerService.playerValueAnalysis[b.name_id].trade_value
-            - this.playerService.playerValueAnalysis[a.name_id].trade_value;
+          return b.trade_value - a.trade_value;
         }
       });
 

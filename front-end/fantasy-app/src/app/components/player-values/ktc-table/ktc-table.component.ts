@@ -72,12 +72,11 @@ export class KtcTableComponent extends BaseComponent implements OnInit {
         case 'halfppr':
           return this.playerService.playerStats[item.sleeper_id]?.pts_half_ppr;
         case 'change':
-          return this.isSuperFlex ? this.playerService.playerValueAnalysis[item.name_id].sf_change
-            : this.playerService.playerValueAnalysis[item.name_id].standard_change;
+          return this.isSuperFlex ? item.sf_change : item.standard_change;
         case 'sf_trade_value':
-          return this.playerService.playerValueAnalysis[item.name_id].sf_trade_value;
+          return item.sf_trade_value;
         case 'trade_value':
-          return this.playerService.playerValueAnalysis[item.name_id].trade_value;
+          return item.trade_value;
         default:
           return item[property];
       }

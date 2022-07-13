@@ -3,10 +3,9 @@
 }
 
 .item {
-  margin: 24px;
+  margin: 14px;
   min-width: 300px;
 }
-
 
 .mat-column-name {
   min-width: 150px;

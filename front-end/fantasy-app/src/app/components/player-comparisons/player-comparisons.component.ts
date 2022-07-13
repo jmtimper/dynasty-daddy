@@ -58,7 +58,7 @@ export class PlayerComparisonsComponent extends BaseComponent implements AfterVi
   private filterActivePlayers(): void {
     this.activePlayers = this.playerService.playerValues.filter(player => {
       const yesterdayDate = new Date().getTime() - 1000 * 60 * 60 * 24;
-      const isCurrent = new Date(player.date).setHours(0, 0, 0, 0) >= new Date(yesterdayDate).setHours(0, 0, 0, 0);
+      const isCurrent = new Date(player.most_recent_data_point).setHours(0, 0, 0, 0) >= new Date(yesterdayDate).setHours(0, 0, 0, 0);
       if (isCurrent) {
         return player;
       }

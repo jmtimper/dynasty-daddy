@@ -79,7 +79,7 @@ export class TransactionsService {
     if (player) {
       return {
         playerName: player.full_name, value: this.sleeperService.selectedLeague.isSuperflex ?
-          player.sf_trade_value : this.playerService.playerValueAnalysis[player.name_id].trade_value, rosterId
+          player.sf_trade_value : player.trade_value, rosterId
       };
     } else {
       return {playerName: this.sleeperService.sleeperPlayers[sleeperId].full_name, value: 0, rosterId};

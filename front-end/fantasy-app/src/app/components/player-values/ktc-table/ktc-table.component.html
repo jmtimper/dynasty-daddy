@@ -75,13 +75,13 @@
       <!-- Value Column -->
       <ng-container matColumnDef="{{isSuperFlex ? 'sf_trade_value' : 'trade_value'}}">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Trade Value</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_trade_value : playerService.playerValueAnalysis[element.name_id].trade_value}} </mat-cell>
+        <mat-cell *matCellDef="let element" [ngClass]="{'warning__alert': isSuperFlex ? (element.sf_trade_value === element.three_month_low_sf) : (element.trade_value === element.three_month_low), 'success__alert':  isSuperFlex ? (element.sf_trade_value === element.three_month_high_sf) : (element.trade_value === element.three_month_high)}">{{isSuperFlex ? element.sf_trade_value :  element.trade_value}} </mat-cell>
       </ng-container>
 
       <!-- % change Column -->
       <ng-container matColumnDef="change">
         <mat-header-cell *matHeaderCellDef mat-sort-header>% Change</mat-header-cell>
-        <mat-cell *matCellDef="let element"> <span [ngClass]="{'success__alert': isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_change > 0 : playerService.playerValueAnalysis[element.name_id].standard_change > 0, 'warning__alert': isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_change < 0 : playerService.playerValueAnalysis[element.name_id].standard_change < 0}">{{isSuperFlex ? playerService.playerValueAnalysis[element.name_id].sf_change : playerService.playerValueAnalysis[element.name_id].standard_change}}%</span></mat-cell>
+        <mat-cell *matCellDef="let element"> <span [ngClass]="{'success__alert': isSuperFlex ? element.sf_change > 0 : element.standard_change > 0, 'warning__alert': isSuperFlex ? element.sf_change < 0 : element.standard_change < 0}">{{isSuperFlex ? element.sf_change : element.standard_change}}%</span></mat-cell>
       </ng-container>
 
 

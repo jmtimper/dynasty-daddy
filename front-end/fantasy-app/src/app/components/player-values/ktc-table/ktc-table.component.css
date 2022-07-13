@@ -35,6 +35,10 @@
   justify-content: flex-end;
 }
 
+.ktc-table-element-row {
+  cursor: pointer;
+}
+
 .ktc-table-element-row:hover {
   background: #c33163;
 }

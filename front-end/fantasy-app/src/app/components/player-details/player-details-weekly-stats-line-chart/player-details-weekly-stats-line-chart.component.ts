@@ -6,6 +6,8 @@ import {Classic10} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschem
 import {BaseChartDirective, Label} from 'ng2-charts';
 import {PlayerService} from '../../../services/player.service';
 import {BaseComponent} from '../../base-component.abstract';
+import {PlayerInsights} from '../../model/playerInsights';
+import {SleeperService} from '../../../services/sleeper.service';
 
 @Component({
   selector: 'app-player-details-weekly-stats-line-chart',
@@ -20,6 +22,10 @@ export class PlayerDetailsWeeklyStatsLineChartComponent extends BaseComponent im
   /** selected player data */
   @Input()
   selectedPlayer: KTCPlayer;
+
+  /** selected player insights */
+  @Input()
+  selectedPlayerInsights: PlayerInsights;
 
   /** total points aggregate */
   totalPoints = 0;
@@ -81,7 +87,8 @@ export class PlayerDetailsWeeklyStatsLineChartComponent extends BaseComponent im
   public lineChartType = 'line';
   public lineChartPlugins = [];
 
-  constructor(private playerService: PlayerService,
+  constructor(public playerService: PlayerService,
+              private sleeperService: SleeperService,
               private cdr: ChangeDetectorRef) {
     super();
   }
@@ -96,6 +103,12 @@ export class PlayerDetailsWeeklyStatsLineChartComponent extends BaseComponent im
       this.generateDataSets();
       this.cdr.detectChanges();
     }));
+    if (!this.selectedPlayerInsights) {
+      this.selectedPlayerInsights = this.playerService.getPlayerInsights(
+        this.selectedPlayer,
+        this.sleeperService.selectedLeague?.isSuperflex || true
+      );
+    }
     this.cdr.detectChanges();
   }
 

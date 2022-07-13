@@ -19,6 +19,19 @@ export class KTCPlayer {
   trade_value: number;
   owner: SleeperOwnerData = null;
   date: string;
+  all_time_high_sf: number;
+  all_time_low_sf: number;
+  all_time_high: number;
+  all_time_low: number;
+  three_month_high_sf: number;
+  three_month_high: number;
+  three_month_low_sf: number;
+  three_month_low: number;
+  last_month_value: number;
+  last_month_value_sf: number;
+  most_recent_data_point: string;
+  sf_change: number = null;
+  standard_change: number = null;
 }
 
 export class KTCPlayerDataPoint {

@@ -1,5 +1,5 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" class="margin-top-25">
-  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" style="display: block">
+  <div fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" style="display: block">
     <mat-card>
       <div class="margin-bot-10 center-text"><span class="mid-bold-text">Trade Value (Past 40 Days)</span> <span (click)="openPlayerComparison(selectedPlayer)"><mat-icon matTooltip="Open in Player Comparison" matTooltipPosition="above" class="open-window-button">open_in_new</mat-icon></span></div>
       <div style="display: block; height: 300px" *ngIf="lineChartData.length > 0">
@@ -20,36 +20,28 @@
       </div>
     </mat-card>
   </div>
-  <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">
-    <mat-card style="min-height: 360px">
-      <div class="mid-bold-text center-text margin-bot-10">Past 18 Games</div>
+  <div fxFlex="20%" fxFlex.xs="100%" fxFlex.sm="80%" class="item" *ngIf="playerService.playerStats[this.selectedPlayer.sleeper_id]">
+    <mat-card style="min-height: 365px">
+      <div class="mid-bold-text center-text margin-bot-10">Trade Value Metrics</div>
       <div class="insight__row">
-        <div class="text__light">Games Played</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.gamesPlayed || '???'}}</div>
+        <div class="text__light">Change in Past 30 Days</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.sf_change || 0 : selectedPlayer?.standard_change || 0}}%</div>
       </div>
       <div class="insight__row">
-        <div class="text__light">18 Week High</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.high || '???'}}</div>
+        <div class="text__light">90-Day High</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.three_month_high_sf || '--' : selectedPlayer?.three_month_high || '--'}}</div>
       </div>
       <div class="insight__row">
-        <div class="text__light">18 Week Low</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.low || '???'}}</div>
+        <div class="text__light">90-Day Low</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.three_month_low_sf || 0 : selectedPlayer?.three_month_low || 0}}</div>
       </div>
       <div class="insight__row">
-        <div class="text__light">Average Points Per Week</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.mean || '???'}}</div>
+        <div class="text__light">All-Time High</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.all_time_high_sf || '--' : selectedPlayer?.all_time_high || '--'}}</div>
       </div>
       <div class="insight__row">
-        <div class="text__light">Variance</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.variance || '???'}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">Standard Deviation</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.stdDev || '???'}}</div>
-      </div>
-      <div class="insight__row">
-        <div class="text__light">Value Per Point Ratio</div>
-        <div class="mid-bold-text">{{selectedPlayerInsights?.valuePerPointRatio || '???'}}</div>
+        <div class="text__light">All-Time Low</div>
+        <div class="mid-bold-text">{{isSuperflex ? selectedPlayer?.all_time_low_sf || 0 : selectedPlayer?.all_time_low || 0}}</div>
       </div>
     </mat-card>
 
@@ -76,7 +68,7 @@
 
         <ng-container matColumnDef="value">
           <mat-header-cell *matHeaderCellDef>Trade Value</mat-header-cell>
-          <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[player.name_id].trade_value : playerService.playerValueAnalysis[player.name_id].sf_trade_value}}</mat-cell>
+          <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? player.trade_value : player.sf_trade_value}}</mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -99,7 +91,7 @@
 
         <ng-container matColumnDef="value">
           <mat-header-cell *matHeaderCellDef>Trade Value</mat-header-cell>
-          <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? playerService.playerValueAnalysis[player.name_id].trade_value : playerService.playerValueAnalysis[player.name_id].sf_trade_value}}</mat-cell>
+          <mat-cell *matCellDef="let player">{{sleeperService.leagueLoaded && !sleeperService.selectedLeague.isSuperflex ? player.trade_value : player.sf_trade_value}}</mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

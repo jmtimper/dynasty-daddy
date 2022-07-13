@@ -1,6 +1,5 @@
 import {KTCPlayer} from '../../model/KTCPlayer';
 import {SleeperTeam} from '../../model/SleeperLeague';
-import {DraftCapital} from '../../model/SleeperUser';
 
 export class TeamPowerRanking {
   constructor(team: SleeperTeam, players: PositionPowerRanking[], sfTradeValue: number, tradeValue: number, picks: PositionPowerRanking) {
