@@ -95,7 +95,6 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterV
   }
 
   ngOnInit(): void {
-    console.log(this.selectedPlayer);
     this.isSuperflex = this.sleeperService.selectedLeague ? this.sleeperService.selectedLeague.isSuperflex : true;
     this.overallAdjPlayers = this.playerService.getAdjacentPlayersByNameId(
       this.selectedPlayer?.name_id, '', this.sleeperService.selectedLeague?.isSuperflex);
@@ -125,14 +124,15 @@ export class PlayerDetailsInsightsComponent implements OnInit, OnChanges, AfterV
             if (new Date(new Date(dateLabel).setHours(0, 0, 0, 0)).getTime()
               === new Date(new Date(dataPoint.date).setHours(0, 0, 0, 0)).getTime()) {
               dataList.push(this.sleeperService.selectedLeague?.isSuperflex === false ? dataPoint.trade_value : dataPoint.sf_trade_value);
-              this.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(dataPoint.date?.slice(0, 10)));
+              this.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(dataPoint.date));
               dataPointInd++;
             }
           });
           // if no point matches
           if (dataList.length < ind) {
             dataList.push(ind === 40 ? null : 0);
-            this.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(dateLabel.toString()));
+            this.lineChartLabels.push(this.playerComparisonService.formatDateForDisplay(
+              new Date(new Date(dateLabel).setHours(0, 0, 0, 0)).toString()));
           }
         }
         // reverse data
